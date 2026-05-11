@@ -12,7 +12,7 @@ const {
 
 
 // =====================================
-// GET CITIZEN BY PHONE
+// GET CITIZEN BY PHONE NUMBER
 // =====================================
 
 router.get(

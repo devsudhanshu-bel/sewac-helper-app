@@ -1,105 +1,94 @@
+const { surveyPrisma } = require("../config/surveyDb");
+
+
+
 // =====================================
-// MOCK EXTERNAL DATABASE FETCH SERVICE
+// GET CITIZEN BY PHONE NUMBER
 // =====================================
-
-
-
-// -------------------------------------
-// SEARCH BY PHONE NUMBER
-// -------------------------------------
 
 const getCitizenByPhoneService = async (
   phoneNumber
 ) => {
+  try {
 
-  // =====================================
-  // LATER:
-  // Replace this with external DB/API call
-  // =====================================
-
-  // Example:
-  // const result = await axios.get(...)
-  // OR PostgreSQL/MySQL Query
-
-
-
-  // MOCK DATA
-  const mockCitizens = [
-    {
-      citizenName: "Rahul Kumar",
-      phoneNumber: "9876543210",
-      address: "Bangalore",
-    },
-
-    {
-      citizenName: "Suresh",
-      phoneNumber: "9988776655",
-      address: "Mysore",
-    },
-  ];
+    const citizen = await surveyPrisma.$queryRawUnsafe(`
+      SELECT
+        "Name of the Person",
+        "Contact no of the HHs"
+      FROM "survery_attribute_specific"
+      WHERE "Contact no of the HHs" = '${phoneNumber}'
+      LIMIT 1
+    `);
 
 
 
-  const citizen = mockCitizens.find(
-    (c) => c.phoneNumber === phoneNumber
-  );
+    if (!citizen || citizen.length === 0) {
+      return null;
+    }
 
 
 
-  return citizen || null;
+    return {
+      citizenName:
+        citizen[0]["Name of the Person"],
+
+      phoneNumber:
+        citizen[0]["Contact no of the HHs"],
+    };
+
+  } catch (error) {
+
+    console.error(
+      "SURVEY DB PHONE SEARCH ERROR:",
+      error
+    );
+
+    throw error;
+  }
 };
 
 
 
 
 
-// -------------------------------------
-// SEARCH BY CITIZEN NAME
-// -------------------------------------
+// =====================================
+// SEARCH CITIZEN BY NAME
+// =====================================
 
 const searchCitizenByNameService = async (
   citizenName
 ) => {
+  try {
 
-  // =====================================
-  // LATER:
-  // Replace this with external DB/API call
-  // =====================================
-
-
-
-  // MOCK DATA
-  const mockCitizens = [
-    {
-      citizenName: "Rahul Kumar",
-      phoneNumber: "9876543210",
-      address: "Bangalore",
-    },
-
-    {
-      citizenName: "Suresh",
-      phoneNumber: "9988776655",
-      address: "Mysore",
-    },
-
-    {
-      citizenName: "Rahul Sharma",
-      phoneNumber: "9123456780",
-      address: "Chennai",
-    },
-  ];
+    const citizens = await surveyPrisma.$queryRawUnsafe(`
+      SELECT
+        "Name of the Person",
+        "Contact no of the HHs"
+      FROM "survery_attribute_specific"
+      WHERE LOWER("Name of the Person")
+      LIKE LOWER('%${citizenName}%')
+      LIMIT 20
+    `);
 
 
 
-  const citizens = mockCitizens.filter((c) =>
-    c.citizenName
-      .toLowerCase()
-      .includes(citizenName.toLowerCase())
-  );
+    return citizens.map((citizen) => ({
+      citizenName:
+        citizen["Name of the Person"],
 
+      phoneNumber:
+        citizen["Contact no of the HHs"],
+    }));
 
+  } catch (error) {
 
-  return citizens;
+    console.error(
+      "SURVEY DB NAME SEARCH ERROR:",
+      error
+    );
+
+    throw error;
+  }
 };
 
 

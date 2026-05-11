@@ -5,8 +5,6 @@ const {
 
 
 
-
-
 // =====================================
 // GET CITIZEN BY PHONE
 // =====================================
@@ -18,6 +16,15 @@ const getCitizenByPhone = async (
   try {
 
     const { phoneNumber } = req.params;
+
+
+
+    if (!phoneNumber) {
+      return res.status(400).json({
+        success: false,
+        message: "Phone number is required",
+      });
+    }
 
 
 
@@ -44,7 +51,10 @@ const getCitizenByPhone = async (
 
   } catch (error) {
 
-    console.error("PHONE SEARCH ERROR:", error);
+    console.error(
+      "GET CITIZEN BY PHONE ERROR:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
@@ -71,6 +81,15 @@ const searchCitizenByName = async (
 
 
 
+    if (!citizenName) {
+      return res.status(400).json({
+        success: false,
+        message: "Citizen name is required",
+      });
+    }
+
+
+
     const citizens =
       await searchCitizenByNameService(
         citizenName
@@ -78,7 +97,9 @@ const searchCitizenByName = async (
 
 
 
-    if (!citizens || citizens.length === 0) {
+    if (!citizens ||
+        citizens.length === 0) {
+
       return res.status(404).json({
         success: false,
         message: "Citizen not found",
@@ -95,7 +116,10 @@ const searchCitizenByName = async (
 
   } catch (error) {
 
-    console.error("NAME SEARCH ERROR:", error);
+    console.error(
+      "SEARCH CITIZEN BY NAME ERROR:",
+      error
+    );
 
     return res.status(500).json({
       success: false,

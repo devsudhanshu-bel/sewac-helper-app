@@ -4,6 +4,10 @@ const app = require("./app");
 
 const { connectDB } = require("./config/db");
 
+const {
+  connectSurveyDB,
+} = require("./config/surveyDb");
+
 
 
 const PORT = process.env.PORT || 5000;
@@ -17,17 +21,33 @@ const PORT = process.env.PORT || 5000;
 const startServer = async () => {
   try {
 
-    // Connect Database
+    // =====================================
+    // CONNECT MAIN DATABASE
+    // =====================================
+
     await connectDB();
 
 
 
-    // Start Express Server
+    // =====================================
+    // CONNECT SURVEY DATABASE
+    // =====================================
+
+    await connectSurveyDB();
+
+
+
+    // =====================================
+    // START EXPRESS SERVER
+    // =====================================
+
     app.listen(PORT, () => {
+
       console.log("=================================");
-      console.log(` SEWAC Helper Backend Running`);
+      console.log(" SEWAC Helper Backend Running");
       console.log(` Server Port : ${PORT}`);
       console.log("=================================");
+
     });
 
   } catch (error) {
@@ -42,5 +62,9 @@ const startServer = async () => {
 };
 
 
+
+// =====================================
+// START APPLICATION
+// =====================================
 
 startServer();
