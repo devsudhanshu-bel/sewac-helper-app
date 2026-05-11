@@ -38,3 +38,11 @@ model TrackingLog {
 
   createdAt    DateTime @default(now())
 }
+
+model Remark {
+  id        Int      @id @default(autoincrement())
+
+  remark    String   @db.Text
+
+  createdAt DateTime @default(now())
+}

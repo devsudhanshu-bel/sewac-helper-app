@@ -4,18 +4,28 @@ const cors = require("cors");
 
 
 // =============================
+// APP INITIALIZATION
+// =============================
+
+const app = express();
+
+
+
+// =============================
 // ROUTE IMPORTS
 // =============================
 
-const rfidRoutes = require("./routes/rfid.routes");
-
-const phoneRoutes = require("./routes/phone.routes");
-
 const authRoutes = require("./auth/auth.routes");
+
+const rfidRoutes = require("./rfid/rfid.routes");
+
+const phoneRoutes = require("./phone/phone.routes");
 
 const trackingRoutes = require("./tracking/tracking.routes");
 
 const citizenRoutes = require("./citizen/citizen.routes");
+
+const remarksRoutes = require("./remarks/remarks.routes");
 
 
 
@@ -23,13 +33,11 @@ const citizenRoutes = require("./citizen/citizen.routes");
 // MIDDLEWARE IMPORTS
 // =============================
 
-const loggerMiddleware = require("./middleware/logger.middleware");
+const loggerMiddleware =
+  require("./middleware/logger.middleware");
 
-const errorMiddleware = require("./middleware/error.middleware");
-
-
-
-const app = express();
+const errorMiddleware =
+  require("./middleware/error.middleware");
 
 
 
@@ -62,6 +70,7 @@ app.get("/", (req, res) => {
   return res.status(200).json({
     success: true,
     message: "SEWAC Helper Backend Running Successfully",
+    version: "1.0.0",
   });
 
 });
@@ -69,27 +78,93 @@ app.get("/", (req, res) => {
 
 
 // =============================
+// API VERSION PREFIX
+// =============================
+
+const API_PREFIX = "/api/v1";
+
+
+
+// =============================
 // API ROUTES
 // =============================
 
-// Authentication
-app.use("/api", authRoutes);
 
 
-// RFID Mapping
-app.use("/api", rfidRoutes);
+/*
+|--------------------------------------------------------------------------
+| Authentication Routes
+|--------------------------------------------------------------------------
+*/
+app.use(
+  `${API_PREFIX}/auth`,
+  authRoutes
+);
 
 
-// Phone Mapping
-app.use("/api", phoneRoutes);
 
 
-// Tracking Logs
-app.use("/api", trackingRoutes);
+/*
+|--------------------------------------------------------------------------
+| RFID Routes
+|--------------------------------------------------------------------------
+*/
+app.use(
+  `${API_PREFIX}/rfid`,
+  rfidRoutes
+);
 
 
-// Citizen External Lookup
-app.use("/api", citizenRoutes);
+
+
+/*
+|--------------------------------------------------------------------------
+| Phone Routes
+|--------------------------------------------------------------------------
+*/
+app.use(
+  `${API_PREFIX}/phone`,
+  phoneRoutes
+);
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Tracking Routes
+|--------------------------------------------------------------------------
+*/
+app.use(
+  `${API_PREFIX}/tracking`,
+  trackingRoutes
+);
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Citizen Routes
+|--------------------------------------------------------------------------
+*/
+app.use(
+  `${API_PREFIX}/citizen`,
+  citizenRoutes
+);
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Remarks Routes
+|--------------------------------------------------------------------------
+*/
+app.use(
+  `${API_PREFIX}/remarks`,
+  remarksRoutes
+);
 
 
 
