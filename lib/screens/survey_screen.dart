@@ -49,7 +49,7 @@ class _SurveyScreenState
   hhTypes = [
 
     "Owner",
-    "Rental",
+    "Tenant",
   ];
 
   final Map<String, bool>

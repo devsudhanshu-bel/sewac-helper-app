@@ -60,6 +60,11 @@ class _DashboardScreenState
     },
   ];
 
+  // Backend serial numbers only
+  List<String> _rfidDropdownItems = [
+    "Select"
+  ];
+
   String? _selectedRFID;
   String? _selectedPhone;
   String? _selectedName;
@@ -88,6 +93,63 @@ class _DashboardScreenState
   final TextEditingController
   _nameSearchController =
   TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _fetchUnmappedRFIDs();
+  }
+
+  // ONLY NEW BACKEND INTEGRATION
+  Future<void>
+  _fetchUnmappedRFIDs() async {
+
+    try {
+
+      final response =
+      await http.get(
+
+        Uri.parse(
+          "https://sewac-helper-app.onrender.com/api/v1/rfid/unmapped",
+        ),
+      );
+
+      if (response.statusCode ==
+          200) {
+
+        final result =
+        jsonDecode(
+            response.body);
+
+        if (result[
+        "success"] ==
+            true) {
+
+          final List<dynamic>
+          rfids =
+          result["data"];
+
+          setState(() {
+
+            _rfidDropdownItems = [
+              "Select",
+              ...rfids.map(
+                    (item) =>
+                    item["slno"]
+                        .toString(),
+              ),
+            ];
+          });
+        }
+      }
+
+    } catch (e) {
+
+      debugPrint(
+          "RFID API error: $e");
+    }
+  }
 
   void _onRFIDSelected(
       String? value) {
@@ -366,8 +428,6 @@ class _DashboardScreenState
             width: 60,
             fit: BoxFit.contain,
 
-
-
             errorBuilder:
                 (
                 context,
@@ -530,13 +590,9 @@ class _DashboardScreenState
                       controller:
                       _rfidSearchController,
 
+                      // ONLY THIS CHANGED
                       items:
-                      _mockDatabase
-                          .map(
-                            (e) =>
-                        e['rfid']!,
-                      )
-                          .toList(),
+                      _rfidDropdownItems,
 
                       icon:
                       Icons.qr_code_scanner_rounded,

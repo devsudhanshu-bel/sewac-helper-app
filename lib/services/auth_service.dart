@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 class AuthService {
 
   static const String loginUrl =
-      "https://sewac-helper-app.onrender.com/api/auth/login";
+      "https://sewac-helper-app.onrender.com/api/v1/auth/login";
 
   static Future<bool> login({
 
