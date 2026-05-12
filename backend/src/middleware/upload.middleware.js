@@ -1,47 +1,25 @@
 const multer = require("multer");
 
-const {
-  CloudinaryStorage,
-} = require("multer-storage-cloudinary");
-
-const cloudinary =
-  require("../config/cloudinary");
-
 
 
 const storage =
-  new CloudinaryStorage({
+  multer.memoryStorage();
 
-    cloudinary,
 
-    params: {
 
-      folder: "sewac-surveys",
+const upload =
+  multer({
 
-      allowed_formats: [
-        "jpg",
-        "jpeg",
-        "png",
-      ],
+    storage,
+
+    limits: {
+
+      fileSize:
+        10 * 1024 * 1024,
 
     },
 
   });
-
-
-
-const upload = multer({
-
-  storage,
-
-  limits: {
-
-    fileSize:
-      5 * 1024 * 1024,
-
-  },
-
-});
 
 
 

@@ -1,22 +1,118 @@
 const surveyService =
   require("./survey.services");
 
+const cloudinary =
+  require("../config/cloudinary");
+
+const streamifier =
+  require("streamifier");
+
 
 
 // ======================================
 // CREATE SURVEY
 // ======================================
+
 const createSurvey =
   async (req, res, next) => {
 
     try {
 
-      const surveyData = req.body;
+      let imageUrl = null;
+
+
+
+      // ======================================
+      // UPLOAD IMAGE TO CLOUDINARY
+      // ======================================
+
+      if (req.file) {
+
+        const streamUpload =
+          () => {
+
+            return new Promise(
+              (
+                resolve,
+                reject
+              ) => {
+
+                const stream =
+                  cloudinary.uploader.upload_stream(
+
+                    {
+
+                      folder:
+                        "sewac-surveys",
+
+                    },
+
+                    (
+                      error,
+                      result
+                    ) => {
+
+                      if (result) {
+
+                        resolve(result);
+
+                      } else {
+
+                        reject(error);
+
+                      }
+
+                    }
+                  );
+
+
+
+                streamifier
+                  .createReadStream(
+                    req.file.buffer
+                  )
+                  .pipe(stream);
+
+              }
+            );
+
+          };
+
+
+
+        const uploadedImage =
+          await streamUpload();
+
+
+
+        imageUrl =
+          uploadedImage.secure_url;
+
+      }
+
+
+
+      // ======================================
+      // CREATE SURVEY DATA
+      // ======================================
+
+      const surveyData = {
+
+        ...req.body,
+
+        buildingPhoto:
+          imageUrl,
+
+      };
+
+
 
       const result =
         await surveyService.createSurvey(
           surveyData
         );
+
+
 
       return res.status(201).json({
 
@@ -47,6 +143,7 @@ const createSurvey =
 // ======================================
 // GET ALL SURVEYS
 // ======================================
+
 const getAllSurveys =
   async (req, res, next) => {
 
@@ -83,6 +180,7 @@ const getAllSurveys =
 // ======================================
 // GET SURVEY BY ID
 // ======================================
+
 const getSurveyById =
   async (req, res, next) => {
 
@@ -94,6 +192,8 @@ const getSurveyById =
         await surveyService.getSurveyById(
           Number(id)
         );
+
+
 
       if (!result) {
 
@@ -107,6 +207,8 @@ const getSurveyById =
         });
 
       }
+
+
 
       return res.status(200).json({
 
@@ -128,6 +230,8 @@ const getSurveyById =
     }
 
 };
+
+
 
 
 
