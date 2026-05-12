@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../widgets/sewac_button.dart';
 import 'main_navigation_screen.dart';
 import '../services/auth_service.dart';
+import '../widgets/sewac_background.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -355,389 +356,325 @@ class _LoginScreenState
     return Scaffold(
 
       body:
-      Stack(
+      SewacBackground(
 
-        children: [
+        child:
+        SafeArea(
 
-          Container(
-
-            decoration:
-            const BoxDecoration(
-
-              gradient:
-              LinearGradient(
-
-                begin:
-                Alignment
-                    .topCenter,
-
-                end:
-                Alignment
-                    .bottomCenter,
-
-                colors: [
-
-                  Color(
-                      0xFFFDFDFD),
-
-                  Color(
-                      0xFFF5F7FA),
-                ],
-              ),
-            ),
+          child:
+          Center(
 
             child:
-            Opacity(
+            SingleChildScrollView(
 
-              opacity:
-              0.03,
-
-              child:
-              Image.asset(
-
-                "assets/images/login_bg.jpeg",
-
-                fit:
-                BoxFit.cover,
-
-                width:
-                double
-                    .infinity,
-
-                height:
-                double
-                    .infinity,
-
-                errorBuilder:
-                    (
-                    context,
-                    error,
-                    stackTrace,
-                    ) {
-
-                  return Container();
-                },
-              ),
-            ),
-          ),
-
-          SafeArea(
-
-            child:
-            Center(
+              padding:
+              const EdgeInsets.symmetric(
+                  horizontal:
+                  32),
 
               child:
-              SingleChildScrollView(
+              Column(
 
-                padding:
-                const EdgeInsets.symmetric(
-                    horizontal:
-                    32),
+                mainAxisAlignment:
+                MainAxisAlignment
+                    .center,
 
-                child:
-                Column(
+                children: [
 
-                  mainAxisAlignment:
-                  MainAxisAlignment
-                      .center,
+                  FadeTransition(
 
-                  children: [
+                    opacity:
+                    _logoFade,
 
+                    child:
+                    ScaleTransition(
+
+                      scale:
+                      _logoScale,
+
+                      child:
+                      Column(
+
+                        children: [
+
+                          Hero(
+
+                            tag:
+                            'app_logo',
+
+                            child:
+                            Image.asset(
+
+                              "assets/images/logo.png",
+
+                              height:
+                              140,
+
+                              width:
+                              140,
+
+                              errorBuilder:
+                                  (
+                                  context,
+                                  error,
+                                  stackTrace,
+                                  ) {
+
+                                return const Icon(
+
+                                  Icons
+                                      .recycling_rounded,
+
+                                  size:
+                                  100,
+
+                                  color:
+                                  Color(
+                                      0xFF4CAF50),
+                                );
+                              },
+                            ),
+                          ),
+
+                          const SizedBox(
+                              height:
+                              16),
+
+                          const Text(
+
+                            "HELPER APP",
+
+                            style:
+                            TextStyle(
+
+                              fontSize:
+                              30,
+
+                              fontWeight:
+                              FontWeight
+                                  .w900,
+
+                              color:
+                              Color(
+                                  0xFF1A237E),
+
+                              letterSpacing:
+                              2,
+                            ),
+                          ),
+
+                          const Text(
+
+                            "Enterprise Waste Management Portal",
+
+                            style:
+                            TextStyle(
+
+                              fontSize:
+                              13,
+
+                              color:
+                              Colors
+                                  .blueGrey,
+
+                              fontWeight:
+                              FontWeight
+                                  .w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(
+                      height:
+                      48),
+
+                  SlideTransition(
+
+                    position:
+                    _cardSlide,
+
+                    child:
                     FadeTransition(
 
                       opacity:
-                      _logoFade,
+                      _cardFade,
 
                       child:
-                      ScaleTransition(
+                      ClipRRect(
 
-                        scale:
-                        _logoScale,
-
-                        child:
-                        Column(
-
-                          children: [
-
-                            Hero(
-
-                              tag:
-                              'app_logo',
-
-                              child:
-                              Image.asset(
-
-                                "assets/images/logo.png",
-
-                                height:
-                                140,
-
-                                width:
-                                140,
-
-                                errorBuilder:
-                                    (
-                                    context,
-                                    error,
-                                    stackTrace,
-                                    ) {
-
-                                  return const Icon(
-
-                                    Icons
-                                        .recycling_rounded,
-
-                                    size:
-                                    100,
-
-                                    color:
-                                    Color(
-                                        0xFF4CAF50),
-                                  );
-                                },
-                              ),
-                            ),
-
-                            const SizedBox(
-                                height:
-                                16),
-
-                            const Text(
-
-                              "SEWAC HELPER",
-
-                              style:
-                              TextStyle(
-
-                                fontSize:
-                                30,
-
-                                fontWeight:
-                                FontWeight
-                                    .w900,
-
-                                color:
-                                Color(
-                                    0xFF1A237E),
-
-                                letterSpacing:
-                                2,
-                              ),
-                            ),
-
-                            const Text(
-
-                              "Enterprise Waste Management Portal",
-
-                              style:
-                              TextStyle(
-
-                                fontSize:
-                                13,
-
-                                color:
-                                Colors
-                                    .blueGrey,
-
-                                fontWeight:
-                                FontWeight
-                                    .w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(
-                        height:
-                        48),
-
-                    SlideTransition(
-
-                      position:
-                      _cardSlide,
-
-                      child:
-                      FadeTransition(
-
-                        opacity:
-                        _cardFade,
+                        borderRadius:
+                        BorderRadius.circular(
+                            32),
 
                         child:
-                        ClipRRect(
+                        BackdropFilter(
 
-                          borderRadius:
-                          BorderRadius.circular(
-                              32),
+                          filter:
+                          ImageFilter.blur(
+
+                            sigmaX:
+                            15,
+
+                            sigmaY:
+                            15,
+                          ),
 
                           child:
-                          BackdropFilter(
+                          Container(
 
-                            filter:
-                            ImageFilter.blur(
+                            padding:
+                            const EdgeInsets.all(
+                                32),
 
-                              sigmaX:
-                              15,
+                            decoration:
+                            BoxDecoration(
 
-                              sigmaY:
-                              15,
-                            ),
+                              color:
+                              Colors.white
+                                  .withOpacity(
+                                  0.85),
 
-                            child:
-                            Container(
-
-                              padding:
-                              const EdgeInsets.all(
+                              borderRadius:
+                              BorderRadius.circular(
                                   32),
 
-                              decoration:
-                              BoxDecoration(
+                              border:
+                              Border.all(
 
                                 color:
                                 Colors.white
                                     .withOpacity(
-                                    0.85),
-
-                                borderRadius:
-                                BorderRadius.circular(
-                                    32),
-
-                                border:
-                                Border.all(
-
-                                  color:
-                                  Colors.white
-                                      .withOpacity(
-                                      0.5),
-                                ),
+                                    0.5),
                               ),
+                            ),
+
+                            child:
+                            Form(
+
+                              key:
+                              _formKey,
 
                               child:
-                              Form(
+                              Column(
 
-                                key:
-                                _formKey,
+                                crossAxisAlignment:
+                                CrossAxisAlignment
+                                    .start,
 
-                                child:
-                                Column(
+                                children: [
 
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment
-                                      .start,
+                                  FadeTransition(
 
-                                  children: [
+                                    opacity:
+                                    _fieldsFade,
 
-                                    FadeTransition(
+                                    child:
+                                    const Text(
 
-                                      opacity:
-                                      _fieldsFade,
+                                      "Admin Login",
 
-                                      child:
-                                      const Text(
+                                      style:
+                                      TextStyle(
 
-                                        "Admin Login",
+                                        fontSize:
+                                        22,
 
-                                        style:
-                                        TextStyle(
-
-                                          fontSize:
-                                          22,
-
-                                          fontWeight:
-                                          FontWeight
-                                              .w800,
-                                        ),
+                                        fontWeight:
+                                        FontWeight
+                                            .w800,
                                       ),
                                     ),
+                                  ),
 
-                                    const SizedBox(
-                                        height:
-                                        24),
+                                  const SizedBox(
+                                      height:
+                                      24),
 
-                                    FadeTransition(
+                                  FadeTransition(
 
-                                      opacity:
-                                      _fieldsFade,
+                                    opacity:
+                                    _fieldsFade,
 
-                                      child:
-                                      _buildInputField(
+                                    child:
+                                    _buildInputField(
 
-                                        controller:
-                                        _adminNameController,
+                                      controller:
+                                      _adminNameController,
 
-                                        label:
-                                        "Username",
+                                      label:
+                                      "Username",
 
-                                        icon:
-                                        Icons
-                                            .person_pin_rounded,
-                                      ),
+                                      icon:
+                                      Icons
+                                          .person_pin_rounded,
                                     ),
+                                  ),
 
-                                    const SizedBox(
-                                        height:
-                                        20),
+                                  const SizedBox(
+                                      height:
+                                      20),
 
-                                    FadeTransition(
+                                  FadeTransition(
 
-                                      opacity:
-                                      _fieldsFade,
+                                    opacity:
+                                    _fieldsFade,
 
-                                      child:
-                                      _buildInputField(
+                                    child:
+                                    _buildInputField(
 
-                                        controller:
-                                        _passwordController,
+                                      controller:
+                                      _passwordController,
 
-                                        label:
-                                        "Password",
+                                      label:
+                                      "Password",
 
-                                        icon:
-                                        Icons
-                                            .lock_person_rounded,
+                                      icon:
+                                      Icons
+                                          .lock_person_rounded,
 
-                                        isPassword:
-                                        true,
-                                      ),
+                                      isPassword:
+                                      true,
                                     ),
+                                  ),
 
-                                    const SizedBox(
-                                        height:
-                                        32),
+                                  const SizedBox(
+                                      height:
+                                      32),
 
-                                    FadeTransition(
+                                  FadeTransition(
 
-                                      opacity:
-                                      _fieldsFade,
+                                    opacity:
+                                    _fieldsFade,
 
-                                      child:
-                                      SewacButton(
+                                    child:
+                                    SewacButton(
 
-                                        text:
-                                        "AUTHENTICATE",
+                                      text:
+                                      "AUTHENTICATE",
 
-                                        isLoading:
-                                        _isLoading,
+                                      isLoading:
+                                      _isLoading,
 
-                                        onPressed:
-                                        _handleLogin,
-                                      ),
+                                      onPressed:
+                                      _handleLogin,
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }

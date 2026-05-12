@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/sewac_button.dart';
 import 'login_screen.dart';
+import '../widgets/sewac_background.dart';
 
 // API imports
 import 'dart:convert';
@@ -103,6 +104,7 @@ class _DashboardScreenState
       setState(() {
 
         _selectedRFID = null;
+
         _rfidSearchController
             .clear();
       });
@@ -326,16 +328,26 @@ class _DashboardScreenState
 
     return Scaffold(
 
+      extendBodyBehindAppBar:
+      true,
+
       backgroundColor:
       const Color(
           0xFFF8F9FA),
 
       appBar: AppBar(
+        leadingWidth: 70,
 
         backgroundColor:
-        Colors.white,
+        Colors.transparent,
 
         elevation: 0,
+
+        surfaceTintColor:
+        Colors.transparent,
+
+        scrolledUnderElevation:
+        0,
 
         centerTitle:
         true,
@@ -349,8 +361,12 @@ class _DashboardScreenState
 
           child:
           Image.asset(
-
             "assets/images/logo.png",
+            height: 60,
+            width: 60,
+            fit: BoxFit.contain,
+
+
 
             errorBuilder:
                 (
@@ -361,6 +377,7 @@ class _DashboardScreenState
 
               return const Icon(
                 Icons.recycling,
+
                 color:
                 Color(
                     0xFF4CAF50),
@@ -372,7 +389,7 @@ class _DashboardScreenState
         title:
         const Text(
 
-          "SEWAC Helper",
+          "Helper App",
 
           style:
           TextStyle(
@@ -385,9 +402,6 @@ class _DashboardScreenState
             FontWeight.w900,
 
             fontSize: 20,
-
-            letterSpacing:
-            1,
           ),
         ),
 
@@ -427,361 +441,367 @@ class _DashboardScreenState
         ],
       ),
 
-      body:
-      SingleChildScrollView(
-
-        padding:
-        const EdgeInsets.all(
-            24),
+      body: SewacBackground(
 
         child:
-        Column(
+        SingleChildScrollView(
 
-          crossAxisAlignment:
-          CrossAxisAlignment
-              .start,
+          padding:
+          const EdgeInsets.fromLTRB(
+              24,
+              110,
+              24,
+              24),
 
-          children: [
+          child:
+          Column(
 
-            const Text(
+            crossAxisAlignment:
+            CrossAxisAlignment
+                .start,
 
-              "RFID Mapping",
+            children: [
 
-              style:
-              TextStyle(
+              const Text(
 
-                fontSize: 28,
+                "RFID Mapping",
 
-                fontWeight:
-                FontWeight.bold,
+                style:
+                TextStyle(
 
-                color:
-                Color(
-                    0xFF2C3E50),
-              ),
-            ),
+                  fontSize: 28,
 
-            const Text(
+                  fontWeight:
+                  FontWeight.bold,
 
-              "Sync resident details from the secure database",
-
-              style:
-              TextStyle(
-
-                color:
-                Colors.blueGrey,
-
-                fontSize: 14,
-              ),
-            ),
-
-            const SizedBox(
-                height: 32),
-
-            Container(
-
-              padding:
-              const EdgeInsets.all(
-                  24),
-
-              decoration:
-              BoxDecoration(
-
-                color:
-                Colors.white,
-
-                borderRadius:
-                BorderRadius.circular(
-                    28),
+                  color:
+                  Color(
+                      0xFF2C3E50),
+                ),
               ),
 
-              child:
-              Column(
+              const Text(
 
-                children: [
+                "Sync resident details from the secure database",
 
-                  _buildSearchDropdown(
+                style:
+                TextStyle(
 
-                    label:
-                    "RFID",
+                  color:
+                  Colors.blueGrey,
 
-                    hint:
-                    "Select RFID Number",
-
-                    controller:
-                    _rfidSearchController,
-
-                    items:
-                    _mockDatabase
-                        .map(
-                          (e) =>
-                      e['rfid']!,
-                    )
-                        .toList(),
-
-                    icon:
-                    Icons.qr_code_scanner_rounded,
-
-                    onSelected:
-                    _onRFIDSelected,
-                  ),
-
-                  const SizedBox(
-                      height: 24),
-
-                  _buildSearchDropdown(
-
-                    label:
-                    "Phone Number",
-
-                    hint:
-                    "Select Phone Number",
-
-                    controller:
-                    _phoneSearchController,
-
-                    items:
-                    _mockDatabase
-                        .map(
-                          (e) =>
-                      e['phone']!,
-                    )
-                        .toList(),
-
-                    icon:
-                    Icons.phone_iphone_rounded,
-
-                    onSelected:
-                        (
-                        val,
-                        ) async {
-
-                      _onPhoneOrNameSelected(
-                          'phone',
-                          val);
-
-                      if (val !=
-                          null &&
-                          val !=
-                              "Select") {
-
-                        await _fetchCitizenByPhone(
-                            val);
-                      }
-                    },
-                  ),
-
-                  const SizedBox(
-                      height: 24),
-
-                  _buildSearchDropdown(
-
-                    label:
-                    "Name",
-
-                    hint:
-                    "Citizen Name",
-
-                    controller:
-                    _nameSearchController,
-
-                    items:
-                    _mockDatabase
-                        .map(
-                          (e) =>
-                      e['name']!,
-                    )
-                        .toList(),
-
-                    icon:
-                    Icons.person_pin_rounded,
-
-                    onSelected:
-                        (
-                        val,
-                        ) {
-
-                      _onPhoneOrNameSelected(
-                          'name',
-                          val);
-                    },
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(
-                height: 24),
-
-            Container(
-
-              padding:
-              const EdgeInsets.symmetric(
-
-                horizontal:
-                24,
-
-                vertical:
-                20,
+                  fontSize: 14,
+                ),
               ),
 
-              decoration:
-              BoxDecoration(
+              const SizedBox(
+                  height: 32),
 
-                color:
-                Colors.white,
+              Container(
 
-                borderRadius:
-                BorderRadius.circular(
-                    28),
-              ),
+                padding:
+                const EdgeInsets.all(
+                    24),
 
-              child:
-              Column(
+                decoration:
+                BoxDecoration(
 
-                crossAxisAlignment:
-                CrossAxisAlignment
-                    .start,
+                  color:
+                  Colors.white,
 
-                children: [
+                  borderRadius:
+                  BorderRadius.circular(
+                      28),
+                ),
 
-                  const Text(
+                child:
+                Column(
 
-                    "Status Selection",
+                  children: [
 
-                    style:
-                    TextStyle(
+                    _buildSearchDropdown(
 
-                      fontWeight:
-                      FontWeight.w800,
+                      label:
+                      "RFID",
 
-                      fontSize: 16,
-                    ),
-                  ),
-
-                  const SizedBox(
-                      height: 8),
-
-                  Row(
-
-                    children: [
-
-                      Expanded(
-
-                        child:
-                        RadioListTile<String>(
-
-                          title:
-                          const Text(
-                              "Found"),
-
-                          value:
-                          'Found',
-
-                          groupValue:
-                          _status,
-
-                          contentPadding:
-                          EdgeInsets.zero,
-
-                          onChanged:
-                              (
-                              value,
-                              ) {
-
-                            setState(
-                                  () {
-
-                                _status =
-                                value!;
-                              },
-                            );
-                          },
-                        ),
-                      ),
-
-                      Expanded(
-
-                        child:
-                        RadioListTile<String>(
-
-                          title:
-                          const Text(
-                              "Not Found"),
-
-                          value:
-                          'Not Found',
-
-                          groupValue:
-                          _status,
-
-                          contentPadding:
-                          EdgeInsets.zero,
-
-                          onChanged:
-                              (
-                              value,
-                              ) {
-
-                            setState(
-                                  () {
-
-                                _status =
-                                value!;
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  if (_status ==
-                      "Not Found")
-                    TextField(
+                      hint:
+                      "Select RFID Number",
 
                       controller:
-                      _remarksController,
+                      _rfidSearchController,
 
-                      maxLines:
-                      3,
+                      items:
+                      _mockDatabase
+                          .map(
+                            (e) =>
+                        e['rfid']!,
+                      )
+                          .toList(),
 
-                      decoration:
-                      InputDecoration(
+                      icon:
+                      Icons.qr_code_scanner_rounded,
 
-                        labelText:
-                        "Remarks",
+                      onSelected:
+                      _onRFIDSelected,
+                    ),
 
-                        errorText:
-                        _showRemarksError
-                            ? "Required"
-                            : null,
+                    const SizedBox(
+                        height: 24),
 
-                        border:
-                        OutlineInputBorder(
+                    _buildSearchDropdown(
 
-                          borderRadius:
-                          BorderRadius.circular(
-                              16),
-                        ),
+                      label:
+                      "Phone Number",
+
+                      hint:
+                      "Select Phone Number",
+
+                      controller:
+                      _phoneSearchController,
+
+                      items:
+                      _mockDatabase
+                          .map(
+                            (e) =>
+                        e['phone']!,
+                      )
+                          .toList(),
+
+                      icon:
+                      Icons.phone_iphone_rounded,
+
+                      onSelected:
+                          (
+                          val,
+                          ) async {
+
+                        _onPhoneOrNameSelected(
+                            'phone',
+                            val);
+
+                        if (val !=
+                            null &&
+                            val !=
+                                "Select") {
+
+                          await _fetchCitizenByPhone(
+                              val);
+                        }
+                      },
+                    ),
+
+                    const SizedBox(
+                        height: 24),
+
+                    _buildSearchDropdown(
+
+                      label:
+                      "Name",
+
+                      hint:
+                      "Citizen Name",
+
+                      controller:
+                      _nameSearchController,
+
+                      items:
+                      _mockDatabase
+                          .map(
+                            (e) =>
+                        e['name']!,
+                      )
+                          .toList(),
+
+                      icon:
+                      Icons.person_pin_rounded,
+
+                      onSelected:
+                          (
+                          val,
+                          ) {
+
+                        _onPhoneOrNameSelected(
+                            'name',
+                            val);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(
+                  height: 24),
+
+              Container(
+
+                padding:
+                const EdgeInsets.symmetric(
+
+                  horizontal:
+                  24,
+
+                  vertical:
+                  20,
+                ),
+
+                decoration:
+                BoxDecoration(
+
+                  color:
+                  Colors.white,
+
+                  borderRadius:
+                  BorderRadius.circular(
+                      28),
+                ),
+
+                child:
+                Column(
+
+                  crossAxisAlignment:
+                  CrossAxisAlignment
+                      .start,
+
+                  children: [
+
+                    const Text(
+
+                      "Status Selection",
+
+                      style:
+                      TextStyle(
+
+                        fontWeight:
+                        FontWeight.w800,
+
+                        fontSize: 16,
                       ),
                     ),
-                ],
+
+                    const SizedBox(
+                        height: 8),
+
+                    Row(
+
+                      children: [
+
+                        Expanded(
+
+                          child:
+                          RadioListTile<String>(
+
+                            title:
+                            const Text(
+                                "Found"),
+
+                            value:
+                            'Found',
+
+                            groupValue:
+                            _status,
+
+                            contentPadding:
+                            EdgeInsets.zero,
+
+                            onChanged:
+                                (
+                                value,
+                                ) {
+
+                              setState(
+                                    () {
+
+                                  _status =
+                                  value!;
+                                },
+                              );
+                            },
+                          ),
+                        ),
+
+                        Expanded(
+
+                          child:
+                          RadioListTile<String>(
+
+                            title:
+                            const Text(
+                                "Not Found"),
+
+                            value:
+                            'Not Found',
+
+                            groupValue:
+                            _status,
+
+                            contentPadding:
+                            EdgeInsets.zero,
+
+                            onChanged:
+                                (
+                                value,
+                                ) {
+
+                              setState(
+                                    () {
+
+                                  _status =
+                                  value!;
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    if (_status ==
+                        "Not Found")
+                      TextField(
+
+                        controller:
+                        _remarksController,
+
+                        maxLines:
+                        3,
+
+                        decoration:
+                        InputDecoration(
+
+                          labelText:
+                          "Remarks",
+
+                          errorText:
+                          _showRemarksError
+                              ? "Required"
+                              : null,
+
+                          border:
+                          OutlineInputBorder(
+
+                            borderRadius:
+                            BorderRadius.circular(
+                                16),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
 
-            const SizedBox(
-                height: 48),
+              const SizedBox(
+                  height: 48),
 
-            SewacButton(
+              SewacButton(
 
-              text:
-              "SAVE COLLECTION DATA",
+                text:
+                "SAVE COLLECTION DATA",
 
-              onPressed:
-              _handleSave,
-            ),
-          ],
+                onPressed:
+                _handleSave,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -789,24 +809,12 @@ class _DashboardScreenState
 
   Widget _buildSearchDropdown({
 
-    required String
-    label,
-
-    required String
-    hint,
-
-    required TextEditingController
-    controller,
-
-    required List<String>
-    items,
-
-    required IconData
-    icon,
-
-    required
-    Function(String?)
-    onSelected,
+    required String label,
+    required String hint,
+    required TextEditingController controller,
+    required List<String> items,
+    required IconData icon,
+    required Function(String?) onSelected,
   }) {
 
     final bool hasError =
@@ -831,7 +839,6 @@ class _DashboardScreenState
           const EdgeInsets.only(
 
             left: 4,
-
             bottom: 8,
           ),
 

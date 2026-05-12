@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import '../widgets/sewac_background.dart';
 
 class SurveyScreen extends StatefulWidget {
   const SurveyScreen({super.key});
@@ -393,119 +394,76 @@ class _SurveyScreenState
       BuildContext context) {
 
     return Scaffold(
-
-      backgroundColor:
-      const Color(
-          0xFFF4F7F9),
+      extendBodyBehindAppBar: true,
+      backgroundColor: const Color(0xFFF8F9FA),
 
       appBar: AppBar(
-
-        backgroundColor:
-        Colors.white,
-
+        leadingWidth: 70,
+        backgroundColor: Colors.transparent,
         elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        scrolledUnderElevation: 0,
+        centerTitle: true,
 
-        centerTitle:
-        true,
-
-        leading:
-        Padding(
-
-          padding:
-          const EdgeInsets.only(
+        leading: Padding(
+          padding: const EdgeInsets.only(
             left: 16,
           ),
-
-          child:
-          Image.asset(
-
+          child: Image.asset(
             "assets/images/logo.png",
-
-            errorBuilder:
-                (
+            height: 40,
+            width: 40,
+            fit: BoxFit.contain,
+            errorBuilder: (
                 context,
                 error,
                 stackTrace,
                 ) {
-
               return const Icon(
                 Icons.recycling,
-
-                color:
-                Color(
-                    0xFF4CAF50),
+                color: Color(0xFF4CAF50),
               );
             },
           ),
         ),
 
-        title:
-        const Text(
-
-          "SEWAC Helper",
-
-          style:
-          TextStyle(
-
-            color:
-            Color(
-                0xFF1A237E),
-
-            fontWeight:
-            FontWeight.w900,
-
-            fontSize:
-            20,
-
-            letterSpacing:
-            1,
+        title: const Text(
+          "Helper App",
+          style: TextStyle(
+            color: Color(0xFF1A237E),
+            fontWeight: FontWeight.w900,
+            fontSize: 20,
           ),
         ),
 
         actions: [
-
           IconButton(
-
-            icon:
-            const Icon(
-
-              Icons
-                  .logout_rounded,
-
-              color:
-              Color(
-                  0xFF1A237E),
+            icon: const Icon(
+              Icons.logout_rounded,
+              color: Color(0xFF1A237E),
             ),
-
-            onPressed:
-                () {
-
+            onPressed: () {
               Navigator.pushReplacement(
-
                 context,
-
                 MaterialPageRoute(
-
-                  builder:
-                      (_) =>
-                  const LoginScreen(),
+                  builder: (_) => const LoginScreen(),
                 ),
               );
             },
           ),
-
-          const SizedBox(
-            width: 8,
-          ),
+          const SizedBox(width: 8),
         ],
       ),
 
-      body:
-      SingleChildScrollView(
+      body: SewacBackground(
+    child: SingleChildScrollView(
 
-        padding:
-        const EdgeInsets.all(
-            20),
+      padding: const EdgeInsets.fromLTRB(
+        24,
+        110,
+        24,
+        24,
+      ),
 
         child:
         Column(
@@ -711,20 +669,7 @@ class _SurveyScreenState
                       ),
                     ),
 
-                    const SizedBox(height: 12),
 
-                    TextFormField(
-                      decoration: InputDecoration(
-                        hintText:
-                        "Tap RFID card to scan...",
-                        border:
-                        OutlineInputBorder(
-                          borderRadius:
-                          BorderRadius.circular(
-                              14),
-                        ),
-                      ),
-                    ),
 
                     const SizedBox(height: 28),
 
@@ -776,6 +721,6 @@ class _SurveyScreenState
           ],
         ),
       ),
-    );
+    ));
   }
 }
