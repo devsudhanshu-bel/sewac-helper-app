@@ -24,25 +24,34 @@ model Moderator {
 }
 
 model TrackingLog {
-  id           Int      @id @default(autoincrement())
-
-  workerId     String
-
-  slno         String
-
-  citizenName  String
-
-  phoneNumber  String
-
-  status       String   @default("FOUND")
-
-  createdAt    DateTime @default(now())
+  id          Int      @id @default(autoincrement())
+  workerId    String
+  slno        String
+  citizenName String
+  phoneNumber String
+  status      String   @default("FOUND")
+  createdAt   DateTime @default(now())
 }
 
 model Remark {
   id        Int      @id @default(autoincrement())
-
-  remark    String   @db.Text
-
+  remark    String
   createdAt DateTime @default(now())
+}
+
+model Survey {
+  city                String?
+  ward                String?
+  area                String?
+  wasteGeneratorTypes String?
+  houseNumber         String?
+  floorNumber         String?
+  householdType       String?
+  personName          String?
+  contactNumber       String?
+  numberOfPeople      String?
+  buildingPhoto       String?
+  id                  Int     @id @default(autoincrement())
+
+  @@map("survey_attribute_specific")
 }

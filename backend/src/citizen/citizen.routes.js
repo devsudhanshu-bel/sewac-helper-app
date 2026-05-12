@@ -2,7 +2,8 @@ const express = require("express");
 
 const router = express.Router();
 
-const verifyToken = require("../auth/auth.middleware");
+const verifyToken =
+  require("../auth/auth.middleware");
 
 const {
   getCitizenByPhone,
@@ -16,7 +17,7 @@ const {
 // =====================================
 
 router.get(
-  "/citizen/phone/:phoneNumber",
+  "/phone/:phoneNumber",
   verifyToken,
   getCitizenByPhone
 );
@@ -28,7 +29,7 @@ router.get(
 // =====================================
 
 router.get(
-  "/citizen/name/:citizenName",
+  "/name/:citizenName",
   verifyToken,
   searchCitizenByName
 );

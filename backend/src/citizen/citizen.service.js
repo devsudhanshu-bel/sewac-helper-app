@@ -1,4 +1,8 @@
-const { surveyPrisma } = require("../config/surveyDb");
+const { PrismaClient } =
+  require("@prisma/client");
+
+const prisma =
+  new PrismaClient();
 
 
 
@@ -6,48 +10,50 @@ const { surveyPrisma } = require("../config/surveyDb");
 // GET CITIZEN BY PHONE NUMBER
 // =====================================
 
-const getCitizenByPhoneService = async (
-  phoneNumber
-) => {
-  try {
+const getCitizenByPhoneService =
+  async (phoneNumber) => {
 
-    const citizen = await surveyPrisma.$queryRawUnsafe(`
-      SELECT
-        "Name of the Person",
-        "Contact no of the HHs"
-      FROM "survery_attribute_specific"
-      WHERE "Contact no of the HHs" = '${phoneNumber}'
-      LIMIT 1
-    `);
+    try {
+
+      const citizen =
+        await prisma.survey.findFirst({
+
+          where: {
+            contactNumber: phoneNumber,
+          },
+
+        });
 
 
 
-    if (!citizen || citizen.length === 0) {
-      return null;
+      if (!citizen) {
+        return null;
+      }
+
+
+
+      return {
+
+        citizenName:
+          citizen.personName,
+
+        phoneNumber:
+          citizen.contactNumber,
+
+      };
+
+    } catch (error) {
+
+      console.error(
+        "GET CITIZEN BY PHONE ERROR:",
+        error
+      );
+
+      throw error;
+
     }
 
-
-
-    return {
-      citizenName:
-        citizen[0]["Name of the Person"],
-
-      phoneNumber:
-        citizen[0]["Contact no of the HHs"],
-    };
-
-  } catch (error) {
-
-    console.error(
-      "SURVEY DB PHONE SEARCH ERROR:",
-      error
-    );
-
-    throw error;
-  }
 };
-
-
 
 
 
@@ -55,47 +61,64 @@ const getCitizenByPhoneService = async (
 // SEARCH CITIZEN BY NAME
 // =====================================
 
-const searchCitizenByNameService = async (
-  citizenName
-) => {
-  try {
+const searchCitizenByNameService =
+  async (citizenName) => {
 
-    const citizens = await surveyPrisma.$queryRawUnsafe(`
-      SELECT
-        "Name of the Person",
-        "Contact no of the HHs"
-      FROM "survery_attribute_specific"
-      WHERE LOWER("Name of the Person")
-      LIKE LOWER('%${citizenName}%')
-      LIMIT 20
-    `);
+    try {
+
+      const citizens =
+        await prisma.survey.findMany({
+
+          where: {
+
+            personName: {
+
+              contains: citizenName,
+
+              mode: "insensitive",
+
+            },
+
+          },
+
+          take: 20,
+
+        });
 
 
 
-    return citizens.map((citizen) => ({
-      citizenName:
-        citizen["Name of the Person"],
+      return citizens.map(
+        (citizen) => ({
 
-      phoneNumber:
-        citizen["Contact no of the HHs"],
-    }));
+          citizenName:
+            citizen.personName,
 
-  } catch (error) {
+          phoneNumber:
+            citizen.contactNumber,
 
-    console.error(
-      "SURVEY DB NAME SEARCH ERROR:",
-      error
-    );
+        })
+      );
 
-    throw error;
-  }
+    } catch (error) {
+
+      console.error(
+        "SEARCH CITIZEN BY NAME ERROR:",
+        error
+      );
+
+      throw error;
+
+    }
+
 };
 
 
 
 
-
 module.exports = {
+
   getCitizenByPhoneService,
+
   searchCitizenByNameService,
+
 };

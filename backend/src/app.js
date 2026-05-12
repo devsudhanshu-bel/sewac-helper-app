@@ -1,5 +1,10 @@
 const express = require("express");
+
 const cors = require("cors");
+
+const compression = require("compression");
+
+const helmet = require("helmet");
 
 
 
@@ -15,17 +20,26 @@ const app = express();
 // ROUTE IMPORTS
 // =============================
 
-const authRoutes = require("./auth/auth.routes");
+const authRoutes =
+  require("./auth/auth.routes");
 
-const rfidRoutes = require("./rfid/rfid.routes");
+const rfidRoutes =
+  require("./rfid/rfid.routes");
 
-const phoneRoutes = require("./phone/phone.routes");
+const phoneRoutes =
+  require("./phone/phone.routes");
 
-const trackingRoutes = require("./tracking/tracking.routes");
+const trackingRoutes =
+  require("./tracking/tracking.routes");
 
-const citizenRoutes = require("./citizen/citizen.routes");
+const citizenRoutes =
+  require("./citizen/citizen.routes");
 
-const remarksRoutes = require("./remarks/remarks.routes");
+const remarksRoutes =
+  require("./remarks/remarks.routes");
+
+const surveyRoutes =
+  require("./survey/survey.routes");
 
 
 
@@ -42,14 +56,68 @@ const errorMiddleware =
 
 
 // =============================
-// GLOBAL MIDDLEWARES
+// SECURITY MIDDLEWARES
 // =============================
 
-app.use(cors());
+app.use(helmet());
 
-app.use(express.json());
 
-app.use(express.urlencoded({ extended: true }));
+
+// =============================
+// CORS CONFIGURATION
+// =============================
+
+app.use(cors({
+
+  origin: "*",
+
+  methods: [
+    "GET",
+    "POST",
+    "PUT",
+    "DELETE",
+    "PATCH",
+  ],
+
+  credentials: true,
+
+}));
+
+
+
+// =============================
+// COMPRESSION MIDDLEWARE
+// =============================
+
+app.use(compression({
+
+  level: 6,
+
+  threshold: 1024,
+
+}));
+
+
+
+// =============================
+// BODY PARSER MIDDLEWARES
+// =============================
+
+app.use(express.json({
+
+  limit: "10mb",
+
+}));
+
+
+
+app.use(express.urlencoded({
+
+  extended: true,
+
+  limit: "10mb",
+
+}));
 
 
 
@@ -62,15 +130,49 @@ app.use(loggerMiddleware);
 
 
 // =============================
+// REQUEST TIME LOGGER
+// =============================
+
+app.use((req, res, next) => {
+
+  req.requestTime =
+    new Date().toISOString();
+
+  next();
+
+});
+
+
+
+// =============================
 // HEALTH CHECK ROUTE
 // =============================
 
 app.get("/", (req, res) => {
 
   return res.status(200).json({
+
     success: true,
-    message: "SEWAC Helper Backend Running Successfully",
+
+    message:
+      "SEWAC Helper Backend Running Successfully",
+
     version: "1.0.0",
+
+    timestamp: new Date().toISOString(),
+
+    services: {
+
+      api: true,
+
+      socket: true,
+
+      redis: true,
+
+      database: true,
+
+    },
+
   });
 
 });
@@ -168,6 +270,19 @@ app.use(
 
 
 
+
+/*
+|--------------------------------------------------------------------------
+| Survey Routes
+|--------------------------------------------------------------------------
+*/
+app.use(
+  `${API_PREFIX}/survey`,
+  surveyRoutes
+);
+
+
+
 // =============================
 // 404 ROUTE HANDLER
 // =============================
@@ -175,8 +290,17 @@ app.use(
 app.use((req, res) => {
 
   return res.status(404).json({
+
     success: false,
+
     message: "Route Not Found",
+
+    path: req.originalUrl,
+
+    method: req.method,
+
+    timestamp: new Date().toISOString(),
+
   });
 
 });
