@@ -6,11 +6,8 @@ const { Server } = require("socket.io");
 
 const app = require("./app");
 
-const { connectDB } = require("./config/db");
-
-const {
-  connectSurveyDB,
-} = require("./config/surveyDb");
+const { connectDB } =
+  require("./config/db");
 
 const {
   connectRedis,
@@ -22,7 +19,8 @@ const {
 // PORT
 // =====================================
 
-const PORT = process.env.PORT || 5000;
+const PORT =
+  process.env.PORT || 5000;
 
 
 
@@ -30,7 +28,8 @@ const PORT = process.env.PORT || 5000;
 // CREATE HTTP SERVER
 // =====================================
 
-const server = http.createServer(app);
+const server =
+  http.createServer(app);
 
 
 
@@ -38,12 +37,21 @@ const server = http.createServer(app);
 // INITIALIZE SOCKET.IO
 // =====================================
 
-const io = new Server(server, {
+const io =
+  new Server(server, {
 
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  },
+    cors: {
+
+      origin: "*",
+
+      methods: [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+      ],
+
+    },
 
 });
 
@@ -53,72 +61,122 @@ const io = new Server(server, {
 // SOCKET CONNECTION
 // =====================================
 
-io.on("connection", (socket) => {
+io.on(
+  "connection",
+  (socket) => {
 
-  console.log("=================================");
-  console.log(" SOCKET CONNECTED");
-  console.log(` Socket ID : ${socket.id}`);
-  console.log("=================================");
+    console.log(
+      "================================="
+    );
 
+    console.log(
+      " SOCKET CONNECTED"
+    );
 
+    console.log(
+      ` Socket ID : ${socket.id}`
+    );
 
-  // =====================================
-  // TEST EVENT
-  // =====================================
-
-  socket.on("ping-server", (data) => {
-
-    console.log(" Ping Received :", data);
-
-    socket.emit("pong-server", {
-      success: true,
-      message: "Server received ping",
-    });
-
-  });
+    console.log(
+      "================================="
+    );
 
 
 
-  // =====================================
-  // JOIN ADMIN ROOM
-  // =====================================
+    // =====================================
+    // TEST EVENT
+    // =====================================
 
-  socket.on("join-admin-room", () => {
+    socket.on(
+      "ping-server",
+      (data) => {
 
-    socket.join("admins");
+        console.log(
+          " Ping Received :",
+          data
+        );
 
-    console.log(` ${socket.id} joined admins room`);
+        socket.emit(
+          "pong-server",
+          {
 
-  });
+            success: true,
 
+            message:
+              "Server received ping",
 
+          }
+        );
 
-  // =====================================
-  // JOIN DEVICE ROOM
-  // =====================================
-
-  socket.on("join-device-room", () => {
-
-    socket.join("devices");
-
-    console.log(` ${socket.id} joined devices room`);
-
-  });
+      }
+    );
 
 
 
-  // =====================================
-  // DISCONNECT EVENT
-  // =====================================
+    // =====================================
+    // JOIN ADMIN ROOM
+    // =====================================
 
-  socket.on("disconnect", () => {
+    socket.on(
+      "join-admin-room",
+      () => {
 
-    console.log("=================================");
-    console.log(" SOCKET DISCONNECTED");
-    console.log(` Socket ID : ${socket.id}`);
-    console.log("=================================");
+        socket.join("admins");
 
-  });
+        console.log(
+          `${socket.id} joined admins room`
+        );
+
+      }
+    );
+
+
+
+    // =====================================
+    // JOIN DEVICE ROOM
+    // =====================================
+
+    socket.on(
+      "join-device-room",
+      () => {
+
+        socket.join("devices");
+
+        console.log(
+          `${socket.id} joined devices room`
+        );
+
+      }
+    );
+
+
+
+    // =====================================
+    // DISCONNECT EVENT
+    // =====================================
+
+    socket.on(
+      "disconnect",
+      () => {
+
+        console.log(
+          "================================="
+        );
+
+        console.log(
+          " SOCKET DISCONNECTED"
+        );
+
+        console.log(
+          ` Socket ID : ${socket.id}`
+        );
+
+        console.log(
+          "================================="
+        );
+
+      }
+    );
 
 });
 
@@ -136,67 +194,100 @@ global.io = io;
 // START SERVER
 // =====================================
 
-const startServer = async () => {
+const startServer =
+  async () => {
 
-  try {
+    try {
 
-    console.log("=================================");
-    console.log(" STARTING SEWAC SERVER");
-    console.log("=================================");
+      console.log(
+        "================================="
+      );
 
+      console.log(
+        " STARTING SEWAC SERVER"
+      );
 
-
-    // =====================================
-    // CONNECT MAIN DATABASE
-    // =====================================
-
-    await connectDB();
-
-
-
-    // =====================================
-    // CONNECT SURVEY DATABASE
-    // =====================================
-
-    await connectSurveyDB();
+      console.log(
+        "================================="
+      );
 
 
 
-    // =====================================
-    // CONNECT REDIS
-    // =====================================
+      // =====================================
+      // CONNECT MAIN DATABASE
+      // =====================================
 
-    if (process.env.REDIS_URL_ENABLED === "true") {
-      await connectRedis();
+      await connectDB();
+
+
+
+      // =====================================
+      // CONNECT REDIS (OPTIONAL)
+      // =====================================
+
+      if (
+        process.env.REDIS_URL_ENABLED
+        === "true"
+      ) {
+
+        await connectRedis();
+
+      }
+
+
+
+      // =====================================
+      // START EXPRESS + SOCKET SERVER
+      // =====================================
+
+      server.listen(
+        PORT,
+        () => {
+
+          console.log(
+            "================================="
+          );
+
+          console.log(
+            " SEWAC Helper Backend Running"
+          );
+
+          console.log(
+            ` Server Port : ${PORT}`
+          );
+
+          console.log(
+            " Socket.IO Enabled"
+          );
+
+          console.log(
+            "================================="
+          );
+
+        }
+      );
+
+    } catch (error) {
+
+      console.error(
+        "================================="
+      );
+
+      console.error(
+        " SERVER START FAILED"
+      );
+
+      console.error(
+        error.message
+      );
+
+      console.error(
+        "================================="
+      );
+
+      process.exit(1);
+
     }
-
-
-
-    // =====================================
-    // START EXPRESS + SOCKET SERVER
-    // =====================================
-
-    server.listen(PORT, () => {
-
-      console.log("=================================");
-      console.log(" SEWAC Helper Backend Running");
-      console.log(` Server Port : ${PORT}`);
-      console.log(" Socket.IO Enabled");
-      console.log(" Redis Enabled");
-      console.log("=================================");
-
-    });
-
-  } catch (error) {
-
-    console.error("=================================");
-    console.error(" SERVER START FAILED");
-    console.error(error.message);
-    console.error("=================================");
-
-    process.exit(1);
-
-  }
 
 };
 
@@ -206,23 +297,49 @@ const startServer = async () => {
 // HANDLE UNCAUGHT ERRORS
 // =====================================
 
-process.on("uncaughtException", (error) => {
+process.on(
+  "uncaughtException",
+  (error) => {
 
-  console.error("=================================");
-  console.error(" UNCAUGHT EXCEPTION");
-  console.error(error.message);
-  console.error("=================================");
+    console.error(
+      "================================="
+    );
+
+    console.error(
+      " UNCAUGHT EXCEPTION"
+    );
+
+    console.error(
+      error.message
+    );
+
+    console.error(
+      "================================="
+    );
 
 });
 
 
 
-process.on("unhandledRejection", (error) => {
+process.on(
+  "unhandledRejection",
+  (error) => {
 
-  console.error("=================================");
-  console.error(" UNHANDLED PROMISE REJECTION");
-  console.error(error.message);
-  console.error("=================================");
+    console.error(
+      "================================="
+    );
+
+    console.error(
+      " UNHANDLED PROMISE REJECTION"
+    );
+
+    console.error(
+      error.message
+    );
+
+    console.error(
+      "================================="
+    );
 
 });
 
