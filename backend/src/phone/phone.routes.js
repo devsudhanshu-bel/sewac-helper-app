@@ -19,20 +19,10 @@ const {
 | PATCH /api/v1/phone/map
 |--------------------------------------------------------------------------
 */
-router.patch("/map", mapPhoneNumber);
-
-
-
-
-
-/*
-|--------------------------------------------------------------------------
-| Get Phone Mapping By SLNO
-|--------------------------------------------------------------------------
-| GET /api/v1/phone/:slno
-|--------------------------------------------------------------------------
-*/
-router.get("/:slno", getPhoneMappingBySLNO);
+router.patch(
+  "/map",
+  mapPhoneNumber
+);
 
 
 
@@ -45,7 +35,26 @@ router.get("/:slno", getPhoneMappingBySLNO);
 | GET /api/v1/phone/all
 |--------------------------------------------------------------------------
 */
-router.get("/all", getAllPhoneMappings);
+router.get(
+  "/all",
+  getAllPhoneMappings
+);
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Get Phone Mapping By SLNO
+|--------------------------------------------------------------------------
+| GET /api/v1/phone/:slno
+|--------------------------------------------------------------------------
+*/
+router.get(
+  "/:slno",
+  getPhoneMappingBySLNO
+);
 
 
 

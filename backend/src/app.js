@@ -159,7 +159,8 @@ app.get("/", (req, res) => {
 
     version: "1.0.0",
 
-    timestamp: new Date().toISOString(),
+    timestamp:
+      new Date().toISOString(),
 
     services: {
 
@@ -299,7 +300,8 @@ app.use((req, res) => {
 
     method: req.method,
 
-    timestamp: new Date().toISOString(),
+    timestamp:
+      new Date().toISOString(),
 
   });
 

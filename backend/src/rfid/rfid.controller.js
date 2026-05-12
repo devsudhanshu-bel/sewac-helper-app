@@ -59,26 +59,26 @@ const createRFID = async (req, res) => {
 
 /*
 |--------------------------------------------------------------------------
-| Map RFID To Phone Number
+| Map RFID SLNO To Phone Number
 |--------------------------------------------------------------------------
 */
 const mapRFIDToPhone = async (req, res) => {
   try {
 
-    const { rfid, phoneNumber } = req.body;
+    const { slno, phoneNumber } = req.body;
 
     // Validate
-    if (!rfid || !phoneNumber) {
+    if (!slno || !phoneNumber) {
       return res.status(400).json({
         success: false,
-        message: "RFID and phone number are required",
+        message: "SLNO and phone number are required",
       });
     }
 
 
 
     const updatedRFID = await mapRFIDToPhoneService(
-      rfid,
+      slno,
       phoneNumber
     );
 

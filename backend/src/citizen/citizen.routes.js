@@ -8,6 +8,8 @@ const verifyToken =
 const {
   getCitizenByPhone,
   searchCitizenByName,
+  getAllCitizenPhoneNumbers,
+  getAllCitizenNames,
 } = require("./citizen.controller");
 
 
@@ -25,6 +27,18 @@ router.get(
 
 
 // =====================================
+// GET ALL CITIZEN PHONE NUMBERS
+// =====================================
+
+router.get(
+  "/phones",
+  verifyToken,
+  getAllCitizenPhoneNumbers
+);
+
+
+
+// ====================================
 // SEARCH CITIZEN BY NAME
 // =====================================
 
@@ -32,6 +46,18 @@ router.get(
   "/name/:citizenName",
   verifyToken,
   searchCitizenByName
+);
+
+
+
+// ====================================
+// GET ALL CITIZEN NAMES
+// =====================================
+
+router.get(
+  "/names",
+  verifyToken,
+  getAllCitizenNames
 );
 
 

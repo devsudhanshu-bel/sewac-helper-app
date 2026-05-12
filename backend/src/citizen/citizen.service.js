@@ -114,11 +114,136 @@ const searchCitizenByNameService =
 
 
 
+// =====================================
+// GET ALL CITIZEN PHONE NUMBERS
+// =====================================
+
+const getAllCitizenPhoneNumbersService =
+  async () => {
+
+    try {
+
+      const citizens =
+        await prisma.survey.findMany({
+
+          where: {
+
+            contactNumber: {
+              not: null,
+            },
+
+          },
+
+          select: {
+
+            contactNumber: true,
+
+          },
+
+          distinct: [
+            "contactNumber",
+          ],
+
+          take: 1000,
+
+        });
+
+
+
+      return citizens.map(
+        (citizen) => ({
+
+          phoneNumber:
+            citizen.contactNumber,
+
+        })
+      );
+
+    } catch (error) {
+
+      console.error(
+        "GET ALL PHONE NUMBERS ERROR:",
+        error
+      );
+
+      throw error;
+
+    }
+
+};
+
+
+
+// =====================================
+// GET ALL CITIZEN NAMES
+// =====================================
+
+const getAllCitizenNamesService =
+  async () => {
+
+    try {
+
+      const citizens =
+        await prisma.survey.findMany({
+
+          where: {
+
+            personName: {
+              not: null,
+            },
+
+          },
+
+          select: {
+
+            personName: true,
+
+          },
+
+          distinct: [
+            "personName",
+          ],
+
+          take: 1000,
+
+        });
+
+
+
+      return citizens.map(
+        (citizen) => ({
+
+          citizenName:
+            citizen.personName,
+
+        })
+      );
+
+    } catch (error) {
+
+      console.error(
+        "GET ALL CITIZEN NAMES ERROR:",
+        error
+      );
+
+      throw error;
+
+    }
+
+};
+
+
+
+
 
 module.exports = {
 
   getCitizenByPhoneService,
 
   searchCitizenByNameService,
+
+  getAllCitizenPhoneNumbersService,
+
+  getAllCitizenNamesService,
 
 };
