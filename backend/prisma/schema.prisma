@@ -29,7 +29,7 @@ model TrackingLog {
 
   workerId String
 
-  slno String
+  slno String?
 
   citizenName String?
 

@@ -50,17 +50,17 @@ const createTrackingLog = async (
 
     /*
     |--------------------------------------------------------------------------
-    | REQUIRED VALIDATION
+    | STATUS REQUIRED
     |--------------------------------------------------------------------------
     */
-    if (!slno || !status) {
+    if (!status) {
 
       return res.status(400).json({
 
         success: false,
 
         message:
-          "SLNO and status are required",
+          "Status is required",
 
       });
 
@@ -102,7 +102,35 @@ const createTrackingLog = async (
 
     /*
     |--------------------------------------------------------------------------
-    | REMARK REQUIRED FOR NOT_FOUND
+    | FOUND VALIDATION
+    |--------------------------------------------------------------------------
+    */
+    if (status === "FOUND") {
+
+      if (
+        !slno ||
+        !phoneNumber ||
+        !citizenName
+      ) {
+
+        return res.status(400).json({
+
+          success: false,
+
+          message:
+            "SLNO, phoneNumber and citizenName are required for FOUND status",
+
+        });
+
+      }
+
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | NOT_FOUND VALIDATION
     |--------------------------------------------------------------------------
     */
     if (
@@ -133,15 +161,27 @@ const createTrackingLog = async (
 
         workerId,
 
-        slno,
+        slno:
+          status === "FOUND"
+            ? slno
+            : null,
 
-        phoneNumber,
+        phoneNumber:
+          status === "FOUND"
+            ? phoneNumber
+            : null,
 
-        citizenName,
+        citizenName:
+          status === "FOUND"
+            ? citizenName
+            : null,
 
         status,
 
-        remarks,
+        remarks:
+          status === "NOT_FOUND"
+            ? remarks
+            : null,
 
       });
 
