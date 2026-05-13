@@ -15,6 +15,11 @@ class _LogsScreenState extends State<LogsScreen>
     with SingleTickerProviderStateMixin {
   bool _isTableView = false;
 
+  final TextEditingController _searchController =
+  TextEditingController();
+
+  String _searchQuery = "";
+
   List<TrackingModel> _logs = [];
   bool _isLoading = true;
 
@@ -71,6 +76,20 @@ class _LogsScreenState extends State<LogsScreen>
   @override
   Widget build(BuildContext context) {
     final filteredLogs = _logs.where((log) {
+      final searchMatch =
+          _searchQuery.isEmpty ||
+
+              (log.phoneNumber ?? "")
+                  .toLowerCase()
+                  .contains(_searchQuery.toLowerCase()) ||
+
+              (log.citizenName ?? "")
+                  .toLowerCase()
+                  .contains(_searchQuery.toLowerCase()) ||
+
+              log.workerId
+                  .toLowerCase()
+                  .contains(_searchQuery.toLowerCase());
       final workerMatch =
           _selectedWorker == "All Workers" ||
               log.workerId.toUpperCase() == _selectedWorker;
@@ -83,7 +102,9 @@ class _LogsScreenState extends State<LogsScreen>
           _selectedStatus == "All Status" ||
               statusText == _selectedStatus;
 
-      return workerMatch && statusMatch;
+      return workerMatch &&
+          statusMatch &&
+          searchMatch;
     }).toList();
 
     return Scaffold(
@@ -213,8 +234,57 @@ class _LogsScreenState extends State<LogsScreen>
               ),
 
               Padding(
-                padding:
-                const EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                ),
+                child: TextField(
+                  controller: _searchController,
+
+                  onChanged: (value) {
+                    setState(() {
+                      _searchQuery = value.trim();
+                    });
+                  },
+
+                  decoration: InputDecoration(
+                    hintText: "Search name, phone, worker...",
+
+                    prefixIcon:
+                    const Icon(Icons.search),
+
+                    suffixIcon:
+                    _searchQuery.isNotEmpty
+                        ? IconButton(
+                      icon: const Icon(
+                        Icons.close,
+                      ),
+                      onPressed: () {
+                        _searchController.clear();
+
+                        setState(() {
+                          _searchQuery = "";
+                        });
+                      },
+                    )
+                        : null,
+
+                    filled: true,
+                    fillColor: Colors.white,
+
+                    border: OutlineInputBorder(
+                      borderRadius:
+                      BorderRadius.circular(18),
+                      borderSide:
+                      BorderSide.none,
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 20,
                 ),
                 child: Container(
@@ -507,15 +577,29 @@ class _LogsScreenState extends State<LogsScreen>
         Row(
           children: [
             _buildInfoItem(
-              Icons.qr_code,
-              "RFID",
-              log.slno,
+              Icons.water_drop_rounded,
+              "Wet RFID",
+              log.wetWasteRfid ?? "-",
             ),
+            _buildInfoItem(
+              Icons.recycling_rounded,
+              "Dry RFID",
+              log.dryWasteRfid ?? "-",
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 12),
+
+        Row(
+          children: [
             _buildInfoItem(
               Icons.phone,
               "Phone",
-              log.phoneNumber ??
-                  "-",
+              log.phoneNumber ?? "-",
+            ),
+            const Expanded(
+              child: SizedBox(),
             ),
           ],
         ),
@@ -543,80 +627,201 @@ class _LogsScreenState extends State<LogsScreen>
   Widget _buildTableView(
       List<TrackingModel> logs,
       ) {
-    if (logs.isEmpty)
+    if (logs.isEmpty) {
       return _buildEmptyState();
+    }
 
-    return SingleChildScrollView(
-      scrollDirection:
-      Axis.horizontal,
-      child: DataTable(
-        columns: const [
-          DataColumn(
-            label: Text("SL"),
-          ),
-          DataColumn(
-            label:
-            Text("Worker ID"),
-          ),
-          DataColumn(
-            label: Text("Name"),
-          ),
-          DataColumn(
-            label: Text("Phone"),
-          ),
-          DataColumn(
-            label:
-            Text("Remarks"),
-          ),
-          DataColumn(
-            label:
-            Text("Status"),
-          ),
-        ],
-        rows: logs.map((log) {
-          final isFound =
-              log.status ==
-                  "FOUND";
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 8,
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.92),
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 14,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
 
-          return DataRow(
-            cells: [
-              DataCell(
-                Text(log.id.toString()),
-              ),
-              DataCell(
-                Text(
-                  log.workerId
-                      .toUpperCase(),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(24),
+
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+
+              child: DataTable(
+                headingRowColor:
+                MaterialStateProperty.all(
+                  const Color(0xFFF5F8F7),
                 ),
+
+                dataRowMinHeight: 58,
+                dataRowMaxHeight: 70,
+
+                horizontalMargin: 20,
+                columnSpacing: 28,
+
+                columns: const [
+
+                  DataColumn(
+                    label: Text(
+                      "SL",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+
+                  DataColumn(
+                    label: Text(
+                      "Worker",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+
+                  DataColumn(
+                    label: Text(
+                      "Name",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+
+                  DataColumn(
+                    label: Text(
+                      "Wet RFID",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+
+                  DataColumn(
+                    label: Text(
+                      "Dry RFID",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+
+                  DataColumn(
+                    label: Text(
+                      "Phone",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+
+                  DataColumn(
+                    label: Text(
+                      "Status",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+
+                rows: logs.map((log) {
+
+                  final isFound =
+                      log.status == "FOUND";
+
+                  return DataRow(
+                    cells: [
+
+                      DataCell(
+                        Text(
+                          log.id.toString(),
+                        ),
+                      ),
+
+                      DataCell(
+                        Text(
+                          log.workerId.toUpperCase(),
+                        ),
+                      ),
+
+                      DataCell(
+                        Text(
+                          log.citizenName ?? "-",
+                        ),
+                      ),
+
+                      DataCell(
+                        Text(
+                          log.wetWasteRfid ?? "-",
+                        ),
+                      ),
+
+                      DataCell(
+                        Text(
+                          log.dryWasteRfid ?? "-",
+                        ),
+                      ),
+
+                      DataCell(
+                        Text(
+                          log.phoneNumber ?? "-",
+                        ),
+                      ),
+
+                      DataCell(
+                        Container(
+                          padding:
+                          const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+
+                          decoration: BoxDecoration(
+                            color: isFound
+                                ? const Color(
+                              0xFFE8F5E9,
+                            )
+                                : const Color(
+                              0xFFFFEBEE,
+                            ),
+
+                            borderRadius:
+                            BorderRadius.circular(
+                              100,
+                            ),
+                          ),
+
+                          child: Text(
+                            isFound
+                                ? "FOUND"
+                                : "NOT FOUND",
+                            style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight:
+                              FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }).toList(),
               ),
-              DataCell(
-                Text(
-                  log.citizenName ??
-                      "-",
-                ),
-              ),
-              DataCell(
-                Text(
-                  log.phoneNumber ??
-                      "-",
-                ),
-              ),
-              DataCell(
-                Text(
-                  log.remarks ??
-                      "-",
-                ),
-              ),
-              DataCell(
-                Text(
-                  isFound
-                      ? "Found"
-                      : "Not Found",
-                ),
-              ),
-            ],
-          );
-        }).toList(),
+            ),
+          ),
+        ),
       ),
     );
   }

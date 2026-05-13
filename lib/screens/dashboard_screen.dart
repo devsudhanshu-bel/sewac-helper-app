@@ -1,126 +1,177 @@
-import 'package:flutter/material.dart';
-import '../widgets/sewac_button.dart';
-import 'login_screen.dart';
-import '../widgets/sewac_background.dart';
+  import 'package:flutter/material.dart';
+  import '../widgets/sewac_button.dart';
+  import 'login_screen.dart';
+  import '../widgets/sewac_background.dart';
 
-// API imports
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+  // API imports
+  import 'dart:convert';
+  import 'package:http/http.dart' as http;
+  import 'package:shared_preferences/shared_preferences.dart';
+
+  import 'dart:async';
 
 
-class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({
-    super.key,
-  });
+  class DashboardScreen extends StatefulWidget {
+    const DashboardScreen({
+      super.key,
+    });
 
-  @override
-  State<DashboardScreen> createState() =>
-      _DashboardScreenState();
-}
-
-class _DashboardScreenState
-    extends State<DashboardScreen> {
-
-  Future<Map<String, String>> _getHeaders() async {
-
-    final prefs =
-    await SharedPreferences.getInstance();
-
-    final token =
-        prefs.getString("auth_token") ?? "";
-
-    return {
-
-      "Authorization":
-      "Bearer $token",
-
-      "Content-Type":
-      "application/json",
-    };
+    @override
+    State<DashboardScreen> createState() =>
+        _DashboardScreenState();
   }
 
-  List<String> _rfidDropdownItems = [
-    "Select"
-  ];
+  class _DashboardScreenState
+      extends State<DashboardScreen> {
 
-  List<String> _phoneDropdownItems = [
-    "Select"
-  ];
+    Future<Map<String, String>> _getHeaders() async {
 
-  List<String> _nameDropdownItems = [
-    "Select"
-  ];
+      final prefs =
+      await SharedPreferences.getInstance();
 
-  String? _selectedRFID;
-  String? _selectedPhone;
-  String? _selectedName;
+      final token =
+          prefs.getString("auth_token") ?? "";
 
-  String _status =
-      'Found';
+      return {
 
-  bool _showValidation =
-  false;
+        "Authorization":
+        "Bearer $token",
 
-  bool _showRemarksError =
-  false;
+        "Content-Type":
+        "application/json",
+      };
+    }
 
-  final TextEditingController
-  _remarksController =
-  TextEditingController();
+    List<String> _rfidDropdownItems = [
+      "Select"
+    ];
 
-  final TextEditingController
-  _rfidSearchController =
-  TextEditingController();
+    List<String> _phoneDropdownItems = [
+      "Select"
+    ];
 
-  final TextEditingController
-  _phoneSearchController =
-  TextEditingController();
+    List<String> _nameDropdownItems = [
+      "Select"
+    ];
 
-  final TextEditingController
-  _nameSearchController =
-  TextEditingController();
+    String? _selectedWetRFID;
+    String? _selectedDryRFID;
+    String? _selectedPhone;
+    String? _selectedName;
 
-  @override
-  void initState() {
-    super.initState();
+    List<String> get _wetAvailableRfids {
+      return _rfidDropdownItems.where((item) {
+        if (item == "Select") return true;
 
-    _fetchUnmappedRFIDs();
-    _fetchPhones();
-    _fetchNames();
-  }
+        return item != _selectedDryRFID;
+      }).toList();
+    }
 
-  Future<void>
-  _fetchUnmappedRFIDs() async {
+    List<String> get _dryAvailableRfids {
+      return _rfidDropdownItems.where((item) {
+        if (item == "Select") return true;
 
-    try {
+        return item != _selectedWetRFID;
+      }).toList();
+    }
 
-      final response =
-      await http.get(
+    String _status =
+        'Found';
 
-        Uri.parse(
-          "https://sewac-helper-app.onrender.com/api/v1/rfid/unmapped",
-        ),
+    bool _showValidation =
+    false;
+
+    bool _showRemarksError =
+    false;
+
+    final TextEditingController
+    _remarksController =
+    TextEditingController();
+
+    final TextEditingController
+    _wetRfidSearchController =
+    TextEditingController();
+
+    final TextEditingController
+    _dryRfidSearchController =
+    TextEditingController();
+
+    final TextEditingController
+    _phoneSearchController =
+    TextEditingController();
+
+    final TextEditingController
+    _nameSearchController =
+    TextEditingController();
+
+    Timer? _refreshTimer;
+
+    @override
+    void initState() {
+      super.initState();
+
+      _loadAllDropdownData();
+
+      // REQUIREMENT 1: Real-time auto refresh every 1 second
+      _refreshTimer = Timer.periodic(
+        const Duration(seconds: 1),
+            (_) {
+          _loadAllDropdownData();
+        },
       );
+    }
 
-      if (response.statusCode ==
-          200) {
+    @override
+    void dispose() {
+      // REQUIREMENT 6: Prevent memory leaks
+      _refreshTimer?.cancel();
+      _remarksController.dispose();
+      _wetRfidSearchController.dispose();
+      _dryRfidSearchController.dispose();
+      _phoneSearchController.dispose();
+      _nameSearchController.dispose();
+      super.dispose();
+    }
 
-        final result =
-        jsonDecode(
-            response.body);
+    Future<void> _loadAllDropdownData() async {
 
-        if (result[
-        "success"] ==
-            true) {
+      // REQUIREMENT 2: Refresh unmapped RFIDs, citizen phones, and citizen names
+      await Future.wait([
 
-          final List<dynamic>
-          rfids =
-          result["data"];
+        _fetchUnmappedRFIDs(),
+        _fetchPhones(),
+        _fetchNames(),
 
-          setState(() {
+      ]);
+    }
 
-            _rfidDropdownItems = [
+    Future<void>
+    _fetchUnmappedRFIDs() async {
+
+      try {
+
+        final response =
+        await http.get(
+
+          Uri.parse(
+            "https://sewac-helper-app.onrender.com/api/v1/rfid/unmapped",
+          ),
+        );
+
+        if (response.statusCode ==
+            200) {
+
+          final result =
+          jsonDecode(
+              response.body);
+
+          if (result["success"] == true) {
+
+            final List<dynamic>
+            rfids =
+            result["data"];
+
+            final List<String> newList = [
               "Select",
               ...rfids.map(
                     (item) =>
@@ -128,616 +179,693 @@ class _DashboardScreenState
                         .toString(),
               ),
             ];
-          });
+
+            setState(() {
+              _rfidDropdownItems = newList;
+
+              // REQUIREMENT 4: If an RFID gets mapped/used elsewhere, remove from selection
+              if (_selectedWetRFID != null &&
+                  !_rfidDropdownItems.contains(_selectedWetRFID)) {
+                _selectedWetRFID = null;
+                _wetRfidSearchController.clear();
+              }
+
+              if (_selectedDryRFID != null &&
+                  !_rfidDropdownItems.contains(_selectedDryRFID)) {
+                _selectedDryRFID = null;
+                _dryRfidSearchController.clear();
+              }
+            });
+          }
         }
+
+      } catch (e) {
+
+        debugPrint(
+            "RFID API error: $e");
       }
-
-    } catch (e) {
-
-      debugPrint(
-          "RFID API error: $e");
     }
-  }
 
-  Future<void> _fetchPhones() async {
+    Future<void> _fetchPhones() async {
 
-    try {
+      try {
 
-      final headers =
-      await _getHeaders();
+        final headers =
+        await _getHeaders();
 
-      final response =
-      await http.get(
+        final response =
+        await http.get(
 
-        Uri.parse(
-          "https://sewac-helper-app.onrender.com/api/v1/citizen/phones",
-        ),
+          Uri.parse(
+            "https://sewac-helper-app.onrender.com/api/v1/citizen/phones",
+          ),
 
-        headers: headers,
-      );
+          headers: headers,
+        );
 
-      if (response.statusCode == 200) {
+        if (response.statusCode == 200) {
 
-        final result =
-        jsonDecode(
-            response.body);
-
-        final List<dynamic>
-        phones =
-            result["data"] ?? [];
-
-        setState(() {
-
-          _phoneDropdownItems = [
-
-            "Select",
-
-            ...phones.map(
-                  (item) =>
-                  item["phoneNumber"]
-                      .toString()
-                      .trim(),
-            ),
-          ];
-        });
-      }
-
-    } catch (e) {
-
-      debugPrint(
-          "PHONE API ERROR: $e");
-    }
-  }
-
-  Future<void>
-  _fetchNames() async {
-
-    try {
-
-      final headers =
-      await _getHeaders();
-
-      final response =
-      await http.get(
-
-        Uri.parse(
-          "https://sewac-helper-app.onrender.com/api/v1/citizen/names",
-        ),
-
-        headers: headers,
-      );
-
-      if (response.statusCode ==
-          200) {
-
-        final result =
-        jsonDecode(
-            response.body);
-
-        if (result[
-        "success"] ==
-            true) {
+          final result =
+          jsonDecode(
+              response.body);
 
           final List<dynamic>
-          names =
-          result["data"];
+          phones =
+              result["data"] ?? [];
 
           setState(() {
 
-            _nameDropdownItems = [
+            _phoneDropdownItems = [
+
               "Select",
 
-              ...names.map(
+              ...phones.map(
                     (item) =>
-                    item["citizenName"]
+                    item["phoneNumber"]
                         .toString()
                         .trim(),
               ),
             ];
           });
         }
+
+      } catch (e) {
+
+        debugPrint(
+            "PHONE API ERROR: $e");
       }
-
-    } catch (e) {
-
-      debugPrint(
-          "NAME API error: $e");
-    }
-  }
-
-  Future<void>
-  _fetchCitizenByPhone(
-      String phone) async {
-
-    try {
-
-      final headers =
-      await _getHeaders();
-
-      final response =
-      await http.get(
-
-        Uri.parse(
-          "https://sewac-helper-app.onrender.com/api/v1/citizen/phone/$phone",
-        ),
-
-        headers: headers,
-      );
-
-      if (response.statusCode ==
-          200) {
-
-        final result =
-        jsonDecode(
-            response.body);
-
-        if (result[
-        "success"] ==
-            true) {
-
-          setState(() {
-
-            _selectedPhone =
-                result["data"]
-                ["phoneNumber"]
-                    .toString();
-
-            _selectedName =
-                result["data"]
-                ["citizenName"]
-                    .toString();
-
-            _phoneSearchController
-                .text =
-            _selectedPhone!;
-
-            _nameSearchController
-                .text =
-            _selectedName!;
-          });
-        }
-      }
-
-    } catch (e) {
-
-      debugPrint(
-          "PHONE MAP ERROR: $e");
-    }
-  }
-
-  Future<void> _fetchCitizenByName(String name) async {
-
-    try {
-
-      final headers =
-      await _getHeaders();
-
-      final encodedName =
-      Uri.encodeComponent(name);
-
-      final response =
-      await http.get(
-
-        Uri.parse(
-          "https://sewac-helper-app.onrender.com/api/v1/citizen/name/$encodedName",
-        ),
-
-        headers: headers,
-      );
-
-      if (response.statusCode == 200) {
-
-        final result =
-        jsonDecode(response.body);
-
-        if (result["success"] == true) {
-
-          final data =
-          result["data"];
-
-          // If API sends list
-          final citizen =
-          data is List
-              ? data.first
-              : data;
-
-          setState(() {
-
-            _selectedName =
-                citizen["citizenName"]
-                    .toString();
-
-            _selectedPhone =
-                citizen["phoneNumber"]
-                    .toString();
-
-            // THIS updates UI instantly
-            _nameSearchController.text =
-            _selectedName!;
-
-            _phoneSearchController.text =
-            _selectedPhone!;
-
-            _showValidation =
-            false;
-          });
-        }
-      }
-
-    } catch (e) {
-
-      debugPrint(
-        "NAME MAP ERROR: $e",
-      );
-    }
-  }
-
-  void _onRFIDSelected(
-      String? value) {
-
-    if (value == null) {
-      return;
     }
 
-    if (value == "Select") {
-
-      FocusScope.of(context)
-          .unfocus();
-
-      setState(() {
-
-        _selectedRFID = null;
-
-        _rfidSearchController
-            .clear();
-      });
-
-      return;
-    }
-
-    FocusScope.of(context)
-        .unfocus();
-
-    setState(() {
-
-      _selectedRFID =
-          value;
-
-      _rfidSearchController
-          .text =
-          value;
-
-      _showValidation =
-      false;
-    });
-  }
-
-  void _clearForm() {
-
-    FocusScope.of(context).unfocus();
-
-    setState(() {
-
-      _selectedRFID = null;
-      _selectedPhone = null;
-      _selectedName = null;
-
-      _status = "Found";
-
-      _showValidation = false;
-      _showRemarksError = false;
-
-      _rfidSearchController.clear();
-      _phoneSearchController.clear();
-      _nameSearchController.clear();
-      _remarksController.clear();
-    });
-  }
-
-  Future<void> _handleSave() async {
-
-    final headers =
-    await _getHeaders();
-
-    if (_status ==
-        "Not Found") {
-
-      if (_remarksController
-          .text
-          .trim()
-          .isEmpty) {
-
-        setState(() {
-
-          _showRemarksError =
-          true;
-        });
-
-        return;
-      }
+    Future<void>
+    _fetchNames() async {
 
       try {
 
+        final headers =
+        await _getHeaders();
+
         final response =
-        await http.post(
+        await http.get(
 
           Uri.parse(
-            "https://sewac-helper-app.onrender.com/api/v1/remarks/create",
+            "https://sewac-helper-app.onrender.com/api/v1/citizen/names",
           ),
 
           headers: headers,
-
-          body: jsonEncode({
-
-            "remark":
-            _remarksController
-                .text
-                .trim(),
-          }),
         );
 
-        if (response.statusCode == 200 ||
-            response.statusCode == 201) {
+        if (response.statusCode ==
+            200) {
 
-          ScaffoldMessenger.of(
-              context)
-              .showSnackBar(
+          final result =
+          jsonDecode(
+              response.body);
 
-            const SnackBar(
-              content:
-              Text(
-                  'Data saved successfully'),
-            ),
-          );
+          if (result[
+          "success"] ==
+              true) {
 
-          _clearForm();
+            final List<dynamic>
+            names =
+            result["data"];
+
+            setState(() {
+
+              _nameDropdownItems = [
+                "Select",
+
+                ...names.map(
+                      (item) =>
+                      item["citizenName"]
+                          .toString()
+                          .trim(),
+                ),
+              ];
+            });
+          }
         }
 
       } catch (e) {
 
         debugPrint(
-            "REMARK ERROR: $e");
+            "NAME API error: $e");
       }
-
-      return;
     }
 
-    if (_selectedRFID ==
-        null ||
-        _selectedPhone ==
-            null ||
-        _selectedName ==
-            null) {
+    Future<void>
+    _fetchCitizenByPhone(
+        String phone) async {
+
+      try {
+
+        final headers =
+        await _getHeaders();
+
+        final response =
+        await http.get(
+
+          Uri.parse(
+            "https://sewac-helper-app.onrender.com/api/v1/citizen/phone/$phone",
+          ),
+
+          headers: headers,
+        );
+
+        if (response.statusCode ==
+            200) {
+
+          final result =
+          jsonDecode(
+              response.body);
+
+          if (result[
+          "success"] ==
+              true) {
+
+            setState(() {
+
+              _selectedPhone =
+                  result["data"]
+                  ["phoneNumber"]
+                      .toString();
+
+              _selectedName =
+                  result["data"]
+                  ["citizenName"]
+                      .toString();
+
+              _phoneSearchController
+                  .text =
+              _selectedPhone!;
+
+              _nameSearchController
+                  .text =
+              _selectedName!;
+            });
+          }
+        }
+
+      } catch (e) {
+
+        debugPrint(
+            "PHONE MAP ERROR: $e");
+      }
+    }
+
+    Future<void> _fetchCitizenByName(String name) async {
+
+      try {
+
+        final headers =
+        await _getHeaders();
+
+        final encodedName =
+        Uri.encodeComponent(name);
+
+        final response =
+        await http.get(
+
+          Uri.parse(
+            "https://sewac-helper-app.onrender.com/api/v1/citizen/name/$encodedName",
+          ),
+
+          headers: headers,
+        );
+
+        if (response.statusCode == 200) {
+
+          final result =
+          jsonDecode(response.body);
+
+          if (result["success"] == true) {
+
+            final data =
+            result["data"];
+
+            // If API sends list
+            final citizen =
+            data is List
+                ? data.first
+                : data;
+
+            setState(() {
+
+              _selectedName =
+                  citizen["citizenName"]
+                      .toString();
+
+              _selectedPhone =
+                  citizen["phoneNumber"]
+                      .toString();
+
+              // THIS updates UI instantly
+              _nameSearchController.text =
+              _selectedName!;
+
+              _phoneSearchController.text =
+              _selectedPhone!;
+
+              _showValidation =
+              false;
+            });
+          }
+        }
+
+      } catch (e) {
+
+        debugPrint(
+          "NAME MAP ERROR: $e",
+        );
+      }
+    }
+
+
+
+    void _clearForm() {
+
+      FocusScope.of(context).unfocus();
 
       setState(() {
 
-        _showValidation =
-        true;
-      });
+        _selectedWetRFID = null;
+        _selectedDryRFID = null;
 
-      return;
+        _wetRfidSearchController.clear();
+        _dryRfidSearchController.clear();
+        _selectedPhone = null;
+        _selectedName = null;
+
+        _status = "Found";
+
+        _showValidation = false;
+        _showRemarksError = false;
+
+        _phoneSearchController.clear();
+        _nameSearchController.clear();
+        _remarksController.clear();
+      });
     }
 
-    try {
+    Future<void> _handleSave() async {
 
-      final response =
-      await http.post(
+      final headers =
+      await _getHeaders();
 
-        Uri.parse(
-          "https://sewac-helper-app.onrender.com/api/v1/rfid/map",
-        ),
+      try {
 
-        headers: headers,
+        // validation
+        if (_status == "Found") {
 
-        body: jsonEncode({
+          if (_selectedWetRFID == null ||
+              _selectedDryRFID == null ||
+              _selectedPhone == null ||
+              _selectedName == null) {
 
-          "slno":
-          _selectedRFID,
+            setState(() {
+              _showValidation = true;
+            });
 
-          "phoneNumber":
-          _selectedPhone,
-        }),
-      );
+            return;
+          }
+        }
 
-      if (response.statusCode == 200 ||
-          response.statusCode == 201) {
+        if (_status == "Not Found") {
 
-        ScaffoldMessenger.of(
-            context)
+          if (_remarksController.text.trim().isEmpty) {
+
+            setState(() {
+              _showRemarksError = true;
+            });
+
+            return;
+          }
+        }
+
+        late http.Response response;
+
+        if (_status == "Not Found") {
+
+          response = await http.post(
+
+            Uri.parse(
+              "https://sewac-helper-app.onrender.com/api/v1/remarks/create",
+            ),
+
+            headers: headers,
+
+            body: jsonEncode({
+              "remark":
+              _remarksController.text.trim(),
+            }),
+          );
+
+        } else {
+
+          response = await http.post(
+
+            Uri.parse(
+              "https://sewac-helper-app.onrender.com/api/v1/rfid/map",
+            ),
+
+            headers: headers,
+
+            body: jsonEncode({
+
+              "wetWasteRfid":
+              _selectedWetRFID,
+
+              "dryWasteRfid":
+              _selectedDryRFID,
+
+              "phoneNumber":
+              _selectedPhone,
+            }),
+          );
+        }
+
+        print(
+          "SAVE STATUS: ${response.statusCode}",
+        );
+
+        print(
+          "SAVE BODY: ${response.body}",
+        );
+
+        if (!mounted) return;
+
+        if (response.statusCode >= 200 &&
+            response.statusCode < 300) {
+
+          ScaffoldMessenger.of(context)
+              .clearSnackBars();
+
+          ScaffoldMessenger.of(context)
+              .showSnackBar(
+
+            const SnackBar(
+              content: Text(
+                "Data saved successfully",
+              ),
+              backgroundColor:
+              Colors.green,
+            ),
+          );
+
+          _clearForm();
+
+          await _loadAllDropdownData();
+
+        } else {
+
+          ScaffoldMessenger.of(context)
+              .showSnackBar(
+
+            SnackBar(
+              content: Text(
+                "Save failed (${response.statusCode})",
+              ),
+              backgroundColor:
+              Colors.red,
+            ),
+          );
+        }
+
+      } catch (e) {
+
+        print(
+          "SAVE ERROR: $e",
+        );
+
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context)
             .showSnackBar(
 
           const SnackBar(
-            content:
-            Text(
-                'Data saved successfully'),
+            content: Text(
+              "Server error",
+            ),
+            backgroundColor:
+            Colors.orange,
           ),
         );
-
-        _clearForm();
       }
-
-    } catch (e) {
-
-      debugPrint(
-          "MAP ERROR: $e");
     }
-  }
+    @override
+    Widget build(
+        BuildContext context) {
 
-  @override
-  Widget build(
-      BuildContext context) {
+      return Scaffold(
 
-    return Scaffold(
-
-      extendBodyBehindAppBar:
-      true,
-
-      backgroundColor:
-      const Color(
-          0xFFF8F9FA),
-
-      appBar: AppBar(
-        leadingWidth: 70,
-        backgroundColor:
-        Colors.transparent,
-        elevation: 0,
-        surfaceTintColor:
-        Colors.transparent,
-        scrolledUnderElevation:
-        0,
-        centerTitle:
+        extendBodyBehindAppBar:
         true,
 
-        leading:
-        Padding(
+        backgroundColor:
+        const Color(
+            0xFFF8F9FA),
 
-          padding:
-          const EdgeInsets.only(
-              left: 16),
+        appBar: AppBar(
+          leadingWidth: 70,
+          backgroundColor:
+          Colors.transparent,
+          elevation: 0,
+          surfaceTintColor:
+          Colors.transparent,
+          scrolledUnderElevation:
+          0,
+          centerTitle:
+          true,
 
-          child:
-          Image.asset(
-            "assets/images/logo.png",
-            height: 60,
-            width: 60,
-            fit: BoxFit.contain,
+          leading:
+          Padding(
+
+            padding:
+            const EdgeInsets.only(
+                left: 16),
+
+            child:
+            Image.asset(
+              "assets/images/logo.png",
+              height: 60,
+              width: 60,
+              fit: BoxFit.contain,
+            ),
           ),
-        ),
 
-        title:
-        const Text(
-          "Helper App",
-          style:
-          TextStyle(
-            color:
-            Color(
-                0xFF1A237E),
-            fontWeight:
-            FontWeight.w900,
-            fontSize: 20,
-          ),
-        ),
-
-        actions: [
-
-          IconButton(
-
-            icon:
-            const Icon(
-              Icons.logout_rounded,
+          title:
+          const Text(
+            "Helper App",
+            style:
+            TextStyle(
               color:
               Color(
                   0xFF1A237E),
+              fontWeight:
+              FontWeight.w900,
+              fontSize: 20,
             ),
-
-            onPressed:
-                () {
-
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (_) =>
-                  const LoginScreen(),
-                ),
-              );
-            },
           ),
 
-          const SizedBox(
-              width: 8),
-        ],
-      ),
+          actions: [
 
-      body: SewacBackground(
+            IconButton(
 
-        child:
-        SingleChildScrollView(
+              icon:
+              const Icon(
+                Icons.logout_rounded,
+                color:
+                Color(
+                    0xFF1A237E),
+              ),
 
-          padding:
-          const EdgeInsets.fromLTRB(
-              24,
-              110,
-              24,
-              24),
+              onPressed:
+                  () {
+
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) =>
+                    const LoginScreen(),
+                  ),
+                );
+              },
+            ),
+
+            const SizedBox(
+                width: 8),
+          ],
+        ),
+
+        body: SewacBackground(
 
           child:
-          Column(
+          SingleChildScrollView(
 
-            crossAxisAlignment:
-            CrossAxisAlignment
-                .start,
+            padding:
+            const EdgeInsets.fromLTRB(
+                24,
+                110,
+                24,
+                24),
 
-            children: [
+            child:
+            Column(
 
-              const Text(
-                "RFID Mapping",
-                style:
-                TextStyle(
-                  fontSize: 28,
-                  fontWeight:
-                  FontWeight.bold,
-                  color:
-                  Color(
-                      0xFF2C3E50),
-                ),
-              ),
+              crossAxisAlignment:
+              CrossAxisAlignment
+                  .start,
 
-              const Text(
-                "Sync resident details from the secure database",
-              ),
+              children: [
 
-              const SizedBox(
-                  height: 32),
-
-              Container(
-
-                padding:
-                const EdgeInsets.all(
-                    24),
-
-                decoration:
-                BoxDecoration(
-                  color:
-                  Colors.white,
-                  borderRadius:
-                  BorderRadius.circular(
-                      28),
+                const Text(
+                  "RFID Mapping",
+                  style:
+                  TextStyle(
+                    fontSize: 28,
+                    fontWeight:
+                    FontWeight.bold,
+                    color:
+                    Color(
+                        0xFF2C3E50),
+                  ),
                 ),
 
-                child:
-                Column(
+                const Text(
+                  "Sync resident details from the secure database",
+                ),
 
-                  children: [
+                const SizedBox(
+                    height: 32),
 
-                    _buildSearchDropdown(
-                      label:
-                      "RFID",
-                      hint:
-                      "Select RFID Number",
-                      controller:
-                      _rfidSearchController,
-                      items:
-                      _rfidDropdownItems,
-                      icon:
-                      Icons.qr_code_scanner_rounded,
-                      onSelected:
-                      _onRFIDSelected,
-                    ),
+                Container(
 
-                    const SizedBox(
-                        height: 24),
+                  padding:
+                  const EdgeInsets.all(
+                      24),
 
-                    _buildSearchDropdown(
-                      label:
-                      "Phone Number",
-                      hint:
-                      "Select Phone Number",
-                      controller:
-                      _phoneSearchController,
-                      items:
-                      _phoneDropdownItems,
-                      icon:
-                      Icons.phone_iphone_rounded,
+                  decoration:
+                  BoxDecoration(
+                    color:
+                    Colors.white,
+                    borderRadius:
+                    BorderRadius.circular(
+                        28),
+                  ),
+
+                  child:
+                  Column(
+
+                    children: [
+
+                      _buildSearchDropdown(
+                        dropdownKey: ValueKey("wet_${_selectedDryRFID ?? "none"}"),
+                        label: "Wet Waste RFID",
+                        hint: "Select RFID Number",
+                        controller: _wetRfidSearchController,
+                        items: _wetAvailableRfids,
+                        icon: Icons.water_drop_rounded,
+                        onSelected: (value) {
+                          if (value == null) return;
+
+                          FocusScope.of(context).unfocus();
+
+                          setState(() {
+                            if (value == "Select") {
+                              _selectedWetRFID = null;
+                              _wetRfidSearchController.clear();
+                            } else {
+                              _selectedWetRFID = value;
+                              _wetRfidSearchController.text = value;
+                            }
+
+                            _showValidation = false;
+                          });
+                        },
+                      ),
+
+
+                      const SizedBox(height: 16),
+
+                      _buildSearchDropdown(
+                        dropdownKey: ValueKey("dry_${_selectedWetRFID ?? "none"}"),
+                        label: "Dry Waste RFID",
+                        hint: "Select RFID Number",
+                        controller: _dryRfidSearchController,
+                        items: _dryAvailableRfids,
+                        icon: Icons.recycling_rounded,
+                        onSelected: (value) {
+                          if (value == null) return;
+
+                          FocusScope.of(context).unfocus();
+
+                          setState(() {
+                            if (value == "Select") {
+                              _selectedDryRFID = null;
+                              _dryRfidSearchController.clear();
+                            } else {
+                              _selectedDryRFID = value;
+                              _dryRfidSearchController.text = value;
+                            }
+
+                            _showValidation = false;
+                          });
+                        },
+                      ),
+
+                      const SizedBox(
+                          height: 24),
+
+                      _buildSearchDropdown(
+                        label:
+                        "Phone Number",
+                        hint:
+                        "Select Phone Number",
+                        controller:
+                        _phoneSearchController,
+                        items:
+                        _phoneDropdownItems,
+                        icon:
+                        Icons.phone_iphone_rounded,
+
+                          onSelected: (val) async {
+
+                            if (val == null) return;
+
+                            if (val == "Select") {
+
+                              FocusScope.of(context).unfocus();
+
+                              setState(() {
+
+                                _selectedPhone = null;
+                                _selectedName = null;
+
+                                _phoneSearchController.clear();
+                                _nameSearchController.clear();
+                              });
+
+                              return;
+                            }
+
+                            await _fetchCitizenByPhone(val);
+                          },
+
+                      ),
+
+                      const SizedBox(
+                          height: 24),
+
+                      _buildSearchDropdown(
+                        label:
+                        "Name",
+                        hint:
+                        "Citizen Name",
+                        controller:
+                        _nameSearchController,
+                        items:
+                        _nameDropdownItems,
+                        icon:
+                        Icons.person_pin_rounded,
 
                         onSelected: (val) async {
 
@@ -759,282 +887,276 @@ class _DashboardScreenState
                             return;
                           }
 
-                          await _fetchCitizenByPhone(val);
+                          await _fetchCitizenByName(val);
                         },
-
-                    ),
-
-                    const SizedBox(
-                        height: 24),
-
-                    _buildSearchDropdown(
-                      label:
-                      "Name",
-                      hint:
-                      "Citizen Name",
-                      controller:
-                      _nameSearchController,
-                      items:
-                      _nameDropdownItems,
-                      icon:
-                      Icons.person_pin_rounded,
-
-                      onSelected: (val) async {
-
-                        if (val == null) return;
-
-                        if (val == "Select") {
-
-                          FocusScope.of(context).unfocus();
-
-                          setState(() {
-
-                            _selectedPhone = null;
-                            _selectedName = null;
-
-                            _phoneSearchController.clear();
-                            _nameSearchController.clear();
-                          });
-
-                          return;
-                        }
-
-                        await _fetchCitizenByName(val);
-                      },
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(
-                  height: 24),
-
-              Container(
-
-                padding:
-                const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 20,
-                ),
-
-                decoration:
-                BoxDecoration(
-                  color:
-                  Colors.white,
-                  borderRadius:
-                  BorderRadius.circular(
-                      28),
-                ),
-
-                child:
-                Column(
-
-                  crossAxisAlignment:
-                  CrossAxisAlignment
-                      .start,
-
-                  children: [
-
-                    const Text(
-                      "Status Selection",
-                    ),
-
-                    Row(
-
-                      children: [
-
-                        Expanded(
-                          child:
-                          RadioListTile<String>(
-                            title:
-                            const Text(
-                                "Found"),
-                            value:
-                            'Found',
-                            groupValue:
-                            _status,
-                            onChanged:
-                                (
-                                value,
-                                ) {
-
-                              setState(
-                                    () {
-
-                                  _status =
-                                  value!;
-                                },
-                              );
-                            },
-                          ),
-                        ),
-
-                        Expanded(
-                          child:
-                          RadioListTile<String>(
-                            title:
-                            const Text(
-                                "Not Found"),
-                            value:
-                            'Not Found',
-                            groupValue:
-                            _status,
-                            onChanged:
-                                (
-                                value,
-                                ) {
-
-                              setState(
-                                    () {
-
-                                  _status =
-                                  value!;
-                                },
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    if (_status ==
-                        "Not Found")
-                      TextField(
-                        controller:
-                        _remarksController,
-                        maxLines: 3,
-                        decoration:
-                        InputDecoration(
-                          labelText:
-                          "Remarks",
-                          errorText:
-                          _showRemarksError
-                              ? "Required"
-                              : null,
-                        ),
                       ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
 
-              const SizedBox(
-                  height: 48),
+                const SizedBox(
+                    height: 10),
 
-              SewacButton(
-                text:
-                "SAVE COLLECTION DATA",
-                onPressed:
-                _handleSave,
-              ),
-            ],
+                Container(
+
+                  padding:
+                  const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 20,
+                  ),
+
+                  decoration:
+                  BoxDecoration(
+                    color:
+                    Colors.white,
+                    borderRadius:
+                    BorderRadius.circular(
+                        28),
+                  ),
+
+                  child:
+                  Column(
+
+                    crossAxisAlignment:
+                    CrossAxisAlignment
+                        .start,
+
+                    children: [
+
+                      const Text(
+                        "Status Selection",
+                      ),
+
+                      Row(
+
+                        children: [
+
+                          Expanded(
+                            child:
+                            RadioListTile<String>(
+                              title:
+                              const Text(
+                                  "Found"),
+                              value:
+                              'Found',
+                              groupValue:
+                              _status,
+                              onChanged:
+                                  (
+                                  value,
+                                  ) {
+
+                                setState(
+                                      () {
+
+                                    _status =
+                                    value!;
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+
+                          Expanded(
+                            child:
+                            RadioListTile<String>(
+                              title:
+                              const Text(
+                                  "Not Found"),
+                              value:
+                              'Not Found',
+                              groupValue:
+                              _status,
+                              onChanged:
+                                  (
+                                  value,
+                                  ) {
+
+                                setState(
+                                      () {
+
+                                    _status =
+                                    value!;
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      if (_status ==
+                          "Not Found")
+                        TextField(
+                          controller:
+                          _remarksController,
+                          maxLines: 3,
+                          decoration:
+                          InputDecoration(
+                            labelText:
+                            "Remarks",
+                            errorText:
+                            _showRemarksError
+                                ? "Required"
+                                : null,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(
+                    height: 12),
+
+                SewacButton(
+                  text:
+                  "SAVE",
+                  onPressed:
+                  _handleSave,
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
+    }
 
-  Widget _buildSearchDropdown({
+    Widget _buildSearchDropdown({
+      Key? dropdownKey,
+      required String label,
+      required String hint,
+      required TextEditingController controller,
+      required List<String> items,
+      required IconData icon,
+      required Function(String?) onSelected,
+    }) {
 
-    required String label,
-    required String hint,
-    required TextEditingController controller,
-    required List<String> items,
-    required IconData icon,
-    required Function(String?) onSelected,
-  }) {
+      final bool hasError =
+          _showValidation &&
+              _status ==
+                  "Found" &&
+              controller.text
+                  .trim()
+                  .isEmpty;
 
-    final bool hasError =
-        _showValidation &&
-            _status ==
-                "Found" &&
-            controller.text
-                .trim()
-                .isEmpty;
+      return Column(
 
-    return Column(
+        crossAxisAlignment:
+        CrossAxisAlignment
+            .start,
 
-      crossAxisAlignment:
-      CrossAxisAlignment
-          .start,
+        children: [
 
-      children: [
-
-        Padding(
-          padding:
-          const EdgeInsets.only(
-            left: 4,
-            bottom: 8,
+          Padding(
+            padding:
+            const EdgeInsets.only(
+              left: 4,
+              bottom: 8,
+            ),
+            child:
+            Text(label),
           ),
-          child:
-          Text(label),
-        ),
 
-        Autocomplete<String>(
+          Autocomplete<String>(
+            key: dropdownKey,
 
-          optionsBuilder:
-              (
-              value,
-              ) {
+            optionsBuilder:
+                (
+                value,
+                ) {
 
-            if (value.text
-                .isEmpty) {
+              if (value.text
+                  .isEmpty) {
 
-              return items;
-            }
+                return items;
+              }
 
-            return items.where(
-                  (item) {
+              return items.where(
+                    (item) {
 
-                return item
-                    .toLowerCase()
-                    .contains(
-                  value.text
-                      .toLowerCase(),
+                  return item
+                      .toLowerCase()
+                      .contains(
+                    value.text
+                        .toLowerCase(),
+                  );
+                },
+              );
+            },
+
+            onSelected:
+            onSelected,
+
+            fieldViewBuilder:
+                (
+                context,
+                textController,
+                focusNode,
+                onEditingComplete,
+                ) {
+
+              // Fill selected value only when different
+              if (textController.text != controller.text) {
+                textController.value = TextEditingValue(
+                  text: controller.text,
+                  selection: TextSelection.collapsed(
+                    offset: controller.text.length,
+                  ),
                 );
-              },
-            );
-          },
+              }
 
-          onSelected:
-          onSelected,
+              return TextField(
 
-          fieldViewBuilder:
-              (
-              context,
-              textController,
-              focusNode,
-              onEditingComplete,
-              ) {
+                controller: textController,
 
-            textController.text =
-                controller.text;
+                focusNode: focusNode,
 
-            return TextField(
+                onChanged: (value) {
 
-              controller:
-              textController,
+                  // allow backspace / manual typing
+                  controller.text = value;
 
-              focusNode:
-              focusNode,
+                  // if user clears manually, reset selected value
+                  if (value.isEmpty) {
 
-              decoration:
-              InputDecoration(
+                    if (label == "Wet Waste RFID") {
+                      _selectedWetRFID = null;
+                    }
 
-                hintText:
-                hint,
+                    if (label == "Dry Waste RFID") {
+                      _selectedDryRFID = null;
+                    }
 
-                errorText:
-                hasError
-                    ? "Required"
-                    : null,
+                    if (label == "Phone Number") {
+                      _selectedPhone = null;
+                      _selectedName = null;
+                      _nameSearchController.clear();
+                    }
 
-                prefixIcon:
-                Icon(icon),
-              ),
-            );
-          },
-        ),
-      ],
-    );
+                    if (label == "Name") {
+                      _selectedName = null;
+                      _selectedPhone = null;
+                      _phoneSearchController.clear();
+                    }
+                  }
+                },
+
+                decoration: InputDecoration(
+
+                  hintText: hint,
+
+                  errorText:
+                  hasError
+                      ? "Required"
+                      : null,
+
+                  prefixIcon:
+                  Icon(icon),
+                ),
+              );
+            },
+          ),
+        ],
+      );
+    }
   }
-}
