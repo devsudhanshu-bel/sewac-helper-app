@@ -16,7 +16,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
   // CHANGE ONLY THIS IF HARDWARE RFID LENGTH CHANGES LATER
   // Example: 36 -> 40
-  static const int maxRfidLength = 36;
+  static const int maxRfidLength = 48;
 
   final TextEditingController
   _rfidController =
