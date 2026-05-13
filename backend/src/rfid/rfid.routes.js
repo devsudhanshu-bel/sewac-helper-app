@@ -26,6 +26,11 @@ router.post(
   createRFID
 );
 
+router.get(
+  "/rfid/:value",
+  createRFID
+);
+
 
 
 
