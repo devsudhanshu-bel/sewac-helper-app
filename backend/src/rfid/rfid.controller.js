@@ -16,13 +16,15 @@ const {
 |--------------------------------------------------------------------------
 | Create RFID
 |--------------------------------------------------------------------------
+| POST /api/v1/rfid/rfid/:value
+|--------------------------------------------------------------------------
 */
 const createRFID = async (req, res) => {
   try {
 
     const { value } = req.params;
 
-    // Validate RFID
+    // VALIDATE RFID
     if (!value || value.trim() === "") {
       return res.status(400).json({
         success: false,
@@ -30,9 +32,55 @@ const createRFID = async (req, res) => {
       });
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | GET LAST SLNO
+    |--------------------------------------------------------------------------
+    */
+    const lastRFID =
+      await prisma.rFIDMapping.findFirst({
+
+        orderBy: {
+          slno: "desc",
+        },
+
+      });
 
 
-    const newRFID = await createRFIDService(value);
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | GENERATE NEXT SLNO
+    |--------------------------------------------------------------------------
+    */
+    let nextSLNO = "00000001";
+
+    if (lastRFID && lastRFID.slno) {
+
+      const currentNumber =
+        parseInt(lastRFID.slno);
+
+      const nextNumber =
+        currentNumber + 1;
+
+      nextSLNO =
+        String(nextNumber).padStart(8, "0");
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | CREATE RFID
+    |--------------------------------------------------------------------------
+    */
+    const newRFID =
+      await createRFIDService(
+        nextSLNO,
+        value
+      );
 
 
 
@@ -44,16 +92,19 @@ const createRFID = async (req, res) => {
 
   } catch (error) {
 
-    console.error("RFID CREATE ERROR:", error);
+    console.error(
+      "RFID CREATE ERROR:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
-      message: error.message || "Internal Server Error",
+      message:
+        error.message ||
+        "Internal Server Error",
     });
   }
 };
-
-
 
 
 
@@ -61,42 +112,55 @@ const createRFID = async (req, res) => {
 |--------------------------------------------------------------------------
 | Map RFID SLNO To Phone Number
 |--------------------------------------------------------------------------
+| POST /api/v1/rfid/map
+|--------------------------------------------------------------------------
 */
 const mapRFIDToPhone = async (req, res) => {
   try {
 
-    const { slno, phoneNumber } = req.body;
+    const {
+      slno,
+      phoneNumber,
+    } = req.body;
 
-    // Validate
+    // VALIDATE
     if (!slno || !phoneNumber) {
       return res.status(400).json({
         success: false,
-        message: "SLNO and phone number are required",
+        message:
+          "SLNO and phone number are required",
       });
     }
 
 
 
-    const updatedRFID = await mapRFIDToPhoneService(
-      slno,
-      phoneNumber
-    );
+    const updatedRFID =
+      await mapRFIDToPhoneService(
+        slno,
+        phoneNumber
+      );
 
 
 
     return res.status(200).json({
       success: true,
-      message: "RFID mapped successfully",
+      message:
+        "RFID mapped successfully",
       data: updatedRFID,
     });
 
   } catch (error) {
 
-    console.error("RFID MAP ERROR:", error);
+    console.error(
+      "RFID MAP ERROR:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
-      message: error.message || "Internal Server Error",
+      message:
+        error.message ||
+        "Internal Server Error",
     });
   }
 };
@@ -109,8 +173,13 @@ const mapRFIDToPhone = async (req, res) => {
 |--------------------------------------------------------------------------
 | Get All RFID Mappings
 |--------------------------------------------------------------------------
+| GET /api/v1/rfid/rfid
+|--------------------------------------------------------------------------
 */
-const getAllRFIDMappings = async (req, res) => {
+const getAllRFIDMappings = async (
+  req,
+  res
+) => {
   try {
 
     const allMappings =
@@ -126,11 +195,16 @@ const getAllRFIDMappings = async (req, res) => {
 
   } catch (error) {
 
-    console.error("GET RFID ERROR:", error);
+    console.error(
+      "GET RFID ERROR:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
-      message: error.message || "Internal Server Error",
+      message:
+        error.message ||
+        "Internal Server Error",
     });
   }
 };
@@ -143,8 +217,13 @@ const getAllRFIDMappings = async (req, res) => {
 |--------------------------------------------------------------------------
 | Get Only Unmapped RFIDs
 |--------------------------------------------------------------------------
+| GET /api/v1/rfid/unmapped
+|--------------------------------------------------------------------------
 */
-const getUnmappedRFIDs = async (req, res) => {
+const getUnmappedRFIDs = async (
+  req,
+  res
+) => {
   try {
 
     const unmappedRFIDs =
@@ -154,17 +233,23 @@ const getUnmappedRFIDs = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      count: unmappedRFIDs.length,
+      count:
+        unmappedRFIDs.length,
       data: unmappedRFIDs,
     });
 
   } catch (error) {
 
-    console.error("GET UNMAPPED RFID ERROR:", error);
+    console.error(
+      "GET UNMAPPED RFID ERROR:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
-      message: error.message || "Internal Server Error",
+      message:
+        error.message ||
+        "Internal Server Error",
     });
   }
 };
@@ -175,34 +260,34 @@ const getUnmappedRFIDs = async (req, res) => {
 
 /*
 |--------------------------------------------------------------------------
-| Get RFID By RFID Value
+| Get RFID Details By RFID Value
+|--------------------------------------------------------------------------
+| GET /api/v1/rfid/:rfid
 |--------------------------------------------------------------------------
 */
-const getRFIDByValue = async (req, res) => {
+const getRFIDByValue = async (
+  req,
+  res
+) => {
   try {
 
-    const { rfid } = req.params;
+    const { rfid } =
+      req.params;
 
     if (!rfid) {
       return res.status(400).json({
         success: false,
-        message: "RFID is required",
+        message:
+          "RFID is required",
       });
     }
 
 
 
     const rfidData =
-      await getRFIDByValueService(rfid);
-
-
-
-    if (!rfidData) {
-      return res.status(404).json({
-        success: false,
-        message: "RFID not found",
-      });
-    }
+      await getRFIDByValueService(
+        rfid
+      );
 
 
 
@@ -213,11 +298,16 @@ const getRFIDByValue = async (req, res) => {
 
   } catch (error) {
 
-    console.error("GET RFID BY VALUE ERROR:", error);
+    console.error(
+      "GET RFID BY VALUE ERROR:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
-      message: error.message || "Internal Server Error",
+      message:
+        error.message ||
+        "Internal Server Error",
     });
   }
 };
