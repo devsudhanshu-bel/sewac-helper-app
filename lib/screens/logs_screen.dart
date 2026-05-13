@@ -31,14 +31,14 @@ class _LogsScreenState extends State<LogsScreen> with SingleTickerProviderStateM
       "phone": "+91 9876543210",
       "status": "Found",
     },
+
     {
       "sl": "2",
       "worker": "SEWAC03",
-      "rfid": "RFID-1022-A4",
-      "name": "Maria Garcia",
-      "phone": "+91 9123456780",
+      "remarks": "House locked",
       "status": "Not Found",
     },
+
     {
       "sl": "3",
       "worker": "SEWAC01",
@@ -47,6 +47,7 @@ class _LogsScreenState extends State<LogsScreen> with SingleTickerProviderStateM
       "phone": "+91 9988776655",
       "status": "Found",
     },
+
     {
       "sl": "4",
       "worker": "SEWAC07",
@@ -55,14 +56,14 @@ class _LogsScreenState extends State<LogsScreen> with SingleTickerProviderStateM
       "phone": "+91 9001122334",
       "status": "Found",
     },
+
     {
       "sl": "5",
       "worker": "SEWAC02",
-      "rfid": "RFID-7762-L3",
-      "name": "Arjun Singh",
-      "phone": "+91 9445566778",
+      "remarks": "Resident unavailable",
       "status": "Not Found",
     },
+
     {
       "sl": "6",
       "worker": "SEWAC05",
@@ -330,58 +331,162 @@ class _LogsScreenState extends State<LogsScreen> with SingleTickerProviderStateM
     if (logs.isEmpty) return _buildEmptyState();
 
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 8,
+      ),
       itemCount: logs.length,
       physics: const BouncingScrollPhysics(),
+
       itemBuilder: (context, index) {
         final log = logs[index];
         final isFound = log["status"] == "Found";
 
         return TweenAnimationBuilder<double>(
-          tween: Tween(begin: 0.0, end: 1.0),
-          duration: Duration(milliseconds: 400 + (index * 100)),
+          tween: Tween(
+            begin: 0.0,
+            end: 1.0,
+          ),
+
+          duration: Duration(
+            milliseconds: 400 + (index * 100),
+          ),
+
           curve: Curves.easeOutQuart,
+
           builder: (context, value, child) {
             return Transform.translate(
-              offset: Offset(0, 30 * (1 - value)),
-              child: Opacity(opacity: value, child: child),
+              offset: Offset(
+                0,
+                30 * (1 - value),
+              ),
+
+              child: Opacity(
+                opacity: value,
+                child: child,
+              ),
             );
           },
+
           child: Container(
-            margin: const EdgeInsets.only(bottom: 16),
-            padding: const EdgeInsets.all(20),
+            margin: const EdgeInsets.only(
+              bottom: 16,
+            ),
+
+            padding: const EdgeInsets.all(
+              20,
+            ),
+
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(24),
+
+              borderRadius: BorderRadius.circular(
+                24,
+              ),
+
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.03),
+                  color: Colors.black.withOpacity(
+                    0.03,
+                  ),
+
                   blurRadius: 20,
-                  offset: const Offset(0, 10),
+
+                  offset: const Offset(
+                    0,
+                    10,
+                  ),
                 ),
               ],
             ),
+
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment:
+              CrossAxisAlignment.start,
+
               children: [
+
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment:
+                  MainAxisAlignment.spaceBetween,
+
                   children: [
+
                     Text(
-                      log["name"]!,
+                      isFound
+                          ? log["name"]!
+                          : "Not Found",
+
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w800,
                         color: Color(0xFF1A237E),
                       ),
                     ),
-                    _buildStatusBadge(isFound, log["status"]!),
+
+                    _buildStatusBadge(
+                      isFound,
+                      log["status"]!,
+                    ),
                   ],
                 ),
+
                 const SizedBox(height: 16),
-                const Divider(height: 1, thickness: 1, color: Color(0xFFF1F4F8)),
+
+                const Divider(
+                  height: 1,
+                  thickness: 1,
+                  color: Color(0xFFF1F4F8),
+                ),
+
                 const SizedBox(height: 16),
-                _buildInfoGrid(log),
+
+                isFound
+                    ? _buildInfoGrid(log)
+
+                    : Column(
+                  children: [
+
+                    // SL + Worker ID same row
+                    Row(
+                      children: [
+
+                        _buildInfoItem(
+                          Icons.tag,
+                          "Sl",
+                          log["sl"] ?? "-",
+                        ),
+
+                        _buildInfoItem(
+                          Icons.badge_rounded,
+                          "Worker ID",
+                          log["worker"] ?? "-",
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(
+                      height: 12,
+                    ),
+
+                    // Remarks next row
+                    Row(
+                      children: [
+
+                        _buildInfoItem(
+                          Icons.notes_rounded,
+                          "Remarks",
+                          log["remarks"] ??
+                              "No remarks",
+                        ),
+
+                        const Expanded(
+                          child: SizedBox(),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -482,15 +587,24 @@ class _LogsScreenState extends State<LogsScreen> with SingleTickerProviderStateM
             child: const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.unfold_more_rounded, size: 14, color: Colors.white70),
+                Icon(
+                  Icons.unfold_more_rounded,
+                  size: 14,
+                  color: Colors.white70,
+                ),
                 SizedBox(width: 8),
                 Text(
                   "Horizontal scroll enabled for detailed data",
-                  style: TextStyle(fontSize: 11, color: Colors.white70, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.white70,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
             ),
           ),
+
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.vertical,
@@ -507,40 +621,78 @@ class _LogsScreenState extends State<LogsScreen> with SingleTickerProviderStateM
                     color: Color(0xFF1A237E),
                     fontSize: 13,
                   ),
+
                   columns: const [
                     DataColumn(label: Text("SL")),
                     DataColumn(label: Text("Worker ID")),
                     DataColumn(label: Text("RFID")),
                     DataColumn(label: Text("Name")),
                     DataColumn(label: Text("Phone")),
+                    DataColumn(label: Text("Remarks")),
                     DataColumn(label: Text("Status")),
                   ],
+
                   rows: List.generate(logs.length, (index) {
                     final log = logs[index];
                     final isFound = log["status"] == "Found";
                     final isEven = index % 2 == 0;
 
                     return DataRow(
-                      color: WidgetStateProperty.all(isEven ? Colors.transparent : const Color(0xFFF8F9FA)),
+                      color: WidgetStateProperty.all(
+                        isEven
+                            ? Colors.transparent
+                            : const Color(0xFFF8F9FA),
+                      ),
+
                       cells: [
-                        DataCell(Text(log["sl"]!)),
-                        DataCell(Text(log["worker"]!, style: const TextStyle(fontWeight: FontWeight.w700))),
-                        DataCell(Text(log["rfid"]!)),
-                        DataCell(Text(log["name"]!, style: const TextStyle(fontWeight: FontWeight.w700))),
-                        DataCell(Text(log["phone"]!)),
+                        DataCell(Text(log["sl"] ?? "-")),
+
+                        DataCell(
+                          Text(
+                            log["worker"] ?? "-",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+
+                        DataCell(Text(log["rfid"] ?? "-")),
+
+                        DataCell(
+                          Text(
+                            log["name"] ?? "-",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+
+                        DataCell(Text(log["phone"] ?? "-")),
+
+                        DataCell(
+                          Text(log["remarks"] ?? "-"),
+                        ),
+
                         DataCell(
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
-                              color: isFound ? const Color(0xFFE8F5E9) : const Color(0xFFFFEBEE),
+                              color: isFound
+                                  ? const Color(0xFFE8F5E9)
+                                  : const Color(0xFFFFEBEE),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
-                              log["status"]!,
+                              log["status"] ?? "-",
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w800,
-                                color: isFound ? const Color(0xFF2E7D32) : const Color(0xFFD32F2F),
+                                color: isFound
+                                    ? const Color(0xFF2E7D32)
+                                    : const Color(0xFFD32F2F),
                               ),
                             ),
                           ),
