@@ -1,5 +1,8 @@
-const { prisma } =
-  require("../config/db");
+const { prisma } = require("../config/db");
+
+const {
+  syncMasterCitizenData,
+} = require("../master/master.service");
 
 
 
@@ -7,115 +10,47 @@ const { prisma } =
 
 /*
 |--------------------------------------------------------------------------
-| Create New RFID
+| Create RFID
 |--------------------------------------------------------------------------
 */
-const createRFIDService =
-  async (rfidValue) => {
+const createRFIDService = async (slno, rfid) => {
 
-    // =============================
-    // CHECK IF RFID ALREADY EXISTS
-    // =============================
+  // CHECK EXISTING SLNO
+  const existingSLNO =
+    await prisma.rFIDMapping.findUnique({
+      where: {
+        slno,
+      },
+    });
 
-    const existingRFID =
-      await prisma.rFIDMapping.findUnique({
+  if (existingSLNO) {
+    throw new Error("SLNO already exists");
+  }
 
-        where: {
-          rfid: rfidValue,
-        },
+  // CHECK EXISTING RFID
+  const existingRFID =
+    await prisma.rFIDMapping.findUnique({
+      where: {
+        rfid,
+      },
+    });
 
-      });
+  if (existingRFID) {
+    throw new Error("RFID already exists");
+  }
 
+  // CREATE RFID
+  const newRFID =
+    await prisma.rFIDMapping.create({
+      data: {
+        slno,
+        rfid,
+        phoneNumber: null,
+      },
+    });
 
-
-    if (existingRFID) {
-
-      throw new Error(
-        "RFID already exists"
-      );
-
-    }
-
-
-
-    // =============================
-    // GET LATEST RECORD
-    // =============================
-
-    const latestRecord =
-      await prisma.rFIDMapping.findFirst({
-
-        orderBy: {
-          createdAt: "desc",
-        },
-
-      });
-
-
-
-    // =============================
-    // GENERATE NEXT SLNO
-    // =============================
-
-    let nextNumber = 1;
-
-
-
-    if (
-      latestRecord &&
-      latestRecord.slno
-    ) {
-
-      const numericPart =
-        latestRecord.slno.replace(
-          /\D/g,
-          ""
-        );
-
-      nextNumber =
-        parseInt(
-          numericPart || "0"
-        ) + 1;
-
-    }
-
-
-
-    // Example:
-    // 00000001
-    // 00000002
-
-    const slno =
-      String(nextNumber)
-        .padStart(8, "0");
-
-
-
-    // =============================
-    // CREATE RFID RECORD
-    // =============================
-
-    const newRFID =
-      await prisma.rFIDMapping.create({
-
-        data: {
-
-          slno,
-
-          rfid: rfidValue,
-
-          phoneNumber: null,
-
-        },
-
-      });
-
-
-
-    return newRFID;
-
+  return newRFID;
 };
-
 
 
 
@@ -126,24 +61,16 @@ const createRFIDService =
 | Get All RFID Mappings
 |--------------------------------------------------------------------------
 */
-const getAllRFIDMappingsService =
-  async () => {
+const getAllRFIDMappingsService = async () => {
 
-    const allMappings =
-      await prisma.rFIDMapping.findMany({
+  return await prisma.rFIDMapping.findMany({
 
-        orderBy: {
-          createdAt: "desc",
-        },
+    orderBy: {
+      createdAt: "desc",
+    },
 
-      });
-
-
-
-    return allMappings;
-
+  });
 };
-
 
 
 
@@ -151,43 +78,33 @@ const getAllRFIDMappingsService =
 
 /*
 |--------------------------------------------------------------------------
-| Get Only Unmapped RFIDs
+| Get Unmapped RFIDs
 |--------------------------------------------------------------------------
 */
-const getUnmappedRFIDsService =
-  async () => {
+const getUnmappedRFIDsService = async () => {
 
-    const unmappedRFIDs =
-      await prisma.rFIDMapping.findMany({
+  return await prisma.rFIDMapping.findMany({
 
-        where: {
-          phoneNumber: null,
-        },
+    where: {
+      phoneNumber: null,
+    },
 
-        select: {
+    select: {
 
-          id: true,
+      slno: true,
 
-          slno: true,
+      rfid: true,
 
-          rfid: true,
+      createdAt: true,
 
-          createdAt: true,
+    },
 
-        },
+    orderBy: {
+      createdAt: "desc",
+    },
 
-        orderBy: {
-          createdAt: "desc",
-        },
-
-      });
-
-
-
-    return unmappedRFIDs;
-
+  });
 };
-
 
 
 
@@ -198,76 +115,63 @@ const getUnmappedRFIDsService =
 | Map RFID To Phone Number
 |--------------------------------------------------------------------------
 */
-const mapRFIDToPhoneService =
-  async (
-    rfid,
+const mapRFIDToPhoneService = async (
+  slno,
+  phoneNumber
+) => {
+
+  // CHECK RFID EXISTS
+  const existingRFID =
+    await prisma.rFIDMapping.findUnique({
+
+      where: {
+        slno,
+      },
+
+    });
+
+  if (!existingRFID) {
+
+    throw new Error(
+      "RFID not found"
+    );
+
+  }
+
+  // CHECK IF RFID ALREADY MAPPED
+  if (existingRFID.phoneNumber) {
+
+    throw new Error(
+      "RFID already mapped"
+    );
+
+  }
+
+  // UPDATE RFID MAPPING
+  const updatedRFID =
+    await prisma.rFIDMapping.update({
+
+      where: {
+        slno,
+      },
+
+      data: {
+        phoneNumber,
+      },
+
+    });
+
+  /*
+  |--------------------------------------------------------------------------
+  | AUTO SYNC MASTER DATABASE
+  |--------------------------------------------------------------------------
+  */
+  await syncMasterCitizenData(
     phoneNumber
-  ) => {
+  );
 
-    // =============================
-    // CHECK IF RFID EXISTS
-    // =============================
-
-    const existingRFID =
-      await prisma.rFIDMapping.findUnique({
-
-        where: {
-          slno: rfid,
-        },
-
-      });
-
-
-
-    if (!existingRFID) {
-
-      throw new Error(
-        "RFID not found"
-      );
-
-    }
-
-
-
-    // =============================
-    // CHECK IF RFID ALREADY MAPPED
-    // =============================
-
-    if (
-      existingRFID.phoneNumber
-    ) {
-
-      throw new Error(
-        "RFID already mapped"
-      );
-
-    }
-
-
-
-    // =============================
-    // UPDATE RFID RECORD
-    // =============================
-
-    const updatedRFID =
-      await prisma.rFIDMapping.update({
-
-        where: {
-          slno: rfid,
-        },
-
-        data: {
-          phoneNumber,
-        },
-
-      });
-
-
-
-    return updatedRFID;
-
+  return updatedRFID;
 };
-
 
 
 
@@ -275,27 +179,32 @@ const mapRFIDToPhoneService =
 
 /*
 |--------------------------------------------------------------------------
-| Get RFID By RFID Value
+| Get RFID By Value
 |--------------------------------------------------------------------------
 */
-const getRFIDByValueService =
-  async (rfid) => {
+const getRFIDByValueService = async (
+  rfid
+) => {
 
-    const rfidData =
-      await prisma.rFIDMapping.findUnique({
+  const data =
+    await prisma.rFIDMapping.findUnique({
 
-        where: {
-          rfid,
-        },
+      where: {
+        rfid,
+      },
 
-      });
+    });
 
+  if (!data) {
 
+    throw new Error(
+      "RFID not found"
+    );
 
-    return rfidData;
+  }
 
+  return data;
 };
-
 
 
 
@@ -306,24 +215,29 @@ const getRFIDByValueService =
 | Get RFID By SLNO
 |--------------------------------------------------------------------------
 */
-const getRFIDBySLNOService =
-  async (slno) => {
+const getRFIDBySLNOService = async (
+  slno
+) => {
 
-    const rfidData =
-      await prisma.rFIDMapping.findUnique({
+  const data =
+    await prisma.rFIDMapping.findUnique({
 
-        where: {
-          slno,
-        },
+      where: {
+        slno,
+      },
 
-      });
+    });
 
+  if (!data) {
 
+    throw new Error(
+      "RFID not found"
+    );
 
-    return rfidData;
+  }
 
+  return data;
 };
-
 
 
 

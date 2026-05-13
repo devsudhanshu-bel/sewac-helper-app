@@ -40,7 +40,8 @@ const remarksRoutes =
 
 const surveyRoutes =
   require("./survey/survey.routes");
-
+const masterRoutes =
+  require("./master/master.routes");
 
 
 // =============================
@@ -282,7 +283,10 @@ app.use(
   surveyRoutes
 );
 
-
+app.use(
+  `${API_PREFIX}/master`,
+  masterRoutes
+);
 
 // =============================
 // 404 ROUTE HANDLER
