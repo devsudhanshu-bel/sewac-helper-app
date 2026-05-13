@@ -1,26 +1,50 @@
-const { prisma } = require("../config/db");
+const { prisma } =
+  require("../config/db");
 
 
 
+
+
+/*
+|--------------------------------------------------------------------------
+| Create Tracking Log
+|--------------------------------------------------------------------------
+*/
 const createTrackingLogService = async ({
+
   workerId,
+
   slno,
+
   phoneNumber,
+
   citizenName,
+
   status,
+
   remarks,
+
 }) => {
 
-  const trackingLog = await prisma.trackingLog.create({
-    data: {
-      workerId,
-      slno,
-      phoneNumber,
-      citizenName,
-      status,
-      remarks,
-    },
-  });
+  const trackingLog =
+    await prisma.trackingLog.create({
+
+      data: {
+
+        workerId,
+
+        slno,
+
+        phoneNumber,
+
+        citizenName,
+
+        status,
+
+        remarks,
+
+      },
+    });
 
   return trackingLog;
 };
@@ -29,13 +53,21 @@ const createTrackingLogService = async ({
 
 
 
+/*
+|--------------------------------------------------------------------------
+| Get All Tracking Logs
+|--------------------------------------------------------------------------
+*/
 const getAllTrackingLogsService = async () => {
 
-  const logs = await prisma.trackingLog.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  const logs =
+    await prisma.trackingLog.findMany({
+
+      orderBy: {
+        createdAt: "desc",
+      },
+
+    });
 
   return logs;
 };
@@ -44,19 +76,27 @@ const getAllTrackingLogsService = async () => {
 
 
 
+/*
+|--------------------------------------------------------------------------
+| Get Tracking Logs By Worker
+|--------------------------------------------------------------------------
+*/
 const getTrackingLogsByWorkerService = async (
   workerId
 ) => {
 
-  const logs = await prisma.trackingLog.findMany({
-    where: {
-      workerId,
-    },
+  const logs =
+    await prisma.trackingLog.findMany({
 
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+      where: {
+        workerId,
+      },
+
+      orderBy: {
+        createdAt: "desc",
+      },
+
+    });
 
   return logs;
 };
@@ -65,19 +105,27 @@ const getTrackingLogsByWorkerService = async (
 
 
 
+/*
+|--------------------------------------------------------------------------
+| Get Tracking Logs By Status
+|--------------------------------------------------------------------------
+*/
 const getTrackingLogsByStatusService = async (
   status
 ) => {
 
-  const logs = await prisma.trackingLog.findMany({
-    where: {
-      status,
-    },
+  const logs =
+    await prisma.trackingLog.findMany({
 
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+      where: {
+        status,
+      },
+
+      orderBy: {
+        createdAt: "desc",
+      },
+
+    });
 
   return logs;
 };
@@ -87,8 +135,13 @@ const getTrackingLogsByStatusService = async (
 
 
 module.exports = {
+
   createTrackingLogService,
+
   getAllTrackingLogsService,
+
   getTrackingLogsByWorkerService,
+
   getTrackingLogsByStatusService,
+
 };

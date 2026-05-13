@@ -24,13 +24,22 @@ model Moderator {
 }
 
 model TrackingLog {
-  id          Int      @id @default(autoincrement())
-  workerId    String
-  slno        String
-  citizenName String
-  phoneNumber String
-  status      String   @default("FOUND")
-  createdAt   DateTime @default(now())
+
+  id Int @id @default(autoincrement())
+
+  workerId String
+
+  slno String
+
+  citizenName String?
+
+  phoneNumber String?
+
+  status String @default("FOUND")
+
+  remarks String?
+
+  createdAt DateTime @default(now())
 }
 
 model Remark {
