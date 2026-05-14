@@ -153,22 +153,27 @@ const createTrackingLog = async (
     | NOT_FOUND VALIDATION
     |--------------------------------------------------------------------------
     */
-    if (
+    if (status === "NOT_FOUND") {
 
-      status === "NOT_FOUND" &&
+      if (
 
-      !remarks
+        !phoneNumber ||
 
-    ) {
+        !citizenName ||
 
-      return res.status(400).json({
+        !remarks
 
-        success: false,
+      ) {
 
-        message:
-          "Remarks required for NOT_FOUND status",
+        return res.status(400).json({
 
-      });
+          success: false,
+
+          message:
+            "citizenName, phoneNumber and remarks are required for NOT_FOUND status",
+
+        });
+      }
     }
 
 
@@ -203,16 +208,12 @@ const createTrackingLog = async (
         */
 
         phoneNumber:
-          status === "FOUND"
-            ? phoneNumber
-            : null,
+          phoneNumber || null,
 
 
 
         citizenName:
-          status === "FOUND"
-            ? citizenName
-            : null,
+          citizenName || null,
 
 
 
@@ -256,9 +257,7 @@ const createTrackingLog = async (
         */
 
         remarks:
-          status === "NOT_FOUND"
-            ? remarks
-            : null,
+          remarks || null,
 
       });
 
