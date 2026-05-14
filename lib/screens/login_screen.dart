@@ -4,6 +4,7 @@ import '../widgets/sewac_button.dart';
 import 'main_navigation_screen.dart';
 import '../services/auth_service.dart';
 import '../widgets/sewac_background.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,6 +18,7 @@ class _LoginScreenState
     extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
 
+  bool _rememberMe = false;
   final _formKey =
   GlobalKey<FormState>();
 
@@ -281,6 +283,11 @@ class _LoginScreenState
       });
 
       if (success) {
+
+        if (_rememberMe) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('isLoggedIn', true);
+        }
 
         _showPopup(
 
@@ -640,9 +647,29 @@ class _LoginScreenState
                                     ),
                                   ),
 
+                                  Row(
+                                    children: [
+                                      Checkbox(
+                                        value: _rememberMe,
+                                        activeColor: const Color(0xFF4CAF50),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _rememberMe = value ?? false;
+                                          });
+                                        },
+                                      ),
+                                      const Text(
+                                        "Remember Me",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
                                   const SizedBox(
                                       height:
-                                      32),
+                                      25),
 
                                   FadeTransition(
 

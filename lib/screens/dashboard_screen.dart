@@ -468,14 +468,12 @@
 
     Future<void> _handleSave() async {
 
-      final headers =
-      await _getHeaders();
+      final headers = await _getHeaders();
 
       try {
 
         // validation
         if (_status == "Found") {
-
           if (_selectedWetRFID == null ||
               _selectedDryRFID == null ||
               _selectedPhone == null ||
@@ -490,7 +488,6 @@
         }
 
         if (_status == "Not Found") {
-
           if (_remarksController.text.trim().isEmpty) {
 
             setState(() {
@@ -501,112 +498,92 @@
           }
         }
 
-        late http.Response response;
+        http.Response? response;
 
         if (_status == "Not Found") {
 
           response = await http.post(
-
             Uri.parse(
               "https://sewac-helper-app.onrender.com/api/v1/remarks/create",
             ),
-
             headers: headers,
-
             body: jsonEncode({
-              "remark":
-              _remarksController.text.trim(),
+              "remark": _remarksController.text.trim(),
             }),
           );
 
         } else {
 
-          response = await http.post(
-
+          // WET RFID mapping
+          final wetResponse = await http.patch(
             Uri.parse(
               "https://sewac-helper-app.onrender.com/api/v1/rfid/map",
             ),
-
             headers: headers,
-
             body: jsonEncode({
+              "slno": _selectedWetRFID,
+              "phoneNumber": _selectedPhone,
+              "wasteType": "WET",
+            }),
+          );
 
-              "wetWasteRfid":
-              _selectedWetRFID,
-
-              "dryWasteRfid":
-              _selectedDryRFID,
-
-              "phoneNumber":
-              _selectedPhone,
+          // DRY RFID mapping
+          response = await http.patch(
+            Uri.parse(
+              "https://sewac-helper-app.onrender.com/api/v1/rfid/map",
+            ),
+            headers: headers,
+            body: jsonEncode({
+              "slno": _selectedDryRFID,
+              "phoneNumber": _selectedPhone,
+              "wasteType": "DRY",
             }),
           );
         }
 
-        print(
-          "SAVE STATUS: ${response.statusCode}",
-        );
-
-        print(
-          "SAVE BODY: ${response.body}",
-        );
+        print("SAVE STATUS: ${response?.statusCode}");
+        print("SAVE BODY: ${response?.body}");
 
         if (!mounted) return;
 
-        if (response.statusCode >= 200 &&
+        if (response != null &&
+            response.statusCode >= 200 &&
             response.statusCode < 300) {
 
-          ScaffoldMessenger.of(context)
-              .clearSnackBars();
+          ScaffoldMessenger.of(context).clearSnackBars();
 
-          ScaffoldMessenger.of(context)
-              .showSnackBar(
-
+          ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text(
-                "Data saved successfully",
-              ),
-              backgroundColor:
-              Colors.green,
+              content: Text("Data saved successfully"),
+              backgroundColor: Colors.green,
             ),
           );
 
           _clearForm();
-
           await _loadAllDropdownData();
 
         } else {
 
-          ScaffoldMessenger.of(context)
-              .showSnackBar(
-
+          ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                "Save failed (${response.statusCode})",
+                "Save failed (${response?.statusCode})",
               ),
-              backgroundColor:
-              Colors.red,
+              backgroundColor: Colors.red,
             ),
           );
         }
 
       } catch (e) {
 
-        print(
-          "SAVE ERROR: $e",
-        );
+        print("SAVE ERROR: $e");
 
         if (!mounted) return;
 
-        ScaffoldMessenger.of(context)
-            .showSnackBar(
-
+        ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text(
-              "Server error",
-            ),
-            backgroundColor:
-            Colors.orange,
+            content: Text("Server error"),
+            backgroundColor: Colors.orange,
           ),
         );
       }
