@@ -114,7 +114,7 @@
 
         // REQUIREMENT 1: Real-time auto refresh every 1 second
         _refreshTimer = Timer.periodic(
-          const Duration(seconds: 10),
+          const Duration(seconds: 2),
               (_) {
             _loadAllDropdownData();
           },
@@ -467,6 +467,7 @@
       }
 
       Future<void> _handleSave() async {
+        _refreshTimer?.cancel();
         final headers = await _getHeaders();
 
         _selectedPhone ??= _phoneSearchController.text.trim();
@@ -632,6 +633,13 @@
 
             _clearForm();
             await _loadAllDropdownData();
+
+            _refreshTimer = Timer.periodic(
+              const Duration(seconds: 2),
+                  (_) {
+                _loadAllDropdownData();
+              },
+            );
 
           } else {
 
