@@ -372,28 +372,19 @@ class _SurveyScreenState
     );
   }
 
-  Future<void>
-  _submitSurvey() async {
+  Future<void> _submitSurvey() async {
 
-    if (!_formKey
-        .currentState!
-        .validate()) {
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    // WASTE TYPE REQUIRED
+    // Waste type validation
     final hasWasteSelected =
-    wasteOptions.values.any(
-          (value) =>
-      value,
-    );
+    wasteOptions.values.any((value) => value);
 
     if (!hasWasteSelected) {
 
-      ScaffoldMessenger.of(
-          context)
-          .showSnackBar(
-
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
             "Please select waste generator type",
@@ -404,115 +395,117 @@ class _SurveyScreenState
       return;
     }
 
-
+    // Selected waste types
     final selectedWasteTypes =
     wasteOptions.entries
-        .where(
-          (entry) =>
-      entry.value,
-    )
-        .map(
-          (entry) =>
-      entry.key,
-    )
+        .where((entry) => entry.value)
+        .map((entry) => entry.key)
         .join(", ");
-
-    final Map<String, dynamic>
-    payload = {
-
-      "city":
-      _selectedCity,
-
-      "ward":
-      _selectedWard,
-
-      "area":
-      _areaController.text
-          .trim(),
-
-      "wasteGeneratorTypes":
-      selectedWasteTypes,
-
-      "houseNumber":
-      _buildingController.text
-          .trim(),
-
-      "floorNumber":
-      _floorController.text
-          .trim(),
-
-      "householdType":
-      _selectedHH,
-
-      "personName":
-      _nameController.text
-          .trim(),
-
-      "contactNumber":
-      _phoneController.text
-          .trim(),
-
-      "numberOfPeople":
-      _peopleController.text
-          .trim(),
-
-      "buildingPhoto":
-      _capturedImage?.path ?? "",
-    };
 
     try {
 
-      final response =
-      await http.post(
+      // Multipart request instead of JSON
+      var request =
+      http.MultipartRequest(
+        "POST",
 
         Uri.parse(
           "https://sewac-helper-app.onrender.com/api/v1/survey/create",
         ),
-
-        headers: {
-
-          "Content-Type":
-          "application/json",
-        },
-
-        body: jsonEncode(
-            payload),
       );
 
-      if (response.statusCode ==
-          200 ||
-          response.statusCode ==
-              201) {
+      // Normal form fields
+      request.fields["city"] =
+          _selectedCity ?? "";
+
+      request.fields["ward"] =
+          _selectedWard ?? "";
+
+      request.fields["area"] =
+          _areaController.text.trim();
+
+      request.fields[
+      "wasteGeneratorTypes"] =
+          selectedWasteTypes;
+
+      request.fields[
+      "houseNumber"] =
+          _buildingController.text.trim();
+
+      request.fields[
+      "floorNumber"] =
+          _floorController.text.trim();
+
+      request.fields[
+      "householdType"] =
+          _selectedHH ?? "";
+
+      request.fields[
+      "personName"] =
+          _nameController.text.trim();
+
+      request.fields[
+      "contactNumber"] =
+          _phoneController.text.trim();
+
+      request.fields[
+      "numberOfPeople"] =
+          _peopleController.text.trim();
+
+      // Image upload
+      if (_capturedImage != null) {
+
+        request.files.add(
+
+          await http.MultipartFile.fromPath(
+
+            "buildingPhoto", // backend field name
+
+            _capturedImage!.path,
+          ),
+        );
+      }
+
+      // Send request
+      final streamedResponse =
+      await request.send();
+
+      final response =
+      await http.Response.fromStream(
+        streamedResponse,
+      );
+
+      if (response.statusCode == 200 ||
+          response.statusCode == 201) {
 
         _clearForm();
 
-        ScaffoldMessenger.of(
-            context)
+        ScaffoldMessenger.of(context)
             .showSnackBar(
 
           const SnackBar(
 
             backgroundColor:
-            Color(
-                0xFF4CAF50),
+            Color(0xFF4CAF50),
 
-            content:
-            Text(
-                "Survey submitted successfully"),
+            content: Text(
+              "Survey submitted successfully",
+            ),
           ),
         );
 
       } else {
 
-        ScaffoldMessenger.of(
-            context)
+        print(response.body);
+
+        ScaffoldMessenger.of(context)
             .showSnackBar(
 
           const SnackBar(
 
-            content:
-            Text(
-                "Failed to submit survey"),
+            content: Text(
+              "Failed to submit survey",
+            ),
           ),
         );
       }
@@ -521,35 +514,34 @@ class _SurveyScreenState
 
     on http.ClientException {
 
-      ScaffoldMessenger.of(
-          context)
+      ScaffoldMessenger.of(context)
           .showSnackBar(
 
         const SnackBar(
 
-          content:
-          Text(
-              "Failed due to internet connection"),
+          content: Text(
+            "Failed due to internet connection",
+          ),
         ),
       );
     }
 
-    catch (_) {
+    catch (e) {
 
-      ScaffoldMessenger.of(
-          context)
+      print(e);
+
+      ScaffoldMessenger.of(context)
           .showSnackBar(
 
         const SnackBar(
 
-          content:
-          Text(
-              "Failed to submit survey"),
+          content: Text(
+            "Failed to submit survey",
+          ),
         ),
       );
     }
   }
-
   @override
   Widget build(
       BuildContext context) {
@@ -558,36 +550,34 @@ class _SurveyScreenState
     // (No UI changes made)
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: false,
       backgroundColor: const Color(0xFFF8F9FA),
 
       appBar: AppBar(
+        toolbarHeight: 62,
         leadingWidth: 70,
-        backgroundColor: Colors.transparent,
+
+        backgroundColor: const Color(0xFFF8FBF8),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         scrolledUnderElevation: 0,
+
         centerTitle: true,
 
-        leading: Padding(
-          padding: const EdgeInsets.only(
-            left: 16,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(18),
+            bottomRight: Radius.circular(18),
           ),
+        ),
+
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 16),
           child: Image.asset(
             "assets/images/logo.png",
-            height: 40,
-            width: 40,
+            height: 34,
+            width: 34,
             fit: BoxFit.contain,
-            errorBuilder: (
-                context,
-                error,
-                stackTrace,
-                ) {
-              return const Icon(
-                Icons.recycling,
-                color: Color(0xFF4CAF50),
-              );
-            },
           ),
         ),
 
@@ -595,34 +585,43 @@ class _SurveyScreenState
           "Helper App",
           style: TextStyle(
             color: Color(0xFF1A237E),
-            fontWeight: FontWeight.w900,
-            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            fontSize: 19,
           ),
         ),
 
         actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.logout_rounded,
-              color: Color(0xFF1A237E),
+          Container(
+            margin: const EdgeInsets.only(right: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
             ),
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const LoginScreen(),
-                ),
-              );
-            },
+            child: IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const LoginScreen(),
+                  ),
+                );
+              },
+              icon: const Icon(
+                Icons.logout_rounded,
+                color: Color(0xFF1A237E),
+              ),
+            ),
           ),
-          const SizedBox(width: 8),
         ],
       ),
 
       body: SewacBackground(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(
-            24, 110, 24, 24,
+            20,
+            4,
+            20,
+            16,
           ),
 
           child: Column(

@@ -112,55 +112,67 @@ class _LogsScreenState extends State<LogsScreen>
     }).toList();
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: false,
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
+        toolbarHeight: 62,
         leadingWidth: 70,
-        backgroundColor: Colors.transparent,
+
+        backgroundColor: const Color(0xFFF8FBF8),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         scrolledUnderElevation: 0,
+
         centerTitle: true,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 16.0),
-          child: Hero(
-            tag: 'app_logo',
-            child: Image.asset(
-              "assets/images/logo.png",
-              height: 40,
-              width: 40,
-              fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) =>
-              const Icon(
-                Icons.recycling,
-                color: Color(0xFF4CAF50),
-              ),
-            ),
+
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(18),
+            bottomRight: Radius.circular(18),
           ),
         ),
+
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 16),
+          child: Image.asset(
+            "assets/images/logo.png",
+            height: 34,
+            width: 34,
+            fit: BoxFit.contain,
+          ),
+        ),
+
         title: const Text(
           "Helper App",
           style: TextStyle(
             color: Color(0xFF1A237E),
-            fontWeight: FontWeight.w900,
-            fontSize: 20,
-            letterSpacing: 1.0,
+            fontWeight: FontWeight.w700,
+            fontSize: 19,
           ),
         ),
+
         actions: [
-          IconButton(
-            onPressed: () => Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const LoginScreen(),
+          Container(
+            margin: const EdgeInsets.only(right: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const LoginScreen(),
+                  ),
+                );
+              },
+              icon: const Icon(
+                Icons.logout_rounded,
+                color: Color(0xFF1A237E),
               ),
             ),
-            icon: const Icon(
-              Icons.logout_rounded,
-              color: Color(0xFF1A237E),
-            ),
           ),
-          const SizedBox(width: 8),
         ],
       ),
       body: SewacBackground(
@@ -172,7 +184,7 @@ class _LogsScreenState extends State<LogsScreen>
               Padding(
                 padding: const EdgeInsets.fromLTRB(
                   20,
-                  110,
+                  4,
                   20,
                   16,
                 ),
@@ -424,7 +436,7 @@ class _LogsScreenState extends State<LogsScreen>
             bottom: 16,
           ),
           padding: const EdgeInsets.all(
-            20,
+            14,
           ),
           decoration: BoxDecoration(
             color: Colors.white,
@@ -447,8 +459,8 @@ class _LogsScreenState extends State<LogsScreen>
                         ? (log.citizenName ?? "-")
                         : "Not Found",
                     style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
                       color: Color(0xFF1A237E),
                     ),
                   ),
@@ -462,11 +474,9 @@ class _LogsScreenState extends State<LogsScreen>
                 ],
               ),
 
-              const SizedBox(height: 16),
-
-              const Divider(),
-
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
+              const Divider(height: 8),
+              const SizedBox(height: 8),
 
               // FOUND
               if (isFound)
@@ -560,8 +570,8 @@ class _LogsScreenState extends State<LogsScreen>
     return Container(
       padding:
       const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 6,
+        horizontal: 10,
+        vertical: 4,
       ),
       decoration: BoxDecoration(
         color: isFound
@@ -604,7 +614,7 @@ class _LogsScreenState extends State<LogsScreen>
           ],
         ),
 
-        const SizedBox(height: 12),
+        const SizedBox(height: 6),
 
         Row(
           children: [
@@ -679,7 +689,7 @@ class _LogsScreenState extends State<LogsScreen>
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.92),
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.05),
