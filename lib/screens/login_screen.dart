@@ -257,9 +257,9 @@ class _LoginScreenState
 
     try {
 
-      final success =
-      await AuthService
-          .login(
+      final loginResult =
+      await AuthService.login(
+
 
         username:
         _adminNameController
@@ -282,7 +282,7 @@ class _LoginScreenState
         false;
       });
 
-      if (success) {
+      if (loginResult == "SUCCESS") {
 
         if (_rememberMe) {
           final prefs = await SharedPreferences.getInstance();
@@ -321,13 +321,37 @@ class _LoginScreenState
           ),
         );
 
-      } else {
+      } else if (
+      loginResult ==
+          "ALREADY_IN_USE") {
 
         _showPopup(
+          message:
+          "Account already in use",
+          color:
+          Colors.orange,
+        );
 
+      }
+
+      else if (
+      loginResult ==
+          "SERVER_ERROR") {
+
+        _showPopup(
+          message:
+          "Server not reachable",
+          color:
+          Colors.orange,
+        );
+
+      }
+
+      else {
+
+        _showPopup(
           message:
           "Invalid username or password",
-
           color:
           Colors.redAccent,
         );

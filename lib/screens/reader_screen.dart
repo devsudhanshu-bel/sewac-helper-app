@@ -4,9 +4,11 @@ import 'package:http/http.dart' as http;
 
 import 'login_screen.dart';
 import '../widgets/sewac_background.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 class ReaderScreen extends StatefulWidget {
   const ReaderScreen({super.key});
+
+
 
   @override
   State<ReaderScreen> createState() => _ReaderScreenState();
@@ -183,6 +185,74 @@ class _ReaderScreenState extends State<ReaderScreen> {
     }
   }
 
+  Future<void> _handleLogout() async {
+
+    try {
+
+      final prefs =
+      await SharedPreferences.getInstance();
+
+      final token =
+          prefs.getString(
+            "auth_token",
+          ) ?? "";
+
+      final response =
+      await http.post(
+
+        Uri.parse(
+          "https://sewac-helper-app.onrender.com/api/v1/auth/logout",
+        ),
+
+        headers: {
+
+          "Authorization":
+          "Bearer $token",
+
+          "Content-Type":
+          "application/json",
+        },
+      );
+
+      print(
+        "LOGOUT STATUS => ${response.statusCode}",
+      );
+
+      print(
+        "LOGOUT BODY => ${response.body}",
+      );
+
+    } catch (e) {
+
+      print(
+        "LOGOUT ERROR => $e",
+      );
+    }
+
+    final prefs =
+    await SharedPreferences.getInstance();
+
+    await prefs.remove(
+      "auth_token",
+    );
+
+    await prefs.remove(
+      "isLoggedIn",
+    );
+
+    if (!mounted) {
+      return;
+    }
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) =>
+        const LoginScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -235,14 +305,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
               borderRadius: BorderRadius.circular(12),
             ),
             child: IconButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const LoginScreen(),
-                  ),
-                );
-              },
+              onPressed: _handleLogout,
               icon: const Icon(
                 Icons.logout_rounded,
                 color: Color(0xFF1A237E),
