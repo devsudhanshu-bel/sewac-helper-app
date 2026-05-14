@@ -45,6 +45,23 @@ const masterRoutes =
 
 
 // =============================
+// REDIS IMPORTS
+// =============================
+
+const {
+  connectRedis,
+} = require("./config/redis");
+
+const redisTestRoute =
+  require("./test/redis.test.route");
+
+// =============================
+// REDIS CONNECTION
+// =============================
+
+connectRedis().catch(console.error);
+
+// =============================
 // MIDDLEWARE IMPORTS
 // =============================
 
@@ -192,6 +209,17 @@ const API_PREFIX = "/api/v1";
 // =============================
 // API ROUTES
 // =============================
+
+
+/*
+|--------------------------------------------------------------------------
+| Redis Test Routes
+|--------------------------------------------------------------------------
+*/
+app.use(
+  "/api/v1/test",
+  redisTestRoute
+);
 
 
 
