@@ -201,7 +201,7 @@ const mapRFIDService = async (
 
   /*
   |--------------------------------------------------------------------------
-  | VALIDATE RFID NUMBER EXISTS
+  | VALIDATE RFID EXISTS
   |--------------------------------------------------------------------------
   */
   const existingRFID =
@@ -209,7 +209,6 @@ const mapRFIDService = async (
 
       where: {
         slno,
-        phoneNumber: null,
       },
 
     });
@@ -219,7 +218,45 @@ const mapRFIDService = async (
   if (!existingRFID) {
 
     throw new Error(
-      "Available RFID not found for this SLNO"
+      "RFID not found"
+    );
+
+  }
+
+
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | CHECK RFID ALREADY MAPPED
+  |--------------------------------------------------------------------------
+  */
+  if (existingRFID.phoneNumber) {
+
+    /*
+    |--------------------------------------------------------------------------
+    | SAME CITIZEN TRYING AGAIN
+    |--------------------------------------------------------------------------
+    */
+    if (
+      existingRFID.phoneNumber === phoneNumber
+    ) {
+
+      throw new Error(
+        `${wasteType} RFID already assigned to this citizen`
+      );
+
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | RFID ALREADY MAPPED TO ANOTHER CITIZEN
+    |--------------------------------------------------------------------------
+    */
+    throw new Error(
+      "RFID already mapped to another citizen"
     );
 
   }
@@ -250,7 +287,7 @@ const mapRFIDService = async (
   if (existingWasteType) {
 
     throw new Error(
-      `${wasteType} RFID already assigned to this citizen`
+      `Citizen already has a ${wasteType} RFID`
     );
 
   }
