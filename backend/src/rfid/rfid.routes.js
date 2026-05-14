@@ -3,11 +3,19 @@ const express = require("express");
 const router = express.Router();
 
 const {
+
   createRFID,
+
+  mapRFID,
+
   getAllRFIDMappings,
+
   getUnmappedRFIDs,
-  mapRFIDToPhone,
+
   getRFIDByValue,
+
+  getCitizenRFIDs,
+
 } = require("./rfid.controller");
 
 
@@ -18,16 +26,20 @@ const {
 |--------------------------------------------------------------------------
 | Create RFID
 |--------------------------------------------------------------------------
-| POST /api/v1/rfid/rfid/:value
+| POST /api/v1/rfid/create/:rfid
+| GET  /api/v1/rfid/create/:rfid
+|--------------------------------------------------------------------------
+| Example:
+| /api/v1/rfid/create/A7F9C2D8E4B1X6Q3M5N8P2R7T1Y4U9W6K3L8V2Z53060
 |--------------------------------------------------------------------------
 */
 router.post(
-  "/rfid/:value",
+  "/create/:rfid",
   createRFID
 );
 
 router.get(
-  "/rfid/:value",
+  "/create/:rfid",
   createRFID
 );
 
@@ -39,11 +51,11 @@ router.get(
 |--------------------------------------------------------------------------
 | Get All RFID Mappings
 |--------------------------------------------------------------------------
-| GET /api/v1/rfid/rfid
+| GET /api/v1/rfid/all
 |--------------------------------------------------------------------------
 */
 router.get(
-  "/rfid",
+  "/all",
   getAllRFIDMappings
 );
 
@@ -69,14 +81,14 @@ router.get(
 
 /*
 |--------------------------------------------------------------------------
-| Map RFID To Phone Number
+| Map RFID To Citizen
 |--------------------------------------------------------------------------
-| POST /api/v1/rfid/map
+| PATCH /api/v1/rfid/map
 |--------------------------------------------------------------------------
 */
-router.post(
+router.patch(
   "/map",
-  mapRFIDToPhone
+  mapRFID
 );
 
 
@@ -85,14 +97,30 @@ router.post(
 
 /*
 |--------------------------------------------------------------------------
-| Get RFID Details By RFID Value
+| Get RFID Details By RFID Number
 |--------------------------------------------------------------------------
-| GET /api/v1/rfid/:rfid
+| GET /api/v1/rfid/rfid/:rfid
 |--------------------------------------------------------------------------
 */
 router.get(
-  "/:rfid",
+  "/rfid/:rfid",
   getRFIDByValue
+);
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Get Citizen RFIDs By Phone Number
+|--------------------------------------------------------------------------
+| GET /api/v1/rfid/citizen/:phoneNumber
+|--------------------------------------------------------------------------
+*/
+router.get(
+  "/citizen/:phoneNumber",
+  getCitizenRFIDs
 );
 
 

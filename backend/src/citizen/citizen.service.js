@@ -6,10 +6,13 @@ const prisma =
 
 
 
-// =====================================
-// GET CITIZEN BY PHONE NUMBER
-// =====================================
 
+
+/*
+|--------------------------------------------------------------------------
+| Get Citizen By Phone Number
+|--------------------------------------------------------------------------
+*/
 const getCitizenByPhoneService =
   async (phoneNumber) => {
 
@@ -19,18 +22,27 @@ const getCitizenByPhoneService =
         await prisma.survey.findFirst({
 
           where: {
-            contactNumber: phoneNumber,
+            contactNumber:
+              phoneNumber,
           },
 
         });
 
 
 
+      // =============================
+      // NOT FOUND
+      // =============================
+
       if (!citizen) {
         return null;
       }
 
 
+
+      // =============================
+      // RESPONSE
+      // =============================
 
       return {
 
@@ -39,6 +51,33 @@ const getCitizenByPhoneService =
 
         phoneNumber:
           citizen.contactNumber,
+
+        city:
+          citizen.city,
+
+        ward:
+          citizen.ward,
+
+        area:
+          citizen.area,
+
+        wasteGeneratorTypes:
+          citizen.wasteGeneratorTypes,
+
+        houseNumber:
+          citizen.houseNumber,
+
+        floorNumber:
+          citizen.floorNumber,
+
+        householdType:
+          citizen.householdType,
+
+        numberOfPeople:
+          citizen.numberOfPeople,
+
+        buildingPhoto:
+          citizen.buildingPhoto,
 
       };
 
@@ -49,18 +88,23 @@ const getCitizenByPhoneService =
         error
       );
 
+
+
       throw error;
 
     }
 
-};
+  };
 
 
 
-// =====================================
-// SEARCH CITIZEN BY NAME
-// =====================================
 
+
+/*
+|--------------------------------------------------------------------------
+| Search Citizen By Name
+|--------------------------------------------------------------------------
+*/
 const searchCitizenByNameService =
   async (citizenName) => {
 
@@ -73,9 +117,11 @@ const searchCitizenByNameService =
 
             personName: {
 
-              contains: citizenName,
+              contains:
+                citizenName,
 
-              mode: "insensitive",
+              mode:
+                "insensitive",
 
             },
 
@@ -96,6 +142,15 @@ const searchCitizenByNameService =
           phoneNumber:
             citizen.contactNumber,
 
+          city:
+            citizen.city,
+
+          ward:
+            citizen.ward,
+
+          area:
+            citizen.area,
+
         })
       );
 
@@ -106,18 +161,23 @@ const searchCitizenByNameService =
         error
       );
 
+
+
       throw error;
 
     }
 
-};
+  };
 
 
 
-// =====================================
-// GET ALL CITIZEN PHONE NUMBERS
-// =====================================
 
+
+/*
+|--------------------------------------------------------------------------
+| Get All Citizen Phone Numbers
+|--------------------------------------------------------------------------
+*/
 const getAllCitizenPhoneNumbersService =
   async () => {
 
@@ -129,7 +189,9 @@ const getAllCitizenPhoneNumbersService =
           where: {
 
             contactNumber: {
+
               not: null,
+
             },
 
           },
@@ -137,6 +199,8 @@ const getAllCitizenPhoneNumbersService =
           select: {
 
             contactNumber: true,
+
+            personName: true,
 
           },
 
@@ -153,6 +217,9 @@ const getAllCitizenPhoneNumbersService =
       return citizens.map(
         (citizen) => ({
 
+          citizenName:
+            citizen.personName,
+
           phoneNumber:
             citizen.contactNumber,
 
@@ -166,18 +233,23 @@ const getAllCitizenPhoneNumbersService =
         error
       );
 
+
+
       throw error;
 
     }
 
-};
+  };
 
 
 
-// =====================================
-// GET ALL CITIZEN NAMES
-// =====================================
 
+
+/*
+|--------------------------------------------------------------------------
+| Get All Citizen Names
+|--------------------------------------------------------------------------
+*/
 const getAllCitizenNamesService =
   async () => {
 
@@ -189,7 +261,9 @@ const getAllCitizenNamesService =
           where: {
 
             personName: {
+
               not: null,
+
             },
 
           },
@@ -226,11 +300,13 @@ const getAllCitizenNamesService =
         error
       );
 
+
+
       throw error;
 
     }
 
-};
+  };
 
 
 

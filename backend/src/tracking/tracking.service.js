@@ -14,11 +14,13 @@ const createTrackingLogService = async ({
 
   workerId,
 
-  slno,
-
   phoneNumber,
 
   citizenName,
+
+  drySlno,
+
+  wetSlno,
 
   status,
 
@@ -26,25 +28,73 @@ const createTrackingLogService = async ({
 
 }) => {
 
+  /*
+  |--------------------------------------------------------------------------
+  | CREATE TRACKING LOG
+  |--------------------------------------------------------------------------
+  */
   const trackingLog =
     await prisma.trackingLog.create({
 
       data: {
 
+        /*
+        |--------------------------------------------------------------------------
+        | WORKER
+        |--------------------------------------------------------------------------
+        */
+
         workerId,
 
-        slno,
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CITIZEN
+        |--------------------------------------------------------------------------
+        */
 
         phoneNumber,
 
         citizenName,
 
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | RFID SNAPSHOT
+        |--------------------------------------------------------------------------
+        */
+
+        drySlno,
+
+        wetSlno,
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | STATUS
+        |--------------------------------------------------------------------------
+        */
+
         status,
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | REMARKS
+        |--------------------------------------------------------------------------
+        */
 
         remarks,
 
       },
+
     });
+
+
 
   return trackingLog;
 };
@@ -58,19 +108,22 @@ const createTrackingLogService = async ({
 | Get All Tracking Logs
 |--------------------------------------------------------------------------
 */
-const getAllTrackingLogsService = async () => {
+const getAllTrackingLogsService =
+  async () => {
 
-  const logs =
-    await prisma.trackingLog.findMany({
+    const logs =
+      await prisma.trackingLog.findMany({
 
-      orderBy: {
-        createdAt: "desc",
-      },
+        orderBy: {
+          createdAt: "desc",
+        },
 
-    });
+      });
 
-  return logs;
-};
+
+
+    return logs;
+  };
 
 
 
@@ -81,25 +134,26 @@ const getAllTrackingLogsService = async () => {
 | Get Tracking Logs By Worker
 |--------------------------------------------------------------------------
 */
-const getTrackingLogsByWorkerService = async (
-  workerId
-) => {
+const getTrackingLogsByWorkerService =
+  async (workerId) => {
 
-  const logs =
-    await prisma.trackingLog.findMany({
+    const logs =
+      await prisma.trackingLog.findMany({
 
-      where: {
-        workerId,
-      },
+        where: {
+          workerId,
+        },
 
-      orderBy: {
-        createdAt: "desc",
-      },
+        orderBy: {
+          createdAt: "desc",
+        },
 
-    });
+      });
 
-  return logs;
-};
+
+
+    return logs;
+  };
 
 
 
@@ -110,25 +164,26 @@ const getTrackingLogsByWorkerService = async (
 | Get Tracking Logs By Status
 |--------------------------------------------------------------------------
 */
-const getTrackingLogsByStatusService = async (
-  status
-) => {
+const getTrackingLogsByStatusService =
+  async (status) => {
 
-  const logs =
-    await prisma.trackingLog.findMany({
+    const logs =
+      await prisma.trackingLog.findMany({
 
-      where: {
-        status,
-      },
+        where: {
+          status,
+        },
 
-      orderBy: {
-        createdAt: "desc",
-      },
+        orderBy: {
+          createdAt: "desc",
+        },
 
-    });
+      });
 
-  return logs;
-};
+
+
+    return logs;
+  };
 
 
 

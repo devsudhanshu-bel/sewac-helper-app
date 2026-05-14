@@ -2,10 +2,14 @@ const express = require("express");
 
 const router = express.Router();
 
+const verifyToken =
+  require("../auth/auth.middleware");
+
 const {
   mapPhoneNumber,
   getPhoneMappingBySLNO,
   getAllPhoneMappings,
+  getUnmappedPhoneNumbers,
 } = require("./phone.controller");
 
 
@@ -21,7 +25,25 @@ const {
 */
 router.patch(
   "/map",
+  verifyToken,
   mapPhoneNumber
+);
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Get Available / Unmapped Phone Numbers
+|--------------------------------------------------------------------------
+| GET /api/v1/phone/unmapped
+|--------------------------------------------------------------------------
+*/
+router.get(
+  "/unmapped",
+  verifyToken,
+  getUnmappedPhoneNumbers
 );
 
 
@@ -37,6 +59,7 @@ router.patch(
 */
 router.get(
   "/all",
+  verifyToken,
   getAllPhoneMappings
 );
 
@@ -53,6 +76,7 @@ router.get(
 */
 router.get(
   "/:slno",
+  verifyToken,
   getPhoneMappingBySLNO
 );
 

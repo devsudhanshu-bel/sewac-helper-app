@@ -7,67 +7,48 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| ENUMS
+|--------------------------------------------------------------------------
+*/
+
+enum WasteType {
+  DRY
+  WET
+}
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| RFID MAPPING
+|--------------------------------------------------------------------------
+| One Citizen -> Multiple RFIDs
+|--------------------------------------------------------------------------
+*/
+
 model RFIDMapping {
-  id          Int      @id @default(autoincrement())
-  slno        String   @unique
-  rfid        String   @unique
-  phoneNumber String?
-  createdAt   DateTime @default(now())
-}
-
-model Moderator {
-  id        Int      @id @default(autoincrement())
-  username  String   @unique
-  password  String
-  role      String   @default("MODERATOR")
-  createdAt DateTime @default(now())
-}
-
-model TrackingLog {
 
   id Int @id @default(autoincrement())
 
-  workerId String
 
-  slno String?
+  /*
+  |--------------------------------------------------------------------------
+  | CITIZEN DATA
+  |--------------------------------------------------------------------------
+  */
 
-  citizenName String?
+  slno String
 
   phoneNumber String?
 
-  status String @default("FOUND")
-
-  remarks String?
-
-  createdAt DateTime @default(now())
-}
-
-model Remark {
-  id        Int      @id @default(autoincrement())
-  remark    String
-  createdAt DateTime @default(now())
-}
-
-model Survey {
-  city                String?
-  ward                String?
-  area                String?
-  wasteGeneratorTypes String?
-  houseNumber         String?
-  floorNumber         String?
-  householdType       String?
-  personName          String?
-  contactNumber       String?
-  numberOfPeople      String?
-  buildingPhoto       String?
-  id                  Int     @id @default(autoincrement())
-
-  @@map("survey_attribute_specific")
-}
-
-model MasterCitizenData {
-
-  id Int @id @default(autoincrement())
 
   /*
   |--------------------------------------------------------------------------
@@ -75,18 +56,217 @@ model MasterCitizenData {
   |--------------------------------------------------------------------------
   */
 
-  slno String @unique
+  rfid String @unique
 
-  rfid String
+  wasteType WasteType?
 
 
   /*
   |--------------------------------------------------------------------------
-  | PHONE
+  | META
   |--------------------------------------------------------------------------
   */
 
+  createdAt DateTime @default(now())
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | CONSTRAINTS
+  |--------------------------------------------------------------------------
+  */
+
+  @@unique([slno, wasteType])
+}
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| MODERATOR
+|--------------------------------------------------------------------------
+*/
+
+model Moderator {
+
+  id Int @id @default(autoincrement())
+
+  username String @unique
+
+  password String
+
+  role String @default("MODERATOR")
+
+  createdAt DateTime @default(now())
+}
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| TRACKING LOG
+|--------------------------------------------------------------------------
+| Verification Snapshot Log
+|--------------------------------------------------------------------------
+*/
+
+model TrackingLog {
+
+  id Int @id @default(autoincrement())
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | WORKER
+  |--------------------------------------------------------------------------
+  */
+
+  workerId String
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | CITIZEN
+  |--------------------------------------------------------------------------
+  */
+
+  slno String?
+
+  citizenName String?
+
   phoneNumber String?
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | RFID SNAPSHOT
+  |--------------------------------------------------------------------------
+  */
+
+  drySlno String?
+
+  wetSlno String?
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | STATUS
+  |--------------------------------------------------------------------------
+  */
+
+  status String @default("FOUND")
+
+  remarks String?
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | META
+  |--------------------------------------------------------------------------
+  */
+
+  createdAt DateTime @default(now())
+}
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| REMARK
+|--------------------------------------------------------------------------
+*/
+
+model Remark {
+
+  id Int @id @default(autoincrement())
+
+  remark String
+
+  createdAt DateTime @default(now())
+}
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| SURVEY
+|--------------------------------------------------------------------------
+*/
+
+model Survey {
+
+  city String?
+
+  ward String?
+
+  area String?
+
+  wasteGeneratorTypes String?
+
+  houseNumber String?
+
+  floorNumber String?
+
+  householdType String?
+
+  personName String?
+
+  contactNumber String?
+
+  numberOfPeople String?
+
+  buildingPhoto String?
+
+  id Int @id @default(autoincrement())
+
+  @@map("survey_attribute_specific")
+}
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| MASTER CITIZEN DATA
+|--------------------------------------------------------------------------
+*/
+
+model MasterCitizenData {
+
+  id Int @id @default(autoincrement())
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | PRIMARY LINK
+  |--------------------------------------------------------------------------
+  */
+
+  phoneNumber String @unique
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | RFID DATA
+  |--------------------------------------------------------------------------
+  */
+
+  dryRFID String?
+
+  wetRFID String?
+
+  drySlno String?
+
+  wetSlno String?
 
 
   /*

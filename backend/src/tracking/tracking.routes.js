@@ -25,12 +25,28 @@ const {
 |--------------------------------------------------------------------------
 | Create Tracking Log
 |--------------------------------------------------------------------------
-| POST /api/v1/tracking/tracking/create
+| POST /api/v1/tracking/create
+|--------------------------------------------------------------------------
+|
+| FOUND BODY:
+| {
+|   "slno": "00000001",
+|   "phoneNumber": "9876543210",
+|   "citizenName": "Ravi Kumar",
+|   "wasteType": "DRY",
+|   "status": "FOUND"
+| }
+|
+| NOT_FOUND BODY:
+| {
+|   "status": "NOT_FOUND",
+|   "remarks": "Citizen shifted"
+| }
 |--------------------------------------------------------------------------
 */
 router.post(
 
-  "/tracking/create",
+  "/create",
 
   verifyToken,
 
@@ -46,12 +62,12 @@ router.post(
 |--------------------------------------------------------------------------
 | Get All Tracking Logs
 |--------------------------------------------------------------------------
-| GET /api/v1/tracking/tracking
+| GET /api/v1/tracking/all
 |--------------------------------------------------------------------------
 */
 router.get(
 
-  "/tracking",
+  "/all",
 
   verifyToken,
 
@@ -67,12 +83,12 @@ router.get(
 |--------------------------------------------------------------------------
 | Get Tracking Logs By Worker
 |--------------------------------------------------------------------------
-| GET /api/v1/tracking/tracking/worker/:workerId
+| GET /api/v1/tracking/worker/:workerId
 |--------------------------------------------------------------------------
 */
 router.get(
 
-  "/tracking/worker/:workerId",
+  "/worker/:workerId",
 
   verifyToken,
 
@@ -88,12 +104,17 @@ router.get(
 |--------------------------------------------------------------------------
 | Get Tracking Logs By Status
 |--------------------------------------------------------------------------
-| GET /api/v1/tracking/tracking/status/:status
+| GET /api/v1/tracking/status/:status
+|--------------------------------------------------------------------------
+|
+| Example:
+| /tracking/status/FOUND
+| /tracking/status/NOT_FOUND
 |--------------------------------------------------------------------------
 */
 router.get(
 
-  "/tracking/status/:status",
+  "/status/:status",
 
   verifyToken,
 

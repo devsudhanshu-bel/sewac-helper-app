@@ -1,11 +1,10 @@
-const { prisma } = require("../config/db");
-
 const {
   createRFIDService,
   getAllRFIDMappingsService,
   getUnmappedRFIDsService,
-  mapRFIDToPhoneService,
+  mapRFIDService,
   getRFIDByValueService,
+  getCitizenRFIDsService,
 } = require("./rfid.service");
 
 
@@ -16,58 +15,40 @@ const {
 |--------------------------------------------------------------------------
 | Create RFID
 |--------------------------------------------------------------------------
-| POST /api/v1/rfid/rfid/:value
+| POST /api/v1/rfid/create/:rfid
+| GET  /api/v1/rfid/create/:rfid
 |--------------------------------------------------------------------------
 */
-const createRFID = async (req, res) => {
+const createRFID = async (
+  req,
+  res
+) => {
   try {
 
-    const { value } = req.params;
+    const { rfid } =
+      req.params;
 
-    // VALIDATE RFID
-    if (!value || value.trim() === "") {
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | VALIDATION
+    |--------------------------------------------------------------------------
+    */
+    if (
+      !rfid ||
+      rfid.trim() === ""
+    ) {
+
       return res.status(400).json({
+
         success: false,
-        message: "RFID value is required",
-      });
-    }
 
-    /*
-    |--------------------------------------------------------------------------
-    | GET LAST SLNO
-    |--------------------------------------------------------------------------
-    */
-    const lastRFID =
-      await prisma.rFIDMapping.findFirst({
-
-        orderBy: {
-          slno: "desc",
-        },
+        message:
+          "RFID code is required",
 
       });
-
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | GENERATE NEXT SLNO
-    |--------------------------------------------------------------------------
-    */
-    let nextSLNO = "00000001";
-
-    if (lastRFID && lastRFID.slno) {
-
-      const currentNumber =
-        parseInt(lastRFID.slno);
-
-      const nextNumber =
-        currentNumber + 1;
-
-      nextSLNO =
-        String(nextNumber).padStart(8, "0");
     }
-
 
 
 
@@ -78,16 +59,20 @@ const createRFID = async (req, res) => {
     */
     const newRFID =
       await createRFIDService(
-        nextSLNO,
-        value
+        rfid
       );
 
 
 
     return res.status(201).json({
+
       success: true,
-      message: "RFID created successfully",
+
+      message:
+        "RFID created successfully",
+
       data: newRFID,
+
     });
 
   } catch (error) {
@@ -98,55 +83,130 @@ const createRFID = async (req, res) => {
     );
 
     return res.status(500).json({
+
       success: false,
+
       message:
         error.message ||
         "Internal Server Error",
+
     });
   }
 };
 
 
 
+
+
 /*
 |--------------------------------------------------------------------------
-| Map RFID SLNO To Phone Number
+| Map RFID To Citizen
 |--------------------------------------------------------------------------
-| POST /api/v1/rfid/map
+| PATCH /api/v1/rfid/map
 |--------------------------------------------------------------------------
 */
-const mapRFIDToPhone = async (req, res) => {
+const mapRFID = async (
+  req,
+  res
+) => {
   try {
 
     const {
+
       slno,
+
       phoneNumber,
+
+      wasteType,
+
     } = req.body;
 
-    // VALIDATE
-    if (!slno || !phoneNumber) {
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | VALIDATION
+    |--------------------------------------------------------------------------
+    */
+    if (
+
+      !slno ||
+
+      !phoneNumber ||
+
+      !wasteType
+
+    ) {
+
       return res.status(400).json({
+
         success: false,
+
         message:
-          "SLNO and phone number are required",
+          "SLNO, phone number, and wasteType are required",
+
       });
     }
 
 
 
-    const updatedRFID =
-      await mapRFIDToPhoneService(
+    /*
+    |--------------------------------------------------------------------------
+    | VALIDATE WASTE TYPE
+    |--------------------------------------------------------------------------
+    */
+    const allowedWasteTypes = [
+      "DRY",
+      "WET",
+    ];
+
+
+
+    if (
+      !allowedWasteTypes.includes(
+        wasteType
+      )
+    ) {
+
+      return res.status(400).json({
+
+        success: false,
+
+        message:
+          "Invalid waste type. Use DRY or WET",
+
+      });
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | MAP RFID
+    |--------------------------------------------------------------------------
+    */
+    const mappedRFID =
+      await mapRFIDService(
+
         slno,
-        phoneNumber
+
+        phoneNumber,
+
+        wasteType
+
       );
 
 
 
     return res.status(200).json({
+
       success: true,
+
       message:
         "RFID mapped successfully",
-      data: updatedRFID,
+
+      data: mappedRFID,
+
     });
 
   } catch (error) {
@@ -157,10 +217,13 @@ const mapRFIDToPhone = async (req, res) => {
     );
 
     return res.status(500).json({
+
       success: false,
+
       message:
         error.message ||
         "Internal Server Error",
+
     });
   }
 };
@@ -173,7 +236,7 @@ const mapRFIDToPhone = async (req, res) => {
 |--------------------------------------------------------------------------
 | Get All RFID Mappings
 |--------------------------------------------------------------------------
-| GET /api/v1/rfid/rfid
+| GET /api/v1/rfid/all
 |--------------------------------------------------------------------------
 */
 const getAllRFIDMappings = async (
@@ -188,23 +251,30 @@ const getAllRFIDMappings = async (
 
 
     return res.status(200).json({
+
       success: true,
+
       count: allMappings.length,
+
       data: allMappings,
+
     });
 
   } catch (error) {
 
     console.error(
-      "GET RFID ERROR:",
+      "GET RFID MAPPINGS ERROR:",
       error
     );
 
     return res.status(500).json({
+
       success: false,
+
       message:
         error.message ||
         "Internal Server Error",
+
     });
   }
 };
@@ -215,7 +285,7 @@ const getAllRFIDMappings = async (
 
 /*
 |--------------------------------------------------------------------------
-| Get Only Unmapped RFIDs
+| Get Unmapped RFIDs
 |--------------------------------------------------------------------------
 | GET /api/v1/rfid/unmapped
 |--------------------------------------------------------------------------
@@ -232,10 +302,14 @@ const getUnmappedRFIDs = async (
 
 
     return res.status(200).json({
+
       success: true,
+
       count:
         unmappedRFIDs.length,
+
       data: unmappedRFIDs,
+
     });
 
   } catch (error) {
@@ -246,10 +320,13 @@ const getUnmappedRFIDs = async (
     );
 
     return res.status(500).json({
+
       success: false,
+
       message:
         error.message ||
         "Internal Server Error",
+
     });
   }
 };
@@ -260,9 +337,9 @@ const getUnmappedRFIDs = async (
 
 /*
 |--------------------------------------------------------------------------
-| Get RFID Details By RFID Value
+| Get RFID Details By RFID Number
 |--------------------------------------------------------------------------
-| GET /api/v1/rfid/:rfid
+| GET /api/v1/rfid/rfid/:slno
 |--------------------------------------------------------------------------
 */
 const getRFIDByValue = async (
@@ -274,16 +351,32 @@ const getRFIDByValue = async (
     const { rfid } =
       req.params;
 
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | VALIDATION
+    |--------------------------------------------------------------------------
+    */
     if (!rfid) {
+
       return res.status(400).json({
+
         success: false,
+
         message:
-          "RFID is required",
+          "RFID number is required",
+
       });
     }
 
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | GET RFID
+    |--------------------------------------------------------------------------
+    */
     const rfidData =
       await getRFIDByValueService(
         rfid
@@ -292,8 +385,11 @@ const getRFIDByValue = async (
 
 
     return res.status(200).json({
+
       success: true,
+
       data: rfidData,
+
     });
 
   } catch (error) {
@@ -304,10 +400,93 @@ const getRFIDByValue = async (
     );
 
     return res.status(500).json({
+
       success: false,
+
       message:
         error.message ||
         "Internal Server Error",
+
+    });
+  }
+};
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Get Citizen RFIDs
+|--------------------------------------------------------------------------
+| GET /api/v1/rfid/citizen/:phoneNumber
+|--------------------------------------------------------------------------
+*/
+const getCitizenRFIDs = async (
+  req,
+  res
+) => {
+  try {
+
+    const { phoneNumber } =
+      req.params;
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | VALIDATION
+    |--------------------------------------------------------------------------
+    */
+    if (!phoneNumber) {
+
+      return res.status(400).json({
+
+        success: false,
+
+        message:
+          "Phone number is required",
+
+      });
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | GET RFIDS
+    |--------------------------------------------------------------------------
+    */
+    const rfids =
+      await getCitizenRFIDsService(
+        phoneNumber
+      );
+
+
+
+    return res.status(200).json({
+
+      success: true,
+
+      data: rfids,
+
+    });
+
+  } catch (error) {
+
+    console.error(
+      "GET CITIZEN RFIDS ERROR:",
+      error
+    );
+
+    return res.status(500).json({
+
+      success: false,
+
+      message:
+        error.message ||
+        "Internal Server Error",
+
     });
   }
 };
@@ -317,9 +496,17 @@ const getRFIDByValue = async (
 
 
 module.exports = {
+
   createRFID,
-  mapRFIDToPhone,
+
+  mapRFID,
+
   getAllRFIDMappings,
+
   getUnmappedRFIDs,
+
   getRFIDByValue,
+
+  getCitizenRFIDs,
+
 };

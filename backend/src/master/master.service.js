@@ -9,21 +9,36 @@ const { prisma } = require("../config/db");
 | Sync Master Citizen Data
 |--------------------------------------------------------------------------
 */
-const syncMasterCitizenData = async (phoneNumber) => {
+const syncMasterCitizenData = async (
+  phoneNumber
+) => {
 
-  // RFID DATA
-  const rfidData =
-    await prisma.rFIDMapping.findFirst({
+  // =============================
+  // GET ALL RFID DATA
+  // =============================
+
+  const rfidMappings =
+    await prisma.rFIDMapping.findMany({
       where: {
         phoneNumber,
       },
     });
 
-  if (!rfidData) {
+
+
+  if (
+    !rfidMappings ||
+    rfidMappings.length === 0
+  ) {
     return null;
   }
 
-  // SURVEY DATA
+
+
+  // =============================
+  // GET SURVEY DATA
+  // =============================
+
   const surveyData =
     await prisma.survey.findFirst({
       where: {
@@ -31,27 +46,79 @@ const syncMasterCitizenData = async (phoneNumber) => {
       },
     });
 
+
+
   if (!surveyData) {
     return null;
   }
 
+
+
+  // =============================
+  // EXTRACT DRY/WET DATA
+  // =============================
+
+  let dryRFID = null;
+  let wetRFID = null;
+
+  let drySlno = null;
+  let wetSlno = null;
+
+
+
+  rfidMappings.forEach((item) => {
+
+    // DRY
+    if (
+      item.wasteType === "DRY"
+    ) {
+
+      dryRFID = item.rfid;
+
+      drySlno = item.slno;
+
+    }
+
+
+
+    // WET
+    if (
+      item.wasteType === "WET"
+    ) {
+
+      wetRFID = item.rfid;
+
+      wetSlno = item.slno;
+
+    }
+
+  });
+
+
+
+  // =============================
   // UPSERT MASTER TABLE
+  // =============================
+
   const master =
     await prisma.masterCitizenData.upsert({
 
       where: {
-        slno: rfidData.slno,
+        phoneNumber,
       },
 
       update: {
 
-        rfid: rfidData.rfid,
+        dryRFID,
+        wetRFID,
 
-        phoneNumber:
-          rfidData.phoneNumber,
+        drySlno,
+        wetSlno,
 
         city: surveyData.city,
+
         ward: surveyData.ward,
+
         area: surveyData.area,
 
         wasteGeneratorTypes:
@@ -77,19 +144,23 @@ const syncMasterCitizenData = async (phoneNumber) => {
 
         buildingPhoto:
           surveyData.buildingPhoto,
+
       },
 
       create: {
 
-        slno: rfidData.slno,
+        phoneNumber,
 
-        rfid: rfidData.rfid,
+        dryRFID,
+        wetRFID,
 
-        phoneNumber:
-          rfidData.phoneNumber,
+        drySlno,
+        wetSlno,
 
         city: surveyData.city,
+
         ward: surveyData.ward,
+
         area: surveyData.area,
 
         wasteGeneratorTypes:
@@ -115,10 +186,15 @@ const syncMasterCitizenData = async (phoneNumber) => {
 
         buildingPhoto:
           surveyData.buildingPhoto,
+
       },
+
     });
 
+
+
   return master;
+
 };
 
 
@@ -130,14 +206,16 @@ const syncMasterCitizenData = async (phoneNumber) => {
 | Get All Master Data
 |--------------------------------------------------------------------------
 */
-const getAllMasterData = async () => {
+const getAllMasterData =
+  async () => {
 
-  return await prisma.masterCitizenData.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-};
+    return await prisma.masterCitizenData.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+  };
 
 
 
@@ -148,14 +226,16 @@ const getAllMasterData = async () => {
 | Get Master By Phone Number
 |--------------------------------------------------------------------------
 */
-const getMasterByPhone = async (phoneNumber) => {
+const getMasterByPhone =
+  async (phoneNumber) => {
 
-  return await prisma.masterCitizenData.findFirst({
-    where: {
-      phoneNumber,
-    },
-  });
-};
+    return await prisma.masterCitizenData.findUnique({
+      where: {
+        phoneNumber,
+      },
+    });
+
+  };
 
 
 
@@ -166,22 +246,36 @@ const getMasterByPhone = async (phoneNumber) => {
 | Get Master By SLNO
 |--------------------------------------------------------------------------
 */
-const getMasterBySLNO = async (slno) => {
+const getMasterBySLNO =
+  async (slno) => {
 
-  return await prisma.masterCitizenData.findFirst({
-    where: {
-      slno,
-    },
-  });
-};
+    return await prisma.masterCitizenData.findFirst({
+      where: {
+        OR: [
+          {
+            drySlno: slno,
+          },
+          {
+            wetSlno: slno,
+          },
+        ],
+      },
+    });
+
+  };
 
 
 
 
 
 module.exports = {
+
   syncMasterCitizenData,
+
   getAllMasterData,
+
   getMasterByPhone,
+
   getMasterBySLNO,
+
 };

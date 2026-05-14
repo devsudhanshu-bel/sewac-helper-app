@@ -28,11 +28,13 @@ const createTrackingLog = async (
 
     const {
 
-      slno,
-
       phoneNumber,
 
       citizenName,
+
+      drySlno,
+
+      wetSlno,
 
       status,
 
@@ -42,9 +44,17 @@ const createTrackingLog = async (
 
 
 
-    // Worker from JWT
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | WORKER FROM JWT
+    |--------------------------------------------------------------------------
+    */
     const workerId =
       req.user.username;
+
+
 
 
 
@@ -63,8 +73,9 @@ const createTrackingLog = async (
           "Status is required",
 
       });
-
     }
+
+
 
 
 
@@ -84,7 +95,9 @@ const createTrackingLog = async (
 
 
     if (
-      !allowedStatuses.includes(status)
+      !allowedStatuses.includes(
+        status
+      )
     ) {
 
       return res.status(400).json({
@@ -95,8 +108,9 @@ const createTrackingLog = async (
           "Invalid status value",
 
       });
-
     }
+
+
 
 
 
@@ -108,9 +122,15 @@ const createTrackingLog = async (
     if (status === "FOUND") {
 
       if (
-        !slno ||
+
         !phoneNumber ||
-        !citizenName
+
+        !citizenName ||
+
+        !drySlno ||
+
+        !wetSlno
+
       ) {
 
         return res.status(400).json({
@@ -118,13 +138,13 @@ const createTrackingLog = async (
           success: false,
 
           message:
-            "SLNO, phoneNumber and citizenName are required for FOUND status",
+            "phoneNumber, citizenName, drySlno and wetSlno are required for FOUND status",
 
         });
-
       }
-
     }
+
+
 
 
 
@@ -134,8 +154,11 @@ const createTrackingLog = async (
     |--------------------------------------------------------------------------
     */
     if (
+
       status === "NOT_FOUND" &&
+
       !remarks
+
     ) {
 
       return res.status(400).json({
@@ -146,8 +169,9 @@ const createTrackingLog = async (
           "Remarks required for NOT_FOUND status",
 
       });
-
     }
+
+
 
 
 
@@ -159,24 +183,77 @@ const createTrackingLog = async (
     const trackingLog =
       await createTrackingLogService({
 
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | WORKER
+        |--------------------------------------------------------------------------
+        */
+
         workerId,
 
-        slno:
-          status === "FOUND"
-            ? slno
-            : null,
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CITIZEN
+        |--------------------------------------------------------------------------
+        */
 
         phoneNumber:
           status === "FOUND"
             ? phoneNumber
             : null,
 
+
+
         citizenName:
           status === "FOUND"
             ? citizenName
             : null,
 
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | RFID SNAPSHOT
+        |--------------------------------------------------------------------------
+        */
+
+        drySlno:
+          status === "FOUND"
+            ? drySlno
+            : null,
+
+
+
+        wetSlno:
+          status === "FOUND"
+            ? wetSlno
+            : null,
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | STATUS
+        |--------------------------------------------------------------------------
+        */
+
         status,
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | REMARKS
+        |--------------------------------------------------------------------------
+        */
 
         remarks:
           status === "NOT_FOUND"
@@ -184,6 +261,8 @@ const createTrackingLog = async (
             : null,
 
       });
+
+
 
 
 
@@ -210,6 +289,7 @@ const createTrackingLog = async (
       success: false,
 
       message:
+        error.message ||
         "Internal Server Error",
 
     });
@@ -251,6 +331,11 @@ const getAllTrackingLogs = async (
 
   } catch (error) {
 
+    console.error(
+      "GET ALL TRACKING LOGS ERROR:",
+      error
+    );
+
     return res.status(500).json({
 
       success: false,
@@ -283,6 +368,8 @@ const getTrackingLogsByWorker = async (
     const { workerId } =
       req.params;
 
+
+
     const logs =
       await getTrackingLogsByWorkerService(
         workerId
@@ -301,6 +388,11 @@ const getTrackingLogsByWorker = async (
     });
 
   } catch (error) {
+
+    console.error(
+      "GET TRACKING LOGS BY WORKER ERROR:",
+      error
+    );
 
     return res.status(500).json({
 
@@ -334,6 +426,8 @@ const getTrackingLogsByStatus = async (
     const { status } =
       req.params;
 
+
+
     const logs =
       await getTrackingLogsByStatusService(
         status
@@ -352,6 +446,11 @@ const getTrackingLogsByStatus = async (
     });
 
   } catch (error) {
+
+    console.error(
+      "GET TRACKING LOGS BY STATUS ERROR:",
+      error
+    );
 
     return res.status(500).json({
 

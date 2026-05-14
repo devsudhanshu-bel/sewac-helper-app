@@ -8,13 +8,20 @@ const { prisma } = require("../config/db");
 |--------------------------------------------------------------------------
 | Map Phone Number To RFID
 |--------------------------------------------------------------------------
-| POST /api/v1/phone/map
+| PATCH /api/v1/phone/map
 |--------------------------------------------------------------------------
 */
-const mapPhoneNumber = async (req, res) => {
+const mapPhoneNumber = async (
+  req,
+  res
+) => {
+
   try {
 
-    const { slno, phoneNumber } = req.body;
+    const {
+      slno,
+      phoneNumber,
+    } = req.body;
 
 
 
@@ -22,11 +29,18 @@ const mapPhoneNumber = async (req, res) => {
     // VALIDATION
     // =============================
 
-    if (!slno || !phoneNumber) {
+    if (
+      !slno ||
+      !phoneNumber
+    ) {
 
       return res.status(400).json({
+
         success: false,
-        message: "SLNO and phone number are required",
+
+        message:
+          "SLNO and phone number are required",
+
       });
 
     }
@@ -34,14 +48,16 @@ const mapPhoneNumber = async (req, res) => {
 
 
     // =============================
-    // CHECK RFID RECORD EXISTS
+    // CHECK RFID EXISTS
     // =============================
 
     const existingRecord =
       await prisma.rFIDMapping.findUnique({
+
         where: {
           slno,
         },
+
       });
 
 
@@ -49,8 +65,12 @@ const mapPhoneNumber = async (req, res) => {
     if (!existingRecord) {
 
       return res.status(404).json({
+
         success: false,
-        message: "SLNO not found",
+
+        message:
+          "SLNO not found",
+
       });
 
     }
@@ -58,15 +78,23 @@ const mapPhoneNumber = async (req, res) => {
 
 
     // =============================
-    // CHECK IF ALREADY MAPPED
+    // CHECK RFID ALREADY MAPPED
     // =============================
 
-    if (existingRecord.phoneNumber) {
+    if (
+      existingRecord.phoneNumber
+    ) {
 
       return res.status(409).json({
+
         success: false,
-        message: "Phone number already mapped to this RFID",
-        data: existingRecord,
+
+        message:
+          "This RFID is already mapped",
+
+        data:
+          existingRecord,
+
       });
 
     }
@@ -74,11 +102,133 @@ const mapPhoneNumber = async (req, res) => {
 
 
     // =============================
-    // UPDATE PHONE NUMBER
+    // GET EXISTING PHONE MAPPINGS
+    // =============================
+
+    const existingMappings =
+      await prisma.rFIDMapping.findMany({
+
+        where: {
+          phoneNumber,
+        },
+
+        select: {
+          wasteType: true,
+        },
+
+      });
+
+
+
+    let hasDry = false;
+
+    let hasWet = false;
+
+
+
+    existingMappings.forEach(
+      (item) => {
+
+        if (
+          item.wasteType === "DRY"
+        ) {
+          hasDry = true;
+        }
+
+
+
+        if (
+          item.wasteType === "WET"
+        ) {
+          hasWet = true;
+        }
+
+      }
+    );
+
+
+
+    // =============================
+    // BLOCK IF BOTH EXIST
+    // =============================
+
+    if (
+      hasDry &&
+      hasWet
+    ) {
+
+      return res.status(409).json({
+
+        success: false,
+
+        message:
+          "Phone number already mapped for both Dry and Wet waste",
+
+      });
+
+    }
+
+
+
+    // =============================
+    // BLOCK DUPLICATE DRY
+    // =============================
+
+    if (
+
+      existingRecord.wasteType ===
+        "DRY" &&
+
+      hasDry
+
+    ) {
+
+      return res.status(409).json({
+
+        success: false,
+
+        message:
+          "Phone number already mapped to a Dry RFID",
+
+      });
+
+    }
+
+
+
+    // =============================
+    // BLOCK DUPLICATE WET
+    // =============================
+
+    if (
+
+      existingRecord.wasteType ===
+        "WET" &&
+
+      hasWet
+
+    ) {
+
+      return res.status(409).json({
+
+        success: false,
+
+        message:
+          "Phone number already mapped to a Wet RFID",
+
+      });
+
+    }
+
+
+
+    // =============================
+    // UPDATE RFID
     // =============================
 
     const updatedRecord =
       await prisma.rFIDMapping.update({
+
         where: {
           slno,
         },
@@ -86,6 +236,7 @@ const mapPhoneNumber = async (req, res) => {
         data: {
           phoneNumber,
         },
+
       });
 
 
@@ -95,24 +246,40 @@ const mapPhoneNumber = async (req, res) => {
     // =============================
 
     return res.status(200).json({
+
       success: true,
-      message: "Phone number mapped successfully",
-      data: updatedRecord,
+
+      message:
+        "Phone number mapped successfully",
+
+      data:
+        updatedRecord,
+
     });
 
   } catch (error) {
 
-    console.error("PHONE MAP ERROR:", error);
+    console.error(
+      "PHONE MAP ERROR:",
+      error
+    );
 
 
 
     return res.status(500).json({
+
       success: false,
-      message: "Internal Server Error",
-      error: error.message,
+
+      message:
+        "Internal Server Error",
+
+      error:
+        error.message,
+
     });
 
   }
+
 };
 
 
@@ -126,63 +293,90 @@ const mapPhoneNumber = async (req, res) => {
 | GET /api/v1/phone/:slno
 |--------------------------------------------------------------------------
 */
-const getPhoneMappingBySLNO = async (req, res) => {
-  try {
+const getPhoneMappingBySLNO =
+  async (req, res) => {
 
-    const { slno } = req.params;
+    try {
+
+      const { slno } =
+        req.params;
 
 
 
-    if (!slno) {
+      if (!slno) {
 
-      return res.status(400).json({
+        return res.status(400).json({
+
+          success: false,
+
+          message:
+            "SLNO is required",
+
+        });
+
+      }
+
+
+
+      const record =
+        await prisma.rFIDMapping.findUnique({
+
+          where: {
+            slno,
+          },
+
+        });
+
+
+
+      if (!record) {
+
+        return res.status(404).json({
+
+          success: false,
+
+          message:
+            "Record not found",
+
+        });
+
+      }
+
+
+
+      return res.status(200).json({
+
+        success: true,
+
+        data:
+          record,
+
+      });
+
+    } catch (error) {
+
+      console.error(
+        "GET PHONE MAPPING ERROR:",
+        error
+      );
+
+
+
+      return res.status(500).json({
+
         success: false,
-        message: "SLNO is required",
+
+        message:
+          "Internal Server Error",
+
+        error:
+          error.message,
+
       });
 
     }
 
-
-
-    const record =
-      await prisma.rFIDMapping.findUnique({
-        where: {
-          slno,
-        },
-      });
-
-
-
-    if (!record) {
-
-      return res.status(404).json({
-        success: false,
-        message: "Record not found",
-      });
-
-    }
-
-
-
-    return res.status(200).json({
-      success: true,
-      data: record,
-    });
-
-  } catch (error) {
-
-    console.error("GET PHONE MAPPING ERROR:", error);
-
-
-
-    return res.status(500).json({
-      success: false,
-      message: "Internal Server Error",
-      error: error.message,
-    });
-
-  }
-};
+  };
 
 
 
@@ -195,45 +389,319 @@ const getPhoneMappingBySLNO = async (req, res) => {
 | GET /api/v1/phone/all
 |--------------------------------------------------------------------------
 */
-const getAllPhoneMappings = async (req, res) => {
-  try {
+const getAllPhoneMappings =
+  async (req, res) => {
 
-    const records =
-      await prisma.rFIDMapping.findMany({
-        orderBy: {
-          createdAt: "desc",
-        },
+    try {
+
+      const records =
+        await prisma.rFIDMapping.findMany({
+
+          orderBy: {
+            createdAt: "desc",
+          },
+
+        });
+
+
+
+      return res.status(200).json({
+
+        success: true,
+
+        count:
+          records.length,
+
+        data:
+          records,
+
+      });
+
+    } catch (error) {
+
+      console.error(
+        "GET ALL PHONE MAPPINGS ERROR:",
+        error
+      );
+
+
+
+      return res.status(500).json({
+
+        success: false,
+
+        message:
+          "Internal Server Error",
+
+        error:
+          error.message,
+
+      });
+
+    }
+
+  };
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Get Unmapped Phone Numbers
+|--------------------------------------------------------------------------
+| GET /api/v1/phone/unmapped
+|--------------------------------------------------------------------------
+*/
+const getUnmappedPhoneNumbers =
+  async (req, res) => {
+
+    try {
+
+      // =============================
+      // GET ALL RFID MAPPINGS
+      // =============================
+
+      const mappings =
+        await prisma.rFIDMapping.findMany({
+
+          where: {
+
+            phoneNumber: {
+              not: null,
+            },
+
+          },
+
+          select: {
+
+            phoneNumber: true,
+
+            wasteType: true,
+
+          },
+
+        });
+
+
+
+      // =============================
+      // TRACK DRY/WET STATUS
+      // =============================
+
+      const tracker = {};
+
+
+
+      mappings.forEach((item) => {
+
+        if (
+          !tracker[item.phoneNumber]
+        ) {
+
+          tracker[item.phoneNumber] = {
+
+            dry: false,
+
+            wet: false,
+
+          };
+
+        }
+
+
+
+        // DRY
+        if (
+          item.wasteType ===
+          "DRY"
+        ) {
+
+          tracker[
+            item.phoneNumber
+          ].dry = true;
+
+        }
+
+
+
+        // WET
+        if (
+          item.wasteType ===
+          "WET"
+        ) {
+
+          tracker[
+            item.phoneNumber
+          ].wet = true;
+
+        }
+
       });
 
 
 
-    return res.status(200).json({
-      success: true,
-      count: records.length,
-      data: records,
-    });
+      // =============================
+      // GET SURVEY DATA
+      // =============================
 
-  } catch (error) {
+      const citizens =
+        await prisma.survey.findMany({
 
-    console.error("GET ALL PHONE MAPPINGS ERROR:", error);
+          where: {
+
+            contactNumber: {
+              not: null,
+            },
+
+          },
+
+          select: {
+
+            personName: true,
+
+            contactNumber: true,
+
+          },
+
+          distinct: [
+            "contactNumber",
+          ],
+
+          orderBy: {
+            id: "desc",
+          },
+
+        });
 
 
 
-    return res.status(500).json({
-      success: false,
-      message: "Internal Server Error",
-      error: error.message,
-    });
+      // =============================
+      // FILTER CITIZENS
+      // =============================
 
-  }
-};
+      const filteredCitizens =
+        citizens.filter(
+          (citizen) => {
+
+            const status =
+              tracker[
+                citizen.contactNumber
+              ];
+
+
+
+            // NEVER MAPPED
+            if (!status) {
+              return true;
+            }
+
+
+
+            // ONLY ONE EXISTS
+            if (
+
+              (
+                status.dry &&
+                !status.wet
+              ) ||
+
+              (
+                !status.dry &&
+                status.wet
+              )
+
+            ) {
+
+              return true;
+
+            }
+
+
+
+            // BOTH EXIST
+            return false;
+
+          }
+        );
+
+
+
+      // =============================
+      // FORMAT RESPONSE
+      // =============================
+
+      const formattedData =
+        filteredCitizens.map(
+          (citizen) => ({
+
+            citizenName:
+              citizen.personName,
+
+            phoneNumber:
+              citizen.contactNumber,
+
+          })
+        );
+
+
+
+      // =============================
+      // SUCCESS RESPONSE
+      // =============================
+
+      return res.status(200).json({
+
+        success: true,
+
+        count:
+          formattedData.length,
+
+        data:
+          formattedData,
+
+      });
+
+    } catch (error) {
+
+      console.error(
+
+        "GET UNMAPPED PHONE NUMBERS ERROR:",
+
+        error
+
+      );
+
+
+
+      return res.status(500).json({
+
+        success: false,
+
+        message:
+          "Internal Server Error",
+
+        error:
+          error.message,
+
+      });
+
+    }
+
+  };
 
 
 
 
 
 module.exports = {
+
   mapPhoneNumber,
+
   getPhoneMappingBySLNO,
+
   getAllPhoneMappings,
+
+  getUnmappedPhoneNumbers,
+
 };

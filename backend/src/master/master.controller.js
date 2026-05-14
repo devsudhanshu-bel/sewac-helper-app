@@ -16,6 +16,8 @@ const {
 |--------------------------------------------------------------------------
 | Get All Master Data
 |--------------------------------------------------------------------------
+| GET /api/v1/master/all
+|--------------------------------------------------------------------------
 */
 const getMasterData = async (
   req,
@@ -26,6 +28,8 @@ const getMasterData = async (
 
     const data =
       await getAllMasterData();
+
+
 
     return res.status(200).json({
 
@@ -39,11 +43,20 @@ const getMasterData = async (
 
   } catch (error) {
 
+    console.error(
+      "GET MASTER DATA ERROR:",
+      error
+    );
+
+
+
     return res.status(500).json({
 
       success: false,
 
-      message: error.message,
+      message:
+        error.message ||
+        "Internal Server Error",
 
     });
 
@@ -57,7 +70,9 @@ const getMasterData = async (
 
 /*
 |--------------------------------------------------------------------------
-| Get Master By Phone
+| Get Master By Phone Number
+|--------------------------------------------------------------------------
+| GET /api/v1/master/phone/:phoneNumber
 |--------------------------------------------------------------------------
 */
 const getMasterDataByPhone = async (
@@ -70,10 +85,41 @@ const getMasterDataByPhone = async (
     const { phoneNumber } =
       req.params;
 
+
+
+    // =============================
+    // VALIDATION
+    // =============================
+
+    if (!phoneNumber) {
+
+      return res.status(400).json({
+
+        success: false,
+
+        message:
+          "Phone number is required",
+
+      });
+
+    }
+
+
+
+    // =============================
+    // FETCH DATA
+    // =============================
+
     const data =
       await getMasterByPhone(
         phoneNumber
       );
+
+
+
+    // =============================
+    // NOT FOUND
+    // =============================
 
     if (!data) {
 
@@ -88,6 +134,12 @@ const getMasterDataByPhone = async (
 
     }
 
+
+
+    // =============================
+    // SUCCESS
+    // =============================
+
     return res.status(200).json({
 
       success: true,
@@ -98,11 +150,20 @@ const getMasterDataByPhone = async (
 
   } catch (error) {
 
+    console.error(
+      "GET MASTER BY PHONE ERROR:",
+      error
+    );
+
+
+
     return res.status(500).json({
 
       success: false,
 
-      message: error.message,
+      message:
+        error.message ||
+        "Internal Server Error",
 
     });
 
@@ -118,6 +179,8 @@ const getMasterDataByPhone = async (
 |--------------------------------------------------------------------------
 | Get Master By SLNO
 |--------------------------------------------------------------------------
+| GET /api/v1/master/slno/:slno
+|--------------------------------------------------------------------------
 */
 const getMasterDataBySLNO = async (
   req,
@@ -129,10 +192,41 @@ const getMasterDataBySLNO = async (
     const { slno } =
       req.params;
 
+
+
+    // =============================
+    // VALIDATION
+    // =============================
+
+    if (!slno) {
+
+      return res.status(400).json({
+
+        success: false,
+
+        message:
+          "SLNO is required",
+
+      });
+
+    }
+
+
+
+    // =============================
+    // FETCH DATA
+    // =============================
+
     const data =
       await getMasterBySLNO(
         slno
       );
+
+
+
+    // =============================
+    // NOT FOUND
+    // =============================
 
     if (!data) {
 
@@ -147,6 +241,12 @@ const getMasterDataBySLNO = async (
 
     }
 
+
+
+    // =============================
+    // SUCCESS
+    // =============================
+
     return res.status(200).json({
 
       success: true,
@@ -157,11 +257,20 @@ const getMasterDataBySLNO = async (
 
   } catch (error) {
 
+    console.error(
+      "GET MASTER BY SLNO ERROR:",
+      error
+    );
+
+
+
     return res.status(500).json({
 
       success: false,
 
-      message: error.message,
+      message:
+        error.message ||
+        "Internal Server Error",
 
     });
 
