@@ -39,10 +39,10 @@ class TrackingModel {
       json["workerId"] ?? "",
 
       wetWasteRfid:
-      json["wetWasteRfid"] ?? "",
+      json["wetSlno"] ?? "",
 
       dryWasteRfid:
-      json["dryWasteRfid"] ?? "",
+      json["drySlno"] ?? "",
 
       citizenName:
       json["citizenName"],

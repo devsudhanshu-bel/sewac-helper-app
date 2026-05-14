@@ -7,7 +7,7 @@ import '../models/tracking_model.dart';
 class TrackingService {
 
   static const String baseUrl =
-      "https://sewac-helper-app.onrender.com/api/v1/tracking/tracking";
+      "https://sewac-helper-app.onrender.com/api/v1/tracking/all";
 
   static Future<List<TrackingModel>> fetchLogs() async {
 
@@ -36,18 +36,24 @@ class TrackingService {
 
       if (response.statusCode == 200) {
 
-        final decoded =
-        jsonDecode(response.body);
+        final decoded = jsonDecode(response.body);
+
+        print("FULL API => $decoded");
 
         final List<dynamic> data =
             decoded["data"] ?? [];
 
-        return data
+        print("TOTAL RECORDS => ${data.length}");
+
+        final logs = data
             .map<TrackingModel>(
-              (item) =>
-              TrackingModel.fromJson(item),
+              (item) => TrackingModel.fromJson(item),
         )
             .toList();
+
+        print("PARSED LOGS => ${logs.length}");
+
+        return logs;
       }
 
       throw Exception(

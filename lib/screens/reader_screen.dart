@@ -76,7 +76,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
       await http.post(
 
         Uri.parse(
-          "https://sewac-helper-app.onrender.com/api/v1/rfid/rfid/$code",
+          "https://sewac-helper-app.onrender.com/api/v1/rfid/create/$code",
         ),
       );
 

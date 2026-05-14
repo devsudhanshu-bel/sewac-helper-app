@@ -48,13 +48,17 @@ class _LogsScreenState extends State<LogsScreen>
 
   Future<void> _fetchLogs() async {
     try {
-      // TODO: replace with logged in worker ID later
-      String currentWorkerId = "sewac01";
 
       final result = await TrackingService.fetchLogs();
 
 
       print("UI Received Logs: ${result.length}");
+
+      for (var item in result) {
+        print(
+            "${item.id} | ${item.workerId} | ${item.status}"
+        );
+      }
 
       setState(() {
         _logs = result;
@@ -403,6 +407,9 @@ class _LogsScreenState extends State<LogsScreen>
     if (logs.isEmpty) return _buildEmptyState();
 
     return ListView.builder(
+      physics:
+      const AlwaysScrollableScrollPhysics(),
+
       padding: const EdgeInsets.symmetric(
         horizontal: 20,
         vertical: 8,
@@ -410,22 +417,18 @@ class _LogsScreenState extends State<LogsScreen>
       itemCount: logs.length,
       itemBuilder: (context, index) {
         final log = logs[index];
-        final isFound =
-            log.status == "FOUND";
+        final isFound = log.status == "FOUND";
 
         return Container(
-          margin:
-          const EdgeInsets.only(
+          margin: const EdgeInsets.only(
             bottom: 16,
           ),
-          padding:
-          const EdgeInsets.all(
+          padding: const EdgeInsets.all(
             20,
           ),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius:
-            BorderRadius.circular(
+            borderRadius: BorderRadius.circular(
               24,
             ),
           ),
@@ -433,27 +436,23 @@ class _LogsScreenState extends State<LogsScreen>
             crossAxisAlignment:
             CrossAxisAlignment.start,
             children: [
+
+              // Header
               Row(
                 mainAxisAlignment:
-                MainAxisAlignment
-                    .spaceBetween,
+                MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     isFound
-                        ? log.citizenName ??
-                        "-"
+                        ? (log.citizenName ?? "-")
                         : "Not Found",
-                    style:
-                    const TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
-                      fontWeight:
-                      FontWeight
-                          .w800,
-                      color: Color(
-                        0xFF1A237E,
-                      ),
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF1A237E),
                     ),
                   ),
+
                   _buildStatusBadge(
                     isFound,
                     isFound
@@ -463,58 +462,90 @@ class _LogsScreenState extends State<LogsScreen>
                 ],
               ),
 
-              const SizedBox(
-                height: 16,
-              ),
+              const SizedBox(height: 16),
 
               const Divider(),
 
-              const SizedBox(
-                height: 16,
-              ),
+              const SizedBox(height: 16),
 
-              isFound
-                  ? _buildInfoGrid(
-                log,
-              )
-                  : Column(
-                children: [
-                  Row(
+              // FOUND
+              if (isFound)
+                _buildInfoGrid(log)
+
+              // NOT FOUND
+              else
+                Container(
+                  padding: const EdgeInsets.all(8),
+
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFF8F8),
+                    borderRadius:
+                    BorderRadius.circular(18),
+                  ),
+
+                  child: Column(
                     children: [
-                      _buildInfoItem(
-                        Icons.tag,
-                        "SL",
-                        log.id.toString(),
+
+                      // Row 1
+                      Row(
+                        children: [
+
+                          _buildInfoItem(
+                            Icons.badge_rounded,
+                            "Worker ID",
+                            log.workerId.toUpperCase(),
+                          ),
+
+                          _buildInfoItem(
+                            Icons.person,
+                            "Name",
+                            log.citizenName ?? "-",
+                          ),
+                        ],
                       ),
-                      _buildInfoItem(
-                        Icons
-                            .badge_rounded,
-                        "Worker ID",
-                        log.workerId
-                            .toUpperCase(),
+
+                      const SizedBox(
+                        height: 10,
+                      ),
+
+                      // Row 2
+                      Row(
+                        children: [
+
+                          _buildInfoItem(
+                            Icons.phone,
+                            "Phone",
+                            log.phoneNumber ?? "-",
+                          ),
+
+                          _buildInfoItem(
+                            Icons.warning_amber_rounded,
+                            "Status",
+                            log.status,
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(
+                        height: 10,
+                      ),
+
+                      // Row 3
+                      Row(
+                        children: [
+
+                          Expanded(
+                            child: _buildInfoItem(
+                              Icons.notes_rounded,
+                              "Remarks",
+                              log.remarks ?? "-",
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  Row(
-                    children: [
-                      _buildInfoItem(
-                        Icons
-                            .notes_rounded,
-                        "Remarks",
-                        log.remarks ??
-                            "-",
-                      ),
-                      const Expanded(
-                        child:
-                        SizedBox(),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                )
             ],
           ),
         );
@@ -556,35 +587,19 @@ class _LogsScreenState extends State<LogsScreen>
       ) {
     return Column(
       children: [
+
         Row(
           children: [
-            _buildInfoItem(
-              Icons.tag,
-              "SL",
-              log.id.toString(),
-            ),
             _buildInfoItem(
               Icons.badge_rounded,
-              "Worker",
-              log.workerId
-                  .toUpperCase(),
+              "Worker ID",
+              log.workerId.toUpperCase(),
             ),
-          ],
-        ),
-        const SizedBox(
-          height: 12,
-        ),
-        Row(
-          children: [
+
             _buildInfoItem(
-              Icons.water_drop_rounded,
-              "Wet RFID",
-              log.wetWasteRfid ?? "-",
-            ),
-            _buildInfoItem(
-              Icons.recycling_rounded,
-              "Dry RFID",
-              log.dryWasteRfid ?? "-",
+              Icons.person,
+              "Name",
+              log.citizenName ?? "-",
             ),
           ],
         ),
@@ -598,8 +613,33 @@ class _LogsScreenState extends State<LogsScreen>
               "Phone",
               log.phoneNumber ?? "-",
             ),
-            const Expanded(
-              child: SizedBox(),
+
+            _buildInfoItem(
+              Icons.verified,
+              "Status",
+              log.status,
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 12),
+
+        Row(
+          children: [
+            _buildInfoItem(
+              Icons.water_drop_rounded,
+              "Wet RFID",
+              log.wetWasteRfid.isEmpty
+                  ? "-"
+                  : log.wetWasteRfid,
+            ),
+
+            _buildInfoItem(
+              Icons.recycling_rounded,
+              "Dry RFID",
+              log.dryWasteRfid.isEmpty
+                  ? "-"
+                  : log.dryWasteRfid,
             ),
           ],
         ),
