@@ -257,8 +257,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: false,
-      backgroundColor:
-      const Color(0xFFF8F9FA),
+      backgroundColor: const Color(0xFFF8F9FA),
 
       appBar: AppBar(
         toolbarHeight: 62,
@@ -316,173 +315,178 @@ class _ReaderScreenState extends State<ReaderScreen> {
       ),
 
       body: SewacBackground(
-        child: Padding(
-          padding:
-          const EdgeInsets.fromLTRB(
+        child: SingleChildScrollView(
+          keyboardDismissBehavior:
+          ScrollViewKeyboardDismissBehavior.onDrag,
+
+
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
               24,
               110,
               24,
-              24),
+              24,
+            ),
 
-          child: Column(
-            crossAxisAlignment:
-            CrossAxisAlignment
-                .start,
+            child: Column(
+              crossAxisAlignment:
+              CrossAxisAlignment.start,
 
-            children: [
+              children: [
 
-              const Text(
-                "Reader",
-
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight:
-                  FontWeight.bold,
-                  color:
-                  Color(0xFF2C3E50),
-                ),
-              ),
-
-              const SizedBox(
-                  height: 32),
-
-              Container(
-                width:
-                double.infinity,
-
-                padding:
-                const EdgeInsets.all(
-                    24),
-
-                decoration:
-                BoxDecoration(
-                  color: Colors.white,
-
-                  borderRadius:
-                  BorderRadius.circular(
-                      28),
+                const Text(
+                  "Reader",
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF2C3E50),
+                  ),
                 ),
 
-                child: Column(
-                  children: [
+                const SizedBox(
+                  height: 18,
+                ),
 
-                    const Icon(
-                      Icons.nfc_rounded,
-                      size: 64,
-                      color:
-                      Color(0xFF4CAF50),
-                    ),
+                Container(
+                  width: double.infinity,
 
-                    const SizedBox(
-                        height: 16),
+                  padding:
+                  const EdgeInsets.all(24),
 
-                    const Text(
-                      "Tap RFID Card",
+                  decoration: BoxDecoration(
+                    color: Colors.white,
 
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight:
-                        FontWeight.w700,
+                    borderRadius:
+                    BorderRadius.circular(28),
+                  ),
+
+                  child: Column(
+                    children: [
+
+                      const Icon(
+                        Icons.nfc_rounded,
+                        size: 64,
+                        color:
+                        Color(0xFF4CAF50),
                       ),
-                    ),
 
-                    const SizedBox(
-                        height: 24),
+                      const SizedBox(
+                        height: 16,
+                      ),
 
-                    TextFormField(
-                      controller:
-                      _rfidController,
-
-                      autofocus: true,
-                      showCursor: true,
-
-                      decoration:
-                      InputDecoration(
-                        hintText:
-                        "Tap RFID card to scan...",
-
-                        filled: true,
-                        fillColor:
-                        Colors.white,
-
-                        contentPadding:
-                        const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 16,
-                        ),
-
-                        border:
-                        OutlineInputBorder(
-                          borderRadius:
-                          BorderRadius.circular(
-                              16),
+                      const Text(
+                        "Tap RFID Card",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight:
+                          FontWeight.w700,
                         ),
                       ),
-                    ),
 
-                    const SizedBox(
-                        height: 24),
+                      const SizedBox(
+                        height: 24,
+                      ),
 
-                    SizedBox(
-                      width:
-                      double.infinity,
+                      TextFormField(
+                        controller:
+                        _rfidController,
 
-                      child: Container(
+                        autofocus: true,
+                        showCursor: true,
+
                         decoration:
-                        BoxDecoration(
-                          borderRadius:
-                          BorderRadius.circular(
-                              16),
+                        InputDecoration(
+                          hintText:
+                          "Tap RFID card to scan...",
 
-                          gradient:
-                          const LinearGradient(
-                            colors: [
-                              Color(
-                                  0xFFFFA000),
-                              Color(
-                                  0xFF4CAF50),
-                            ],
+                          filled: true,
+                          fillColor:
+                          Colors.white,
+
+                          contentPadding:
+                          const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 16,
+                          ),
+
+                          border:
+                          OutlineInputBorder(
+                            borderRadius:
+                            BorderRadius.circular(
+                                16),
                           ),
                         ),
+                      ),
 
-                        child:
-                        ElevatedButton(
+                      const SizedBox(
+                        height: 24,
+                      ),
 
-                          onPressed:
-                          _isSaving
-                              ? null
-                              : _saveRFID,
+                      SizedBox(
+                        width:
+                        double.infinity,
 
-                          style:
-                          ElevatedButton
-                              .styleFrom(
-                            backgroundColor:
-                            Colors.transparent,
+                        child: Container(
+                          decoration:
+                          BoxDecoration(
+                            borderRadius:
+                            BorderRadius.circular(
+                                16),
 
-                            shadowColor:
-                            Colors.transparent,
+                            gradient:
+                            const LinearGradient(
+                              colors: [
+                                Color(
+                                    0xFFFFA000),
+                                Color(
+                                    0xFF4CAF50),
+                              ],
+                            ),
                           ),
 
                           child:
-                          const Text(
-                            "SAVE",
+                          ElevatedButton(
+
+                            onPressed:
+                            _isSaving
+                                ? null
+                                : _saveRFID,
 
                             style:
-                            TextStyle(
-                              color:
-                              Colors.white,
+                            ElevatedButton
+                                .styleFrom(
+                              backgroundColor:
+                              Colors.transparent,
+
+                              shadowColor:
+                              Colors.transparent,
+                            ),
+
+                            child:
+                            const Text(
+                              "SAVE",
+
+                              style:
+                              TextStyle(
+                                color:
+                                Colors.white,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
+    ),
     );
   }
 }

@@ -496,7 +496,7 @@ class _LoginScreenState
 
                           const Text(
 
-                            "Enterprise Waste Management Portal",
+                            "Rfid Management Portal",
 
                             style:
                             TextStyle(
@@ -671,30 +671,62 @@ class _LoginScreenState
                                     ),
                                   ),
 
-                                  Row(
-                                    children: [
-                                      Checkbox(
-                                        value: _rememberMe,
-                                        activeColor: const Color(0xFF4CAF50),
-                                        onChanged: (value) {
-                                          setState(() {
-                                            _rememberMe = value ?? false;
-                                          });
-                                        },
-                                      ),
-                                      const Text(
-                                        "Remember Me",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w500,
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: 4,
+                                      bottom: 8,
+                                    ),
+
+                                    child: Row(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.center,
+
+                                      children: [
+
+                                        Transform.scale(
+                                          scale: 0.95,
+
+                                          child: Checkbox(
+                                            value: _rememberMe,
+
+                                            activeColor:
+                                            const Color(0xFF4CAF50),
+
+                                            visualDensity:
+                                            VisualDensity.compact,
+
+                                            materialTapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
+
+                                            onChanged: (value) {
+                                              setState(() {
+                                                _rememberMe =
+                                                    value ?? false;
+                                              });
+                                            },
+                                          ),
                                         ),
-                                      ),
-                                    ],
+
+                                        const SizedBox(
+                                          width: 8,
+                                        ),
+
+                                        const Text(
+                                          "Remember Me",
+
+                                          style: TextStyle(
+                                            fontWeight:
+                                            FontWeight.w500,
+
+                                            fontSize: 15,
+
+                                            color:
+                                            Color(0xFF546E7A),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-
-                                  const SizedBox(
-                                      height:
-                                      25),
-
                                   FadeTransition(
 
                                     opacity:

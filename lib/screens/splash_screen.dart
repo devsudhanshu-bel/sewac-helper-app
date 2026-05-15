@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'login_screen.dart';
+import 'main_navigation_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -76,37 +79,64 @@ class _SplashScreenState
 
     _logoController.forward();
 
+    _navigateNext();
+  }
+
+  Future<void>
+  _navigateNext() async {
+
+    final prefs =
+    await SharedPreferences
+        .getInstance();
+
+    final isLoggedIn =
+        prefs.getBool(
+          "isLoggedIn",
+        ) ?? false;
+
     Timer(
-      const Duration(seconds: 3),
+      const Duration(
+        seconds: 3,
+      ),
+
           () {
-        if (mounted) {
-          Navigator.pushReplacement(
-            context,
-            PageRouteBuilder(
-              pageBuilder:
-                  (_, __, ___) =>
-              const LoginScreen(),
 
-              transitionsBuilder:
-                  (
-                  context,
-                  animation,
-                  secondaryAnimation,
-                  child,
-                  ) {
-                return FadeTransition(
-                  opacity: animation,
-                  child: child,
-                );
-              },
-
-              transitionDuration:
-              const Duration(
-                milliseconds: 700,
-              ),
-            ),
-          );
+        if (!mounted) {
+          return;
         }
+
+        Navigator.pushReplacement(
+          context,
+
+          PageRouteBuilder(
+
+            pageBuilder:
+                (_, __, ___) =>
+
+            isLoggedIn
+                ? const MainNavigationScreen()
+                : const LoginScreen(),
+
+            transitionsBuilder:
+                (
+                context,
+                animation,
+                secondaryAnimation,
+                child,
+                ) {
+
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+
+            transitionDuration:
+            const Duration(
+              milliseconds: 700,
+            ),
+          ),
+        );
       },
     );
   }
@@ -137,7 +167,6 @@ class _SplashScreenState
           return Stack(
             children: [
 
-              // Background circles
               Positioned(
                 top: -80,
                 right: -60,
@@ -195,19 +224,16 @@ class _SplashScreenState
 
                       children: [
 
-                        // Logo glow
                         Container(
                           padding:
-                          const EdgeInsets
-                              .all(
+                          const EdgeInsets.all(
                             22,
                           ),
 
                           decoration:
                           BoxDecoration(
                             shape:
-                            BoxShape
-                                .circle,
+                            BoxShape.circle,
 
                             boxShadow: [
 
@@ -242,14 +268,9 @@ class _SplashScreenState
                                 stackTrace,
                                 ) {
                               return const Icon(
-                                Icons
-                                    .recycling_rounded,
-
-                                size:
-                                120,
-
-                                color:
-                                Color(
+                                Icons.recycling_rounded,
+                                size: 120,
+                                color: Color(
                                   0xFF4CAF50,
                                 ),
                               );
@@ -266,20 +287,12 @@ class _SplashScreenState
 
                           style:
                           TextStyle(
-                            fontSize:
-                            34,
-
+                            fontSize: 34,
                             fontWeight:
-                            FontWeight
-                                .w900,
-
-                            letterSpacing:
-                            6,
-
+                            FontWeight.w900,
+                            letterSpacing: 6,
                             color:
-                            Color(
-                              0xFF1A237E,
-                            ),
+                            Color(0xFF1A237E),
                           ),
                         ),
 
@@ -292,19 +305,12 @@ class _SplashScreenState
 
                           style:
                           TextStyle(
-                            fontSize:
-                            13,
-
-                            letterSpacing:
-                            5,
-
+                            fontSize: 13,
+                            letterSpacing: 5,
                             fontWeight:
-                            FontWeight
-                                .w600,
-
+                            FontWeight.w600,
                             color:
-                            Colors
-                                .blueGrey,
+                            Colors.blueGrey,
                           ),
                         ),
                       ],

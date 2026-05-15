@@ -3,8 +3,8 @@
     <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
-        android:label="sewac_helper_app"
         android:name="${applicationName}"
+        android:label="SEWAC Helper"
         android:icon="@mipmap/ic_launcher">
 
         <activity
@@ -30,7 +30,7 @@
 
         <meta-data
             android:name="flutterEmbedding"
-            android:value="2" />
+            android:value="2"/>
 
     </application>
 
