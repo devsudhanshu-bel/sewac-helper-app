@@ -9,50 +9,89 @@ const prisma =
 // ======================================
 // CREATE SURVEY
 // ======================================
+
 const createSurvey =
   async (data) => {
 
-    const survey =
-      await prisma.survey.create({
+    return prisma.survey.create({
 
-        data: {
+      data: {
 
-          city: "Bangalore",
+        city:
+          "Bangalore",
 
-          ward: "Ibbanuru-174",
+        ward:
+          "Ibbanuru-174",
 
-          area:
-            data.area || null,
+        area:
+          data.area || null,
 
-          wasteGeneratorTypes:
-            data.wasteGeneratorTypes || null,
+        wasteGeneratorTypes:
+          data.wasteGeneratorTypes || null,
 
-          houseNumber:
-            data.houseNumber || null,
+        houseNumber:
+          data.houseNumber || null,
 
-          floorNumber:
-            data.floorNumber || null,
+        floorNumber:
+          data.floorNumber || null,
 
-          householdType:
-            data.householdType || null,
+        householdType:
+          data.householdType || null,
 
-          personName:
-            data.personName || null,
+        personName:
+          data.personName || null,
 
-          contactNumber:
-            data.contactNumber || null,
+        contactNumber:
+          data.contactNumber || null,
 
-          numberOfPeople:
-            data.numberOfPeople || null,
+        numberOfPeople:
+          data.numberOfPeople || null,
 
-          buildingPhoto:
-            data.buildingPhoto || null,
+        buildingPhoto:
+          data.buildingPhoto || null,
 
-        },
+      },
 
-      });
+      select: {
 
-    return survey;
+        id: true,
+
+        personName: true,
+
+        contactNumber: true,
+
+        createdAt: true,
+
+      },
+
+    });
+
+};
+
+
+
+// ======================================
+// FIND SURVEY BY PHONE NUMBER
+// ======================================
+
+const findByPhone =
+  async (contactNumber) => {
+
+    return prisma.survey.findFirst({
+
+      where: {
+
+        contactNumber,
+
+      },
+
+      select: {
+
+        id: true,
+
+      },
+
+    });
 
 };
 
@@ -61,21 +100,19 @@ const createSurvey =
 // ======================================
 // GET ALL SURVEYS
 // ======================================
+
 const getAllSurveys =
   async () => {
 
-    const surveys =
-      await prisma.survey.findMany({
+    return prisma.survey.findMany({
 
-        orderBy: {
+      orderBy: {
 
-          id: "desc",
+        createdAt: "desc",
 
-        },
+      },
 
-      });
-
-    return surveys;
+    });
 
 };
 
@@ -84,23 +121,57 @@ const getAllSurveys =
 // ======================================
 // GET SURVEY BY ID
 // ======================================
+
 const getSurveyById =
   async (id) => {
 
-    const survey =
-      await prisma.survey.findUnique({
+    return prisma.survey.findUnique({
 
-        where: {
+      where: {
 
-          id,
+        id,
 
-        },
+      },
 
-      });
-
-    return survey;
+    });
 
 };
+
+
+
+// ======================================
+// DELETE SURVEY
+// ======================================
+
+const deleteSurvey =
+  async (id) => {
+
+    return prisma.survey.delete({
+
+      where: {
+
+        id,
+
+      },
+
+    });
+
+};
+
+
+
+// ======================================
+// TOTAL SURVEY COUNT
+// ======================================
+
+const getSurveyCount =
+  async () => {
+
+    return prisma.survey.count();
+
+};
+
+
 
 
 
@@ -108,8 +179,14 @@ module.exports = {
 
   createSurvey,
 
+  findByPhone,
+
   getAllSurveys,
 
   getSurveyById,
+
+  deleteSurvey,
+
+  getSurveyCount,
 
 };

@@ -1,24 +1,53 @@
-const express = require("express");
+const express =
+  require("express");
 
-const cors = require("cors");
+const cors =
+  require("cors");
 
-const compression = require("compression");
+const compression =
+  require("compression");
 
-const helmet = require("helmet");
+const helmet =
+  require("helmet");
 
 
 
-// =============================
+// =====================================
+// RATE LIMITER IMPORTS
+// =====================================
+
+const {
+  globalLimiter,
+} = require(
+  "./middleware/rateLimiter"
+);
+
+
+
+// =====================================
 // APP INITIALIZATION
-// =============================
+// =====================================
 
 const app = express();
 
 
 
-// =============================
+// =====================================
+// TRUST PROXY
+// IMPORTANT FOR:
+// RENDER / RAILWAY / AWS / NGINX
+// =====================================
+
+app.set(
+  "trust proxy",
+  1
+);
+
+
+
+// =====================================
 // ROUTE IMPORTS
-// =============================
+// =====================================
 
 const authRoutes =
   require("./auth/auth.routes");
@@ -40,13 +69,15 @@ const remarksRoutes =
 
 const surveyRoutes =
   require("./survey/survey.routes");
+
 const masterRoutes =
   require("./master/master.routes");
 
 
-// =============================
+
+// =====================================
 // REDIS IMPORTS
-// =============================
+// =====================================
 
 const {
   connectRedis,
@@ -55,179 +86,210 @@ const {
 const redisTestRoute =
   require("./test/redis.test.route");
 
-// =============================
-// REDIS CONNECTION
-// =============================
 
-connectRedis().catch(console.error);
 
-// =============================
+// =====================================
 // MIDDLEWARE IMPORTS
-// =============================
+// =====================================
 
 const loggerMiddleware =
-  require("./middleware/logger.middleware");
+  require(
+    "./middleware/logger.middleware"
+  );
 
 const errorMiddleware =
-  require("./middleware/error.middleware");
+  require(
+    "./middleware/error.middleware"
+  );
 
 
 
-// =============================
-// SECURITY MIDDLEWARES
-// =============================
+// =====================================
+// CONNECT REDIS
+// =====================================
 
-app.use(helmet());
+connectRedis().catch(
+  console.error
+);
 
 
 
-// =============================
-// CORS CONFIGURATION
-// =============================
+// =====================================
+// SECURITY MIDDLEWARE
+// =====================================
 
-app.use(cors({
-
-  origin: "*",
-
-  methods: [
-    "GET",
-    "POST",
-    "PUT",
-    "DELETE",
-    "PATCH",
-  ],
-
-  credentials: true,
-
-}));
-
-
-
-// =============================
-// COMPRESSION MIDDLEWARE
-// =============================
-
-app.use(compression({
-
-  level: 6,
-
-  threshold: 1024,
-
-}));
-
-
-
-// =============================
-// BODY PARSER MIDDLEWARES
-// =============================
-
-app.use(express.json({
-
-  limit: "10mb",
-
-}));
-
-
-
-app.use(express.urlencoded({
-
-  extended: true,
-
-  limit: "10mb",
-
-}));
-
-
-
-// =============================
-// LOGGER MIDDLEWARE
-// =============================
-
-app.use(loggerMiddleware);
-
-
-
-// =============================
-// REQUEST TIME LOGGER
-// =============================
-
-app.use((req, res, next) => {
-
-  req.requestTime =
-    new Date().toISOString();
-
-  next();
-
-});
-
-
-
-// =============================
-// HEALTH CHECK ROUTE
-// =============================
-
-app.get("/", (req, res) => {
-
-  return res.status(200).json({
-
-    success: true,
-
-    message:
-      "SEWAC Helper Backend Running Successfully",
-
-    version: "1.0.0",
-
-    timestamp:
-      new Date().toISOString(),
-
-    services: {
-
-      api: true,
-
-      socket: true,
-
-      redis: true,
-
-      database: true,
-
-    },
-
-  });
-
-});
-
-
-
-// =============================
-// API VERSION PREFIX
-// =============================
-
-const API_PREFIX = "/api/v1";
-
-
-
-// =============================
-// API ROUTES
-// =============================
-
-
-/*
-|--------------------------------------------------------------------------
-| Redis Test Routes
-|--------------------------------------------------------------------------
-*/
 app.use(
-  "/api/v1/test",
+  helmet()
+);
+
+
+
+// =====================================
+// GLOBAL RATE LIMITER
+// =====================================
+
+app.use(
+  globalLimiter
+);
+
+
+
+// =====================================
+// COMPRESSION MIDDLEWARE
+// =====================================
+
+app.use(
+  compression({
+
+    level: 6,
+
+    threshold: 1024,
+
+  })
+);
+
+
+
+// =====================================
+// CORS CONFIGURATION
+// =====================================
+
+app.use(
+  cors({
+
+    origin: "*",
+
+    methods: [
+      "GET",
+      "POST",
+      "PUT",
+      "DELETE",
+      "PATCH",
+    ],
+
+    credentials: true,
+
+  })
+);
+
+
+
+// =====================================
+// BODY PARSER MIDDLEWARES
+// =====================================
+
+app.use(
+  express.json({
+
+    limit: "10mb",
+
+  })
+);
+
+
+
+app.use(
+  express.urlencoded({
+
+    extended: true,
+
+    limit: "10mb",
+
+  })
+);
+
+
+
+// =====================================
+// LOGGER MIDDLEWARE
+// =====================================
+
+app.use(
+  loggerMiddleware
+);
+
+
+
+// =====================================
+// REQUEST TIME LOGGER
+// =====================================
+
+app.use(
+  (req, res, next) => {
+
+    req.requestTime =
+      new Date().toISOString();
+
+    next();
+
+  }
+);
+
+
+
+// =====================================
+// HEALTH CHECK ROUTE
+// =====================================
+
+app.get(
+  "/",
+  (req, res) => {
+
+    return res.status(200).json({
+
+      success: true,
+
+      message:
+        "SEWAC Helper Backend Running Successfully",
+
+      version: "1.0.0",
+
+      timestamp:
+        new Date().toISOString(),
+
+      services: {
+
+        api: true,
+
+        socket: true,
+
+        redis: true,
+
+        database: true,
+
+      },
+
+    });
+
+  }
+);
+
+
+
+// =====================================
+// API VERSION PREFIX
+// =====================================
+
+const API_PREFIX =
+  "/api/v1";
+
+
+
+// =====================================
+// REDIS TEST ROUTES
+// =====================================
+
+app.use(
+  `${API_PREFIX}/test`,
   redisTestRoute
 );
 
 
 
-/*
-|--------------------------------------------------------------------------
-| Authentication Routes
-|--------------------------------------------------------------------------
-*/
+// =====================================
+// AUTH ROUTES
+// =====================================
+
 app.use(
   `${API_PREFIX}/auth`,
   authRoutes
@@ -235,12 +297,10 @@ app.use(
 
 
 
+// =====================================
+// RFID ROUTES
+// =====================================
 
-/*
-|--------------------------------------------------------------------------
-| RFID Routes
-|--------------------------------------------------------------------------
-*/
 app.use(
   `${API_PREFIX}/rfid`,
   rfidRoutes
@@ -248,12 +308,10 @@ app.use(
 
 
 
+// =====================================
+// PHONE ROUTES
+// =====================================
 
-/*
-|--------------------------------------------------------------------------
-| Phone Routes
-|--------------------------------------------------------------------------
-*/
 app.use(
   `${API_PREFIX}/phone`,
   phoneRoutes
@@ -261,12 +319,10 @@ app.use(
 
 
 
+// =====================================
+// TRACKING ROUTES
+// =====================================
 
-/*
-|--------------------------------------------------------------------------
-| Tracking Routes
-|--------------------------------------------------------------------------
-*/
 app.use(
   `${API_PREFIX}/tracking`,
   trackingRoutes
@@ -274,12 +330,10 @@ app.use(
 
 
 
+// =====================================
+// CITIZEN ROUTES
+// =====================================
 
-/*
-|--------------------------------------------------------------------------
-| Citizen Routes
-|--------------------------------------------------------------------------
-*/
 app.use(
   `${API_PREFIX}/citizen`,
   citizenRoutes
@@ -287,12 +341,10 @@ app.use(
 
 
 
+// =====================================
+// REMARKS ROUTES
+// =====================================
 
-/*
-|--------------------------------------------------------------------------
-| Remarks Routes
-|--------------------------------------------------------------------------
-*/
 app.use(
   `${API_PREFIX}/remarks`,
   remarksRoutes
@@ -300,57 +352,71 @@ app.use(
 
 
 
+// =====================================
+// SURVEY ROUTES
+// =====================================
 
-/*
-|--------------------------------------------------------------------------
-| Survey Routes
-|--------------------------------------------------------------------------
-*/
 app.use(
   `${API_PREFIX}/survey`,
   surveyRoutes
 );
+
+
+
+// =====================================
+// MASTER ROUTES
+// =====================================
 
 app.use(
   `${API_PREFIX}/master`,
   masterRoutes
 );
 
-// =============================
+
+
+// =====================================
 // 404 ROUTE HANDLER
-// =============================
+// =====================================
 
-app.use((req, res) => {
+app.use(
+  (req, res) => {
 
-  return res.status(404).json({
+    return res.status(404).json({
 
-    success: false,
+      success: false,
 
-    message: "Route Not Found",
+      message:
+        "Route Not Found",
 
-    path: req.originalUrl,
+      path:
+        req.originalUrl,
 
-    method: req.method,
+      method:
+        req.method,
 
-    timestamp:
-      new Date().toISOString(),
+      timestamp:
+        new Date().toISOString(),
 
-  });
+    });
 
-});
+  }
+);
 
 
 
-// =============================
+// =====================================
 // GLOBAL ERROR HANDLER
-// =============================
+// =====================================
 
-app.use(errorMiddleware);
+app.use(
+  errorMiddleware
+);
 
 
 
-// =============================
+// =====================================
 // EXPORT APP
-// =============================
+// =====================================
 
-module.exports = app;
+module.exports =
+  app;

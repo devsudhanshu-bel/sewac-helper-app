@@ -10,6 +10,60 @@ const streamifier =
 
 
 // ======================================
+// CLOUDINARY STREAM UPLOAD
+// ======================================
+
+const uploadToCloudinary =
+  (buffer) => {
+
+    return new Promise(
+
+      (resolve, reject) => {
+
+        const stream =
+          cloudinary.uploader.upload_stream(
+
+            {
+              folder:
+                "sewac-surveys",
+
+              resource_type:
+                "image",
+
+              quality:
+                "auto:good",
+
+              fetch_format:
+                "auto",
+            },
+
+            (error, result) => {
+
+              if (error) {
+
+                return reject(error);
+
+              }
+
+              resolve(result);
+
+            }
+          );
+
+
+
+        streamifier
+          .createReadStream(buffer)
+          .pipe(stream);
+
+      }
+    );
+
+};
+
+
+
+// ======================================
 // CREATE SURVEY
 // ======================================
 
@@ -18,72 +72,71 @@ const createSurvey =
 
     try {
 
+      const {
+        contactNumber,
+      } = req.body;
+
+
+
+      // ======================================
+      // VALIDATE PHONE NUMBER
+      // ======================================
+
+      if (!contactNumber) {
+
+        return res.status(400).json({
+
+          success: false,
+
+          message:
+            "Contact number is required",
+
+        });
+
+      }
+
+
+
+      // ======================================
+      // CHECK DUPLICATE SURVEY
+      // ======================================
+
+      const existingSurvey =
+        await surveyService.findByPhone(
+          contactNumber
+        );
+
+
+
+      if (existingSurvey) {
+
+        return res.status(409).json({
+
+          success: false,
+
+          message:
+            "Survey already submitted with this phone number",
+
+        });
+
+      }
+
+
+
+      // ======================================
+      // IMAGE UPLOAD
+      // ======================================
+
       let imageUrl = null;
 
 
 
-      // ======================================
-      // UPLOAD IMAGE TO CLOUDINARY
-      // ======================================
-
       if (req.file) {
 
-        const streamUpload =
-          () => {
-
-            return new Promise(
-              (
-                resolve,
-                reject
-              ) => {
-
-                const stream =
-                  cloudinary.uploader.upload_stream(
-
-                    {
-
-                      folder:
-                        "sewac-surveys",
-
-                    },
-
-                    (
-                      error,
-                      result
-                    ) => {
-
-                      if (result) {
-
-                        resolve(result);
-
-                      } else {
-
-                        reject(error);
-
-                      }
-
-                    }
-                  );
-
-
-
-                streamifier
-                  .createReadStream(
-                    req.file.buffer
-                  )
-                  .pipe(stream);
-
-              }
-            );
-
-          };
-
-
-
         const uploadedImage =
-          await streamUpload();
-
-
+          await uploadToCloudinary(
+            req.file.buffer
+          );
 
         imageUrl =
           uploadedImage.secure_url;
@@ -93,7 +146,7 @@ const createSurvey =
 
 
       // ======================================
-      // CREATE SURVEY DATA
+      // PREPARE SURVEY DATA
       // ======================================
 
       const surveyData = {
@@ -107,21 +160,26 @@ const createSurvey =
 
 
 
-      const result =
-        await surveyService.createSurvey(
-          surveyData
-        );
+      // ======================================
+      // SAVE TO DATABASE
+      // ======================================
+
+      await surveyService.createSurvey(
+        surveyData
+      );
 
 
+
+      // ======================================
+      // FAST RESPONSE
+      // ======================================
 
       return res.status(201).json({
 
         success: true,
 
         message:
-          "Survey created successfully",
-
-        data: result,
+          "Survey submitted successfully",
 
       });
 
@@ -132,7 +190,37 @@ const createSurvey =
         error
       );
 
-      next(error);
+
+
+      // ======================================
+      // PRISMA UNIQUE ERROR
+      // ======================================
+
+      if (
+        error.code === "P2002"
+      ) {
+
+        return res.status(409).json({
+
+          success: false,
+
+          message:
+            "Phone number already exists",
+
+        });
+
+      }
+
+
+
+      return res.status(500).json({
+
+        success: false,
+
+        message:
+          "Internal server error",
+
+      });
 
     }
 
@@ -152,13 +240,17 @@ const getAllSurveys =
       const result =
         await surveyService.getAllSurveys();
 
+
+
       return res.status(200).json({
 
         success: true,
 
-        total: result.length,
+        total:
+          result.length,
 
-        data: result,
+        data:
+          result,
 
       });
 
@@ -169,7 +261,16 @@ const getAllSurveys =
         error
       );
 
-      next(error);
+
+
+      return res.status(500).json({
+
+        success: false,
+
+        message:
+          "Internal server error",
+
+      });
 
     }
 
@@ -186,7 +287,10 @@ const getSurveyById =
 
     try {
 
-      const { id } = req.params;
+      const { id } =
+        req.params;
+
+
 
       const result =
         await surveyService.getSurveyById(
@@ -214,7 +318,8 @@ const getSurveyById =
 
         success: true,
 
-        data: result,
+        data:
+          result,
 
       });
 
@@ -225,7 +330,115 @@ const getSurveyById =
         error
       );
 
-      next(error);
+
+
+      return res.status(500).json({
+
+        success: false,
+
+        message:
+          "Internal server error",
+
+      });
+
+    }
+
+};
+
+
+
+// ======================================
+// DELETE SURVEY
+// ======================================
+
+const deleteSurvey =
+  async (req, res, next) => {
+
+    try {
+
+      const { id } =
+        req.params;
+
+
+
+      await surveyService.deleteSurvey(
+        Number(id)
+      );
+
+
+
+      return res.status(200).json({
+
+        success: true,
+
+        message:
+          "Survey deleted successfully",
+
+      });
+
+    } catch (error) {
+
+      console.error(
+        "DELETE SURVEY ERROR:",
+        error
+      );
+
+
+
+      return res.status(500).json({
+
+        success: false,
+
+        message:
+          "Internal server error",
+
+      });
+
+    }
+
+};
+
+
+
+// ======================================
+// GET TOTAL SURVEY COUNT
+// ======================================
+
+const getSurveyCount =
+  async (req, res, next) => {
+
+    try {
+
+      const total =
+        await surveyService.getSurveyCount();
+
+
+
+      return res.status(200).json({
+
+        success: true,
+
+        total,
+
+      });
+
+    } catch (error) {
+
+      console.error(
+        "GET SURVEY COUNT ERROR:",
+        error
+      );
+
+
+
+      return res.status(500).json({
+
+        success: false,
+
+        message:
+          "Internal server error",
+
+      });
 
     }
 
@@ -242,5 +455,9 @@ module.exports = {
   getAllSurveys,
 
   getSurveyById,
+
+  deleteSurvey,
+
+  getSurveyCount,
 
 };
