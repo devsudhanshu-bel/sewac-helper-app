@@ -88,7 +88,7 @@ const generateNextSLNO =
     return String(nextNumber)
       .padStart(8, "0");
 
-};
+  };
 
 
 
@@ -114,9 +114,14 @@ const createRFIDService =
       rfid.trim() === ""
     ) {
 
-      throw new Error(
-        "RFID code is required"
-      );
+      return {
+
+        success: false,
+
+        message:
+          "RFID code is required",
+
+      };
 
     }
 
@@ -140,11 +145,28 @@ const createRFIDService =
 
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | RFID ALREADY EXISTS
+    |--------------------------------------------------------------------------
+    */
     if (existingRFID) {
 
-      throw new Error(
-        "RFID already exists"
-      );
+      return {
+
+        success: false,
+
+        message:
+          "RFID already exists",
+
+        data: {
+
+          slno:
+            existingRFID.slno,
+
+        },
+
+      };
 
     }
 
@@ -190,9 +212,24 @@ const createRFIDService =
 
 
 
-    return newRFID;
+    /*
+    |--------------------------------------------------------------------------
+    | SUCCESS RESPONSE
+    |--------------------------------------------------------------------------
+    */
+    return {
 
-};
+      success: true,
+
+      message:
+        "RFID created successfully",
+
+      data:
+        newRFID,
+
+    };
+
+  };
 
 
 
@@ -214,7 +251,7 @@ const getAllRFIDMappingsService =
 
     });
 
-};
+  };
 
 
 
@@ -252,7 +289,7 @@ const getUnmappedRFIDsService =
 
     });
 
-};
+  };
 
 
 
@@ -336,7 +373,9 @@ const mapRFIDService =
       |--------------------------------------------------------------------------
       */
       throw new Error(
-        "RFID already mapped to another citizen"
+
+        `RFID already assigned to ${existingRFID.phoneNumber}`
+
       );
 
     }
@@ -415,7 +454,7 @@ const mapRFIDService =
 
     return updatedRFID;
 
-};
+  };
 
 
 
@@ -454,7 +493,7 @@ const getRFIDByValueService =
 
     return data;
 
-};
+  };
 
 
 
@@ -564,7 +603,7 @@ const getCitizenRFIDsService =
 
     };
 
-};
+  };
 
 
 

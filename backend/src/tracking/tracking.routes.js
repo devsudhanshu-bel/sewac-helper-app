@@ -5,6 +5,9 @@ const router = express.Router();
 const verifyToken =
   require("../auth/auth.middleware");
 
+const upload =
+  require("../middleware/upload.middleware");
+
 const {
 
   createTrackingLog,
@@ -28,20 +31,43 @@ const {
 | POST /api/v1/tracking/create
 |--------------------------------------------------------------------------
 |
+| IMPORTANT:
+| Use multipart/form-data
+|
+|--------------------------------------------------------------------------
+|
 | FOUND BODY:
-| {
-|   "slno": "00000001",
-|   "phoneNumber": "9876543210",
-|   "citizenName": "Ravi Kumar",
-|   "wasteType": "DRY",
-|   "status": "FOUND"
-| }
+|
+| slno          -> text
+| phoneNumber   -> text
+| citizenName   -> text
+| drySlno       -> text
+| wetSlno       -> text
+| status        -> FOUND
+|
+|--------------------------------------------------------------------------
 |
 | NOT_FOUND BODY:
-| {
-|   "status": "NOT_FOUND",
-|   "remarks": "Citizen shifted"
-| }
+|
+| status        -> NOT_FOUND
+| address       -> text
+| buildingNo    -> text
+| floorNo       -> text
+| remarks       -> text
+| latitude      -> text
+| longitude     -> text
+| photo         -> file
+|
+|--------------------------------------------------------------------------
+|
+| Cloudinary automatically uploads:
+|
+| req.file.path
+|
+| and stores URL inside:
+|
+| photoUrl
+|
 |--------------------------------------------------------------------------
 */
 router.post(
@@ -49,6 +75,8 @@ router.post(
   "/create",
 
   verifyToken,
+
+  upload.single("photo"),
 
   createTrackingLog
 
@@ -108,7 +136,9 @@ router.get(
 |--------------------------------------------------------------------------
 |
 | Example:
+|
 | /tracking/status/FOUND
+|
 | /tracking/status/NOT_FOUND
 |--------------------------------------------------------------------------
 */

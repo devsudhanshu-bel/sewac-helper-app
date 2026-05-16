@@ -28,16 +28,54 @@ const createTrackingLog = async (
 
     const {
 
+      /*
+      |--------------------------------------------------------------------------
+      | CITIZEN
+      |--------------------------------------------------------------------------
+      */
+      slno,
       phoneNumber,
-
       citizenName,
 
-      drySlno,
 
+
+      /*
+      |--------------------------------------------------------------------------
+      | RFID
+      |--------------------------------------------------------------------------
+      */
+      drySlno,
       wetSlno,
 
-      status,
 
+
+      /*
+      |--------------------------------------------------------------------------
+      | NOT FOUND DETAILS
+      |--------------------------------------------------------------------------
+      */
+      address,
+      buildingNo,
+      floorNo,
+
+
+
+      /*
+      |--------------------------------------------------------------------------
+      | LOCATION
+      |--------------------------------------------------------------------------
+      */
+      latitude,
+      longitude,
+
+
+
+      /*
+      |--------------------------------------------------------------------------
+      | STATUS
+      |--------------------------------------------------------------------------
+      */
+      status,
       remarks,
 
     } = req.body;
@@ -53,6 +91,20 @@ const createTrackingLog = async (
     */
     const workerId =
       req.user.username;
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | CLOUDINARY PHOTO URL
+    |--------------------------------------------------------------------------
+    */
+    const photoUrl =
+      req.file
+        ? req.file.path
+        : null;
 
 
 
@@ -157,11 +209,17 @@ const createTrackingLog = async (
 
       if (
 
-        !phoneNumber ||
+        !address ||
 
-        !citizenName ||
+        !buildingNo ||
 
-        !remarks
+        !floorNo ||
+
+        !remarks ||
+
+        latitude === undefined ||
+
+        longitude === undefined
 
       ) {
 
@@ -170,7 +228,7 @@ const createTrackingLog = async (
           success: false,
 
           message:
-            "citizenName, phoneNumber and remarks are required for NOT_FOUND status",
+            "address, buildingNo, floorNo, remarks, latitude and longitude are required for NOT_FOUND status",
 
         });
       }
@@ -195,7 +253,6 @@ const createTrackingLog = async (
         | WORKER
         |--------------------------------------------------------------------------
         */
-
         workerId,
 
 
@@ -206,6 +263,10 @@ const createTrackingLog = async (
         | CITIZEN
         |--------------------------------------------------------------------------
         */
+        slno:
+          slno || null,
+
+
 
         phoneNumber:
           phoneNumber || null,
@@ -223,7 +284,6 @@ const createTrackingLog = async (
         | RFID SNAPSHOT
         |--------------------------------------------------------------------------
         */
-
         drySlno:
           status === "FOUND"
             ? drySlno
@@ -241,10 +301,63 @@ const createTrackingLog = async (
 
         /*
         |--------------------------------------------------------------------------
+        | NOT FOUND DETAILS
+        |--------------------------------------------------------------------------
+        */
+        address:
+          status === "NOT_FOUND"
+            ? address
+            : null,
+
+
+
+        buildingNo:
+          status === "NOT_FOUND"
+            ? buildingNo
+            : null,
+
+
+
+        floorNo:
+          status === "NOT_FOUND"
+            ? floorNo
+            : null,
+
+
+
+        photoUrl:
+          status === "NOT_FOUND"
+            ? photoUrl
+            : null,
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | GEO LOCATION
+        |--------------------------------------------------------------------------
+        */
+        latitude:
+          status === "NOT_FOUND"
+            ? parseFloat(latitude)
+            : null,
+
+
+
+        longitude:
+          status === "NOT_FOUND"
+            ? parseFloat(longitude)
+            : null,
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
         | STATUS
         |--------------------------------------------------------------------------
         */
-
         status,
 
 
@@ -255,7 +368,6 @@ const createTrackingLog = async (
         | REMARKS
         |--------------------------------------------------------------------------
         */
-
         remarks:
           remarks || null,
 

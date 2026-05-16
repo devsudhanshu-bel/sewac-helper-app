@@ -108,9 +108,20 @@ model Moderator {
 
 /*
 |--------------------------------------------------------------------------
-| TRACKING LOG
+| ENUMS
 |--------------------------------------------------------------------------
-| Verification Snapshot Log
+*/
+
+enum TrackingStatus {
+  FOUND
+  NOT_FOUND
+}
+
+
+
+/*
+|--------------------------------------------------------------------------
+| TRACKING LOG
 |--------------------------------------------------------------------------
 */
 
@@ -154,11 +165,37 @@ model TrackingLog {
 
   /*
   |--------------------------------------------------------------------------
+  | NOT FOUND DETAILS
+  |--------------------------------------------------------------------------
+  */
+
+  address String?
+
+  buildingNo String?
+
+  floorNo String?
+
+  photoUrl String?
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | GEO LOCATION
+  |--------------------------------------------------------------------------
+  */
+
+  latitude Float?
+
+  longitude Float?
+
+
+  /*
+  |--------------------------------------------------------------------------
   | STATUS
   |--------------------------------------------------------------------------
   */
 
-  status String @default("FOUND")
+  status TrackingStatus @default(FOUND)
 
   remarks String?
 
@@ -170,64 +207,8 @@ model TrackingLog {
   */
 
   createdAt DateTime @default(now())
-}
 
-
-
-
-
-/*
-|--------------------------------------------------------------------------
-| REMARK
-|--------------------------------------------------------------------------
-*/
-
-model Remark {
-
-  id Int @id @default(autoincrement())
-
-  remark String
-
-  createdAt DateTime @default(now())
-}
-
-
-
-
-
-/*
-|--------------------------------------------------------------------------
-| SURVEY
-|--------------------------------------------------------------------------
-*/
-
-model Survey {
-
-  city String?
-
-  ward String?
-
-  area String?
-
-  wasteGeneratorTypes String?
-
-  houseNumber String?
-
-  floorNumber String?
-
-  householdType String?
-
-  personName String?
-
-  contactNumber String?
-
-  numberOfPeople String?
-
-  buildingPhoto String?
-
-  id Int @id @default(autoincrement())
-
-  @@map("survey_attribute_specific")
+  updatedAt DateTime @updatedAt
 }
 
 
