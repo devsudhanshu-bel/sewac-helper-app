@@ -6,6 +6,7 @@ import '../services/tracking_service.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../widgets/sewac_header.dart';
 
 class LogsScreen extends StatefulWidget {
   const LogsScreen({super.key});
@@ -184,59 +185,8 @@ class _LogsScreenState extends State<LogsScreen>
     return Scaffold(
       extendBodyBehindAppBar: false,
       backgroundColor: const Color(0xFFF8F9FA),
-      appBar: AppBar(
-        toolbarHeight: 62,
-        leadingWidth: 70,
-
-        backgroundColor: const Color(0xFFF8FBF8),
-        elevation: 0,
-        surfaceTintColor: Colors.transparent,
-        scrolledUnderElevation: 0,
-
-        centerTitle: true,
-
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(18),
-            bottomRight: Radius.circular(18),
-          ),
-        ),
-
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 16),
-          child: Image.asset(
-            "assets/images/logo.png",
-            height: 34,
-            width: 34,
-            fit: BoxFit.contain,
-          ),
-        ),
-
-        title: const Text(
-          "Helper App",
-          style: TextStyle(
-            color: Color(0xFF1A237E),
-            fontWeight: FontWeight.w700,
-            fontSize: 19,
-          ),
-        ),
-
-        actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: IconButton(
-              onPressed: _handleLogout,
-              icon: const Icon(
-                Icons.logout_rounded,
-                color: Color(0xFF1A237E),
-              ),
-            ),
-          ),
-        ],
+      appBar: SewacHeader(
+        onLogout: _handleLogout,
       ),
       body: SewacBackground(
         child: RefreshIndicator(

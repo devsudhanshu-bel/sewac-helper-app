@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
 import '../widgets/sewac_background.dart';
+import '../widgets/sewac_header.dart';
 
 class SurveyScreen extends StatefulWidget {
   const SurveyScreen({super.key});
@@ -46,6 +47,7 @@ class _SurveyScreenState
   String? _selectedWard;
 
   File? _capturedImage;
+  bool _isSubmitting = false;
 
   final ImagePicker _picker =
   ImagePicker();
@@ -375,17 +377,23 @@ class _SurveyScreenState
 
   Future<void> _submitSurvey() async {
 
+    if (_isSubmitting) {
+      return;
+    }
+
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    // Waste type validation
     final hasWasteSelected =
-    wasteOptions.values.any((value) => value);
+    wasteOptions.values.any(
+            (value) => value);
 
     if (!hasWasteSelected) {
 
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
         const SnackBar(
           content: Text(
             "Please select waste generator type",
@@ -396,18 +404,25 @@ class _SurveyScreenState
       return;
     }
 
-    // Selected waste types
+    setState(() {
+      _isSubmitting = true;
+    });
+
     final selectedWasteTypes =
     wasteOptions.entries
-        .where((entry) => entry.value)
-        .map((entry) => entry.key)
+        .where(
+            (entry) =>
+        entry.value)
+        .map(
+            (entry) =>
+        entry.key)
         .join(", ");
 
     try {
 
-      // Multipart request instead of JSON
       var request =
       http.MultipartRequest(
+
         "POST",
 
         Uri.parse(
@@ -415,7 +430,6 @@ class _SurveyScreenState
         ),
       );
 
-      // Normal form fields
       request.fields["city"] =
           _selectedCity ?? "";
 
@@ -423,7 +437,8 @@ class _SurveyScreenState
           _selectedWard ?? "";
 
       request.fields["area"] =
-          _areaController.text.trim();
+          _areaController.text
+              .trim();
 
       request.fields[
       "wasteGeneratorTypes"] =
@@ -431,11 +446,13 @@ class _SurveyScreenState
 
       request.fields[
       "houseNumber"] =
-          _buildingController.text.trim();
+          _buildingController.text
+              .trim();
 
       request.fields[
       "floorNumber"] =
-          _floorController.text.trim();
+          _floorController.text
+              .trim();
 
       request.fields[
       "householdType"] =
@@ -443,51 +460,60 @@ class _SurveyScreenState
 
       request.fields[
       "personName"] =
-          _nameController.text.trim();
+          _nameController.text
+              .trim();
 
       request.fields[
       "contactNumber"] =
-          _phoneController.text.trim();
+          _phoneController.text
+              .trim();
 
       request.fields[
       "numberOfPeople"] =
-          _peopleController.text.trim();
+          _peopleController.text
+              .trim();
 
-      // Image upload
-      if (_capturedImage != null) {
+      if (_capturedImage !=
+          null) {
 
         request.files.add(
 
-          await http.MultipartFile.fromPath(
+          await http.MultipartFile
+              .fromPath(
 
-            "buildingPhoto", // backend field name
+            "buildingPhoto",
 
-            _capturedImage!.path,
+            _capturedImage!
+                .path,
           ),
         );
       }
 
-      // Send request
       final streamedResponse =
       await request.send();
 
       final response =
-      await http.Response.fromStream(
+      await http.Response
+          .fromStream(
         streamedResponse,
       );
 
-      if (response.statusCode == 200 ||
-          response.statusCode == 201) {
+      if (response.statusCode ==
+          200 ||
+          response.statusCode ==
+              201) {
 
         _clearForm();
 
-        ScaffoldMessenger.of(context)
+        ScaffoldMessenger.of(
+            context)
             .showSnackBar(
 
           const SnackBar(
 
             backgroundColor:
-            Color(0xFF4CAF50),
+            Color(
+                0xFF4CAF50),
 
             content: Text(
               "Survey submitted successfully",
@@ -499,7 +525,8 @@ class _SurveyScreenState
 
         print(response.body);
 
-        ScaffoldMessenger.of(context)
+        ScaffoldMessenger.of(
+            context)
             .showSnackBar(
 
           const SnackBar(
@@ -515,7 +542,8 @@ class _SurveyScreenState
 
     on http.ClientException {
 
-      ScaffoldMessenger.of(context)
+      ScaffoldMessenger.of(
+          context)
           .showSnackBar(
 
         const SnackBar(
@@ -531,7 +559,8 @@ class _SurveyScreenState
 
       print(e);
 
-      ScaffoldMessenger.of(context)
+      ScaffoldMessenger.of(
+          context)
           .showSnackBar(
 
         const SnackBar(
@@ -541,6 +570,13 @@ class _SurveyScreenState
           ),
         ),
       );
+    }
+
+    finally {
+
+      setState(() {
+        _isSubmitting = false;
+      });
     }
   }
   Future<void> _handleLogout() async {
@@ -622,59 +658,8 @@ class _SurveyScreenState
       extendBodyBehindAppBar: false,
       backgroundColor: const Color(0xFFF8F9FA),
 
-      appBar: AppBar(
-        toolbarHeight: 62,
-        leadingWidth: 70,
-
-        backgroundColor: const Color(0xFFF8FBF8),
-        elevation: 0,
-        surfaceTintColor: Colors.transparent,
-        scrolledUnderElevation: 0,
-
-        centerTitle: true,
-
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(18),
-            bottomRight: Radius.circular(18),
-          ),
-        ),
-
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 16),
-          child: Image.asset(
-            "assets/images/logo.png",
-            height: 34,
-            width: 34,
-            fit: BoxFit.contain,
-          ),
-        ),
-
-        title: const Text(
-          "Helper App",
-          style: TextStyle(
-            color: Color(0xFF1A237E),
-            fontWeight: FontWeight.w700,
-            fontSize: 19,
-          ),
-        ),
-
-        actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: IconButton(
-              onPressed: _handleLogout,
-              icon: const Icon(
-                Icons.logout_rounded,
-                color: Color(0xFF1A237E),
-              ),
-            ),
-          ),
-        ],
+      appBar: SewacHeader(
+        onLogout: _handleLogout,
       ),
 
       body: SewacBackground(
@@ -951,7 +936,9 @@ class _SurveyScreenState
                           child:
                           ElevatedButton(
                             onPressed:
-                            _submitSurvey,
+                            _isSubmitting
+                                ? null
+                                : _submitSurvey,
 
                             style:
                             ElevatedButton.styleFrom(
@@ -963,12 +950,24 @@ class _SurveyScreenState
                             ),
 
                             child:
-                            const Text(
+
+                            _isSubmitting
+
+                                ? const SizedBox(
+                              height: 22,
+                              width: 22,
+
+                              child:
+                              CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+
+                                : const Text(
                               "SUBMIT",
-                              style:
-                              TextStyle(
-                                color:
-                                Colors.white,
+                              style: TextStyle(
+                                color: Colors.white,
                               ),
                             ),
                           ),

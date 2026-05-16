@@ -19,6 +19,7 @@ class _LoginScreenState
     with SingleTickerProviderStateMixin {
 
   bool _rememberMe = false;
+  bool _hidePassword = true;
   final _formKey =
   GlobalKey<FormState>();
 
@@ -771,22 +772,19 @@ class _LoginScreenState
 
     required IconData icon,
 
-    bool isPassword =
-    false,
+    bool isPassword = false,
   }) {
 
     return TextFormField(
 
-      controller:
-      controller,
+      controller: controller,
 
       obscureText:
-      isPassword,
+      isPassword
+          ? _hidePassword
+          : false,
 
-      validator:
-          (
-          value,
-          ) {
+      validator: (value) {
 
         if (value == null ||
             value.isEmpty) {
@@ -800,25 +798,52 @@ class _LoginScreenState
       decoration:
       InputDecoration(
 
-        labelText:
-        label,
+        labelText: label,
 
-        prefixIcon:
-        Icon(
+        prefixIcon: Icon(
 
           icon,
 
           color:
           const Color(
-              0xFF4CAF50),
+            0xFF4CAF50,
+          ),
         ),
 
-        filled:
-        true,
+        suffixIcon:
+        isPassword
+            ? IconButton(
+
+          onPressed: () {
+
+            setState(() {
+
+              _hidePassword =
+              !_hidePassword;
+            });
+          },
+
+          icon: Icon(
+
+            _hidePassword
+                ? Icons
+                .visibility_off_rounded
+                : Icons
+                .visibility_rounded,
+
+            color:
+            Colors
+                .grey,
+          ),
+        )
+            : null,
+
+        filled: true,
 
         fillColor:
         const Color(
-            0xFFF8F9FA),
+          0xFFF8F9FA,
+        ),
 
         border:
         OutlineInputBorder(

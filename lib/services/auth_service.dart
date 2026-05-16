@@ -43,23 +43,23 @@ class AuthService {
       final body =
       response.body.toLowerCase();
 
-      // ================= ACCOUNT ALREADY ACTIVE =================
+      // ACCOUNT IN USE
       if (
 
-      response.statusCode == 409 ||
+      body.contains("already") ||
 
-          body.contains(
-              "already logged in") ||
+          body.contains("active") ||
 
-          body.contains(
-              "already in use")
+          body.contains("logged in") ||
+
+          body.contains("in use")
 
       ) {
 
         return "ALREADY_IN_USE";
       }
 
-      // ================= LOGIN SUCCESS =================
+      // SUCCESS
       if (response.statusCode == 200) {
 
         final data =
@@ -83,19 +83,19 @@ class AuthService {
               .getInstance();
 
           await prefs.setString(
-
             "auth_token",
-
             token,
+          );
+
+          await prefs.setString(
+            "admin_name",
+            username.trim(),
           );
 
           return "SUCCESS";
         }
-
-        return "INVALID";
       }
 
-      // ================= INVALID LOGIN =================
       return "INVALID";
 
     } catch (e) {

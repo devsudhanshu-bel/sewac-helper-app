@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'login_screen.dart';
 import '../widgets/sewac_background.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../widgets/sewac_header.dart';
 class ReaderScreen extends StatefulWidget {
   const ReaderScreen({super.key});
 
@@ -18,7 +19,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
   // CHANGE ONLY THIS IF HARDWARE RFID LENGTH CHANGES LATER
   // Example: 36 -> 40
-  static const int maxRfidLength = 48;
+  static const int requiredRfidLength = 24;
 
   final TextEditingController
   _rfidController =
@@ -26,18 +27,15 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
   bool _isSaving = false;
 
-  Future<void>
-  _saveRFID() async {
+  Future<void> _saveRFID() async {
 
     final code =
-    _rfidController.text
-        .trim();
+    _rfidController.text.trim();
 
     // EMPTY FIELD
     if (code.isEmpty) {
 
-      ScaffoldMessenger.of(
-          context)
+      ScaffoldMessenger.of(context)
           .showSnackBar(
 
         const SnackBar(
@@ -51,23 +49,6 @@ class _ReaderScreenState extends State<ReaderScreen> {
     }
 
     // LENGTH CHECK
-    if (code.length >
-        maxRfidLength) {
-
-      ScaffoldMessenger.of(
-          context)
-          .showSnackBar(
-
-        SnackBar(
-          content: Text(
-            "RFID max length is $maxRfidLength",
-          ),
-        ),
-      );
-
-      return;
-    }
-
     try {
 
       setState(() {
@@ -83,25 +64,28 @@ class _ReaderScreenState extends State<ReaderScreen> {
       );
 
       final body =
-      response.body
-          .toLowerCase();
+      response.body.toLowerCase();
 
       // SUCCESS
-      if (response.statusCode ==
-          200 ||
-          response.statusCode ==
-              201) {
+      if (response.statusCode == 200 ||
+          response.statusCode == 201) {
 
-        ScaffoldMessenger.of(
-            context)
+        final result =
+        jsonDecode(response.body);
+
+        final serialNo =
+        result["data"]["slno"]
+            .toString();
+
+        ScaffoldMessenger.of(context)
             .showSnackBar(
 
-          const SnackBar(
+          SnackBar(
             backgroundColor:
-            Color(0xFF4CAF50),
+            const Color(0xFF4CAF50),
 
             content: Text(
-              "RFID saved successfully",
+              "RFID assigned to Serial No: $serialNo",
             ),
           ),
         );
@@ -111,21 +95,24 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
       // RFID EXISTS
       else if (
-      body.contains(
-          "already exists") ||
-          body.contains(
-              "exists") ||
-          body.contains(
-              "duplicate")
+      body.contains("already exists") ||
+          body.contains("exists") ||
+          body.contains("duplicate")
       ) {
 
-        ScaffoldMessenger.of(
-            context)
+        final result =
+        jsonDecode(response.body);
+
+        final serialNo =
+        result["data"]["slno"]
+            .toString();
+
+        ScaffoldMessenger.of(context)
             .showSnackBar(
 
-          const SnackBar(
+          SnackBar(
             content: Text(
-              "RFID already exists",
+              "RFID already assigned to Serial No: $serialNo",
             ),
           ),
         );
@@ -134,8 +121,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
       // OTHER BACKEND ERROR
       else {
 
-        ScaffoldMessenger.of(
-            context)
+        ScaffoldMessenger.of(context)
             .showSnackBar(
 
           const SnackBar(
@@ -151,8 +137,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
     // INTERNET ISSUE
     on http.ClientException {
 
-      ScaffoldMessenger.of(
-          context)
+      ScaffoldMessenger.of(context)
           .showSnackBar(
 
         const SnackBar(
@@ -163,10 +148,14 @@ class _ReaderScreenState extends State<ReaderScreen> {
       );
     }
 
-    catch (_) {
+    // OTHER ERROR
+    catch (e) {
 
-      ScaffoldMessenger.of(
-          context)
+      print(
+        "SAVE ERROR => $e",
+      );
+
+      ScaffoldMessenger.of(context)
           .showSnackBar(
 
         const SnackBar(
@@ -259,59 +248,8 @@ class _ReaderScreenState extends State<ReaderScreen> {
       extendBodyBehindAppBar: false,
       backgroundColor: const Color(0xFFF8F9FA),
 
-      appBar: AppBar(
-        toolbarHeight: 62,
-        leadingWidth: 70,
-
-        backgroundColor: const Color(0xFFF8FBF8),
-        elevation: 0,
-        surfaceTintColor: Colors.transparent,
-        scrolledUnderElevation: 0,
-
-        centerTitle: true,
-
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(18),
-            bottomRight: Radius.circular(18),
-          ),
-        ),
-
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 16),
-          child: Image.asset(
-            "assets/images/logo.png",
-            height: 34,
-            width: 34,
-            fit: BoxFit.contain,
-          ),
-        ),
-
-        title: const Text(
-          "Helper App",
-          style: TextStyle(
-            color: Color(0xFF1A237E),
-            fontWeight: FontWeight.w700,
-            fontSize: 19,
-          ),
-        ),
-
-        actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: IconButton(
-              onPressed: _handleLogout,
-              icon: const Icon(
-                Icons.logout_rounded,
-                color: Color(0xFF1A237E),
-              ),
-            ),
-          ),
-        ],
+      appBar: SewacHeader(
+        onLogout: _handleLogout,
       ),
 
       body: SewacBackground(
@@ -391,20 +329,25 @@ class _ReaderScreenState extends State<ReaderScreen> {
                       ),
 
                       TextFormField(
-                        controller:
-                        _rfidController,
+                        controller: _rfidController,
 
                         autofocus: true,
                         showCursor: true,
 
-                        decoration:
-                        InputDecoration(
+                        onChanged: (_) {
+                          setState(() {});
+                        },
+
+                        maxLength: requiredRfidLength,
+
+                        decoration: InputDecoration(
                           hintText:
                           "Tap RFID card to scan...",
 
+                          counterText: "",
+
                           filled: true,
-                          fillColor:
-                          Colors.white,
+                          fillColor: Colors.white,
 
                           contentPadding:
                           const EdgeInsets.symmetric(
@@ -420,7 +363,6 @@ class _ReaderScreenState extends State<ReaderScreen> {
                           ),
                         ),
                       ),
-
                       const SizedBox(
                         height: 24,
                       ),
@@ -447,19 +389,26 @@ class _ReaderScreenState extends State<ReaderScreen> {
                             ),
                           ),
 
-                          child:
-                          ElevatedButton(
+                          child: ElevatedButton(
 
                             onPressed:
-                            _isSaving
+                            _isSaving ||
+                                _rfidController
+                                    .text
+                                    .trim()
+                                    .length !=
+                                    requiredRfidLength
                                 ? null
                                 : _saveRFID,
 
                             style:
-                            ElevatedButton
-                                .styleFrom(
+                            ElevatedButton.styleFrom(
+
                               backgroundColor:
                               Colors.transparent,
+
+                              disabledBackgroundColor:
+                              Colors.grey,
 
                               shadowColor:
                               Colors.transparent,
@@ -469,10 +418,8 @@ class _ReaderScreenState extends State<ReaderScreen> {
                             const Text(
                               "SAVE",
 
-                              style:
-                              TextStyle(
-                                color:
-                                Colors.white,
+                              style: TextStyle(
+                                color: Colors.white,
                               ),
                             ),
                           ),

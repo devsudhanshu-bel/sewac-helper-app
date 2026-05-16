@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/sewac_button.dart';
 import 'login_screen.dart';
 import '../widgets/sewac_background.dart';
+import '../widgets/sewac_header.dart';
 
 // API imports
 import 'dart:convert';
@@ -23,6 +24,21 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState
     extends State<DashboardScreen> {
+  String _adminName = "A";
+  Future<void> _loadAdminName() async {
+
+    final prefs =
+    await SharedPreferences
+        .getInstance();
+
+    setState(() {
+      _adminName =
+          prefs.getString(
+            "admin_name",
+          ) ??
+              "A";
+    });
+  }
 
   Future<Map<String, String>> _getHeaders() async {
 
@@ -110,9 +126,11 @@ class _DashboardScreenState
   @override
   void initState() {
     super.initState();
+
+    _loadAdminName();
+
     _loadAllDropdownData();
 
-    // REQUIREMENT 1: Real-time auto refresh every 1 second
     _refreshTimer = Timer.periodic(
       const Duration(seconds: 2),
           (_) {
@@ -734,60 +752,8 @@ class _DashboardScreenState
       const Color(
           0xFFF8F9FA),
 
-      appBar: AppBar(
-        toolbarHeight: 62,
-        leadingWidth: 70,
-
-        backgroundColor: const Color(0xFFF8FBF8),
-        elevation: 0,
-        surfaceTintColor: Colors.transparent,
-        scrolledUnderElevation: 0,
-
-        centerTitle: true,
-
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(18),
-            bottomRight: Radius.circular(18),
-          ),
-        ),
-
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 16),
-          child: Image.asset(
-            "assets/images/logo.png",
-            height: 34,
-            width: 34,
-            fit: BoxFit.contain,
-          ),
-        ),
-
-        title: const Text(
-          "Helper App",
-          style: TextStyle(
-            color: Color(0xFF1A237E),
-            fontWeight: FontWeight.w700,
-            fontSize: 19,
-          ),
-        ),
-
-        actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: IconButton(
-              onPressed: _handleLogout,
-              icon: const Icon(
-                Icons.logout_rounded,
-
-                color: Color(0xFF1A237E),
-              ),
-            ),
-          ),
-        ],
+      appBar: SewacHeader(
+        onLogout: _handleLogout,
       ),
 
       body: SewacBackground(
@@ -1153,28 +1119,44 @@ class _DashboardScreenState
         Autocomplete<String>(
           key: dropdownKey,
 
-          optionsBuilder:
-              (
-              value,
-              ) {
+          optionsBuilder: (value) {
 
-            if (value.text
-                .isEmpty) {
+            List<String> filtered;
 
-              return items;
-            }
-
-            return items.where(
-                  (item) {
-
+            if (value.text.isEmpty) {
+              filtered = List.from(items);
+            } else {
+              filtered = items.where((item) {
                 return item
                     .toLowerCase()
                     .contains(
-                  value.text
-                      .toLowerCase(),
+                  value.text.toLowerCase(),
                 );
-              },
-            );
+              }).toList();
+            }
+
+            // Keep Select on top
+            final hasSelect =
+            filtered.contains("Select");
+
+            filtered.remove("Select");
+
+            // Sort ascending
+            filtered.sort((a, b) {
+              return int.parse(a)
+                  .compareTo(
+                int.parse(b),
+              );
+            });
+
+            if (hasSelect) {
+              filtered.insert(
+                0,
+                "Select",
+              );
+            }
+
+            return filtered;
           },
 
           onSelected:
