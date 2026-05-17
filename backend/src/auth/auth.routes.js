@@ -1,19 +1,13 @@
-const express =
-  require("express");
+const express = require("express");
 
-const router =
-  express.Router();
+const router = express.Router();
 
 const {
-
   login,
-
   logout,
-
 } = require("./auth.controller");
 
-const verifyToken =
-  require("./auth.middleware");
+const verifyToken = require("./auth.middleware");
 
 const {
   redisClient,
@@ -26,11 +20,8 @@ const {
 // =====================================
 
 router.post(
-
   "/login",
-
   login
-
 );
 
 
@@ -40,13 +31,9 @@ router.post(
 // =====================================
 
 router.post(
-
   "/logout",
-
   verifyToken,
-
   logout
-
 );
 
 
@@ -56,15 +43,9 @@ router.post(
 // =====================================
 
 router.get(
-
   "/me",
-
   verifyToken,
-
-  async (
-    req,
-    res
-  ) => {
+  async (req, res) => {
 
     try {
 
@@ -97,8 +78,6 @@ router.get(
         error.message
       );
 
-
-
       return res.status(500).json({
 
         success: false,
@@ -111,37 +90,51 @@ router.get(
     }
 
   }
-
 );
 
 
 
 // =====================================
-// DEV ONLY - CLEAR SINGLE SESSION
+// HEALTH CHECK
+// =====================================
+
+router.get(
+  "/health",
+  (req, res) => {
+
+    return res.status(200).json({
+
+      success: true,
+
+      message:
+        "Auth service running successfully",
+
+    });
+
+  }
+);
+
+
+
+// =====================================
+// DEV ONLY ROUTES
 // =====================================
 
 if (
-  process.env.NODE_ENV !==
-  "production"
+  process.env.NODE_ENV !== "production"
 ) {
 
+  // CLEAR SINGLE SESSION
+
   router.get(
-
     "/clear-session/:id",
-
-    async (
-      req,
-      res
-    ) => {
+    async (req, res) => {
 
       try {
 
         await redisClient.del(
-
           `session:${req.params.id}`
         );
-
-
 
         return res.status(200).json({
 
@@ -159,8 +152,6 @@ if (
           error.message
         );
 
-
-
         return res.status(500).json({
 
           success: false,
@@ -173,29 +164,19 @@ if (
       }
 
     }
-
   );
 
 
 
-  // =====================================
-  // DEV ONLY - CLEAR ALL SESSIONS
-  // =====================================
+  // CLEAR ALL SESSIONS
 
   router.get(
-
     "/clear-all-sessions",
-
-    async (
-      req,
-      res
-    ) => {
+    async (req, res) => {
 
       try {
 
         await redisClient.flushAll();
-
-
 
         return res.status(200).json({
 
@@ -213,21 +194,18 @@ if (
           error.message
         );
 
-
-
         return res.status(500).json({
 
           success: false,
 
           message:
-            "Failed to clear Redis sessions",
+            error.message,
 
         });
 
       }
 
     }
-
   );
 
 }
@@ -235,36 +213,7 @@ if (
 
 
 // =====================================
-// HEALTH CHECK
-// =====================================
-
-router.get(
-
-  "/health",
-
-  (
-    req,
-    res
-  ) => {
-
-    return res.status(200).json({
-
-      success: true,
-
-      message:
-        "Auth service running successfully",
-
-    });
-
-  }
-
-);
-
-
-
-// =====================================
 // EXPORT ROUTER
 // =====================================
 
-module.exports =
-  router;
+module.exports = router;
