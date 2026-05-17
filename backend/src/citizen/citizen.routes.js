@@ -1,15 +1,24 @@
-const express = require("express");
+const express =
+  require("express");
 
-const router = express.Router();
+const router =
+  express.Router();
 
 const verifyToken =
   require("../auth/auth.middleware");
 
 const {
+
   getCitizenByPhone,
+
   searchCitizenByName,
+
   getAllCitizenPhoneNumbers,
+
   getAllCitizenNames,
+
+  getUnmappedCitizens,
+
 } = require("./citizen.controller");
 
 
@@ -52,23 +61,6 @@ router.get(
 
 /*
 |--------------------------------------------------------------------------
-| Search Citizen By Name
-|--------------------------------------------------------------------------
-| GET /api/v1/citizen/name/:citizenName
-|--------------------------------------------------------------------------
-*/
-router.get(
-  "/name/:citizenName",
-  verifyToken,
-  searchCitizenByName
-);
-
-
-
-
-
-/*
-|--------------------------------------------------------------------------
 | Get All Citizen Names
 |--------------------------------------------------------------------------
 | GET /api/v1/citizen/names
@@ -78,6 +70,40 @@ router.get(
   "/names",
   verifyToken,
   getAllCitizenNames
+);
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Get Unmapped Citizens
+|--------------------------------------------------------------------------
+| GET /api/v1/citizen/unmapped
+|--------------------------------------------------------------------------
+*/
+router.get(
+  "/unmapped",
+  verifyToken,
+  getUnmappedCitizens
+);
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Search Citizen By Name
+|--------------------------------------------------------------------------
+| GET /api/v1/citizen/name/:citizenName
+|--------------------------------------------------------------------------
+*/
+router.get(
+  "/name/:citizenName",
+  verifyToken,
+  searchCitizenByName
 );
 
 

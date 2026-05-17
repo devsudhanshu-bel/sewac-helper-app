@@ -3,6 +3,7 @@ const {
   searchCitizenByNameService,
   getAllCitizenPhoneNumbersService,
   getAllCitizenNamesService,
+  getUnmappedCitizensService,
 } = require("./citizen.service");
 
 
@@ -340,6 +341,62 @@ const getAllCitizenNames =
 
 
 
+/*
+|--------------------------------------------------------------------------
+| Get Unmapped Citizens
+|--------------------------------------------------------------------------
+| GET /api/v1/citizen/unmapped
+|--------------------------------------------------------------------------
+*/
+const getUnmappedCitizens =
+  async (req, res) => {
+
+    try {
+
+      const citizens =
+        await getUnmappedCitizensService();
+
+
+
+      return res.status(200).json({
+
+        success: true,
+
+        count:
+          citizens.length,
+
+        data:
+          citizens,
+
+      });
+
+    } catch (error) {
+
+      console.error(
+        "GET UNMAPPED CITIZENS ERROR:",
+        error
+      );
+
+
+
+      return res.status(500).json({
+
+        success: false,
+
+        message:
+          error.message ||
+          "Internal Server Error",
+
+      });
+
+    }
+
+  };
+
+
+
+
+
 module.exports = {
 
   getCitizenByPhone,
@@ -349,5 +406,7 @@ module.exports = {
   getAllCitizenPhoneNumbers,
 
   getAllCitizenNames,
+
+  getUnmappedCitizens,
 
 };

@@ -283,6 +283,117 @@ const getAllCitizenNamesService =
 
 
 
+/*
+|--------------------------------------------------------------------------
+| Get Unmapped Citizens
+|--------------------------------------------------------------------------
+*/
+const getUnmappedCitizensService =
+  async () => {
+
+    try {
+
+      // =============================
+      // GET MAPPED PHONE NUMBERS
+      // =============================
+
+      const mappedPhones =
+        await prisma.rFIDMapping.findMany({
+
+          where: {
+
+            phoneNumber: {
+              not: null,
+            },
+
+          },
+
+          select: {
+            phoneNumber: true,
+          },
+
+        });
+
+
+
+      // =============================
+      // CONVERT TO ARRAY
+      // =============================
+
+      const mappedPhoneNumbers =
+        mappedPhones.map(
+          (item) => item.phoneNumber
+        );
+
+
+
+      // =============================
+      // GET ALL CITIZENS
+      // =============================
+
+      const citizens =
+        await prisma.$queryRaw`
+
+          SELECT DISTINCT
+            "personName",
+            "contactNumber"
+          FROM "survey_attribute_specific"
+          WHERE "contactNumber" IS NOT NULL
+
+        `;
+
+
+
+      // =============================
+      // FILTER UNMAPPED
+      // =============================
+
+      const unmappedCitizens =
+        citizens.filter(
+          (citizen) =>
+
+            !mappedPhoneNumbers.includes(
+              citizen.contactNumber
+            )
+        );
+
+
+
+      // =============================
+      // FORMAT RESPONSE
+      // =============================
+
+      return unmappedCitizens.map(
+        (citizen) => ({
+
+          citizenName:
+            citizen.personName,
+
+          phoneNumber:
+            citizen.contactNumber,
+
+        })
+      );
+
+    } catch (error) {
+
+      console.error(
+        "GET UNMAPPED CITIZENS ERROR:",
+        error
+      );
+
+
+
+      throw error;
+
+    }
+
+  };
+
+
+
+
+
 module.exports = {
 
   getCitizenByPhoneService,
@@ -292,5 +403,7 @@ module.exports = {
   getAllCitizenPhoneNumbersService,
 
   getAllCitizenNamesService,
+
+  getUnmappedCitizensService,
 
 };
