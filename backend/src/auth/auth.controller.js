@@ -9,7 +9,7 @@ const {
 
 
 // =====================================
-// LOGIN
+// LOGIN CONTROLLER
 // =====================================
 
 const login =
@@ -17,14 +17,24 @@ const login =
 
     try {
 
+      // =====================================
+      // EXTRACT BODY
+      // =====================================
+
       const {
+
         username,
+
         password,
+
       } = req.body;
 
 
 
+      // =====================================
       // VALIDATION
+      // =====================================
+
       if (
         !username ||
         !password
@@ -43,7 +53,10 @@ const login =
 
 
 
+      // =====================================
       // LOGIN SERVICE
+      // =====================================
+
       const result =
         await loginService(
 
@@ -54,6 +67,10 @@ const login =
 
 
 
+      // =====================================
+      // SUCCESS RESPONSE
+      // =====================================
+
       return res.status(200).json({
 
         success: true,
@@ -61,12 +78,26 @@ const login =
         message:
           "Login successful",
 
-        data:
-          result,
+        data: {
+
+          token:
+            result.token,
+
+          moderator:
+            result.moderator,
+
+        },
 
       });
 
     } catch (error) {
+
+      console.log(
+        "LOGIN CONTROLLER ERROR:",
+        error.message
+      );
+
+
 
       return res.status(401).json({
 
@@ -84,7 +115,7 @@ const login =
 
 
 // =====================================
-// LOGOUT
+// LOGOUT CONTROLLER
 // =====================================
 
 const logout =
@@ -92,12 +123,40 @@ const logout =
 
     try {
 
+      // =====================================
+      // CHECK AUTH USER
+      // =====================================
+
+      if (!req.user) {
+
+        return res.status(401).json({
+
+          success: false,
+
+          message:
+            "Unauthorized access",
+
+        });
+
+      }
+
+
+
+      // =====================================
+      // LOGOUT SERVICE
+      // =====================================
+
       const result =
         await logoutService(
+
           req.user.id
         );
 
 
+
+      // =====================================
+      // SUCCESS RESPONSE
+      // =====================================
 
       return res.status(200).json({
 
@@ -109,6 +168,13 @@ const logout =
       });
 
     } catch (error) {
+
+      console.log(
+        "LOGOUT CONTROLLER ERROR:",
+        error.message
+      );
+
+
 
       return res.status(500).json({
 

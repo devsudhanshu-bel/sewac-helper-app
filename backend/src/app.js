@@ -20,6 +20,9 @@ const app = express();
 // ROUTE IMPORTS
 // =============================
 
+const upload =
+  require("../middlewares/cloudinary.middleware");
+
 const authRoutes =
   require("./auth/auth.routes");
 

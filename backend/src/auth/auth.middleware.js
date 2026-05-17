@@ -30,7 +30,7 @@ const verifyToken =
 
 
       // =====================================
-      // CHECK AUTH HEADER
+      // VALIDATE AUTH HEADER
       // =====================================
 
       if (
@@ -66,7 +66,7 @@ const verifyToken =
 
 
       // =====================================
-      // VERIFY JWT
+      // VERIFY JWT TOKEN
       // =====================================
 
       const decoded =
@@ -80,7 +80,7 @@ const verifyToken =
 
 
       // =====================================
-      // CHECK REDIS ACTIVE SESSION
+      // GET ACTIVE SESSION FROM REDIS
       // =====================================
 
       const activeSession =
@@ -92,17 +92,10 @@ const verifyToken =
 
 
       // =====================================
-      // INVALID SESSION
+      // SESSION NOT FOUND
       // =====================================
 
-      if (
-
-        !activeSession ||
-
-        activeSession !==
-          decoded.sessionId
-
-      ) {
+      if (!activeSession) {
 
         return res.status(401).json({
 
@@ -118,7 +111,31 @@ const verifyToken =
 
 
       // =====================================
-      // SAVE USER DATA
+      // SESSION MISMATCH
+      // =====================================
+
+      if (
+
+        activeSession !==
+        decoded.sessionId
+
+      ) {
+
+        return res.status(401).json({
+
+          success: false,
+
+          message:
+            "Another login detected. Please login again",
+
+        });
+
+      }
+
+
+
+      // =====================================
+      // ATTACH USER DATA
       // =====================================
 
       req.user = {
@@ -140,7 +157,7 @@ const verifyToken =
 
 
       // =====================================
-      // NEXT MIDDLEWARE
+      // NEXT
       // =====================================
 
       next();
@@ -154,12 +171,56 @@ const verifyToken =
 
 
 
-      return res.status(401).json({
+      // =====================================
+      // JWT ERROR HANDLING
+      // =====================================
+
+      if (
+        error.name ===
+        "TokenExpiredError"
+      ) {
+
+        return res.status(401).json({
+
+          success: false,
+
+          message:
+            "Token expired. Please login again",
+
+        });
+
+      }
+
+
+
+      if (
+        error.name ===
+        "JsonWebTokenError"
+      ) {
+
+        return res.status(401).json({
+
+          success: false,
+
+          message:
+            "Invalid token",
+
+        });
+
+      }
+
+
+
+      // =====================================
+      // DEFAULT ERROR
+      // =====================================
+
+      return res.status(500).json({
 
         success: false,
 
         message:
-          "Invalid or expired token",
+          "Authentication failed",
 
       });
 

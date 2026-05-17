@@ -45,7 +45,7 @@ const loginService =
 
 
       // =====================================
-      // MODERATOR NOT FOUND
+      // INVALID USER
       // =====================================
 
       if (!moderator) {
@@ -72,10 +72,6 @@ const loginService =
 
 
 
-      // =====================================
-      // INVALID PASSWORD
-      // =====================================
-
       if (!isPasswordValid) {
 
         throw new Error(
@@ -87,7 +83,7 @@ const loginService =
 
 
       // =====================================
-      // CHECK ACTIVE SESSION
+      // CHECK EXISTING SESSION
       // =====================================
 
       const existingSession =
@@ -105,7 +101,7 @@ const loginService =
       if (existingSession) {
 
         throw new Error(
-          "Account already active on another device"
+          "Account already logged in on another device"
         );
 
       }
@@ -122,28 +118,21 @@ const loginService =
 
 
       // =====================================
-      // SAVE SESSION IN REDIS
+      // STORE SESSION
       // =====================================
 
       await redisClient.set(
 
         `session:${moderator.id}`,
 
-        sessionId,
-
-        {
-
-          EX:
-            60 * 60 * 24 * 7,
-
-        }
+        sessionId
 
       );
 
 
 
       // =====================================
-      // GENERATE JWT TOKEN
+      // GENERATE JWT
       // =====================================
 
       const token =
@@ -169,7 +158,7 @@ const loginService =
           {
 
             expiresIn:
-              "7d",
+              "30d",
 
           }
 
@@ -195,8 +184,6 @@ const loginService =
 
           role:
             moderator.role,
-
-          sessionId,
 
         },
 
@@ -227,7 +214,7 @@ const logoutService =
     try {
 
       // =====================================
-      // REMOVE REDIS SESSION
+      // DELETE SESSION
       // =====================================
 
       await redisClient.del(
@@ -262,7 +249,7 @@ const logoutService =
 
 
 // =====================================
-// EXPORT SERVICES
+// EXPORTS
 // =====================================
 
 module.exports = {

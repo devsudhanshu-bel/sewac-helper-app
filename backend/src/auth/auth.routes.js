@@ -5,8 +5,11 @@ const router =
   express.Router();
 
 const {
+
   login,
+
   logout,
+
 } = require("./auth.controller");
 
 const verifyToken =
@@ -23,9 +26,11 @@ const {
 // =====================================
 
 router.post(
+
   "/login",
 
   login
+
 );
 
 
@@ -35,20 +40,23 @@ router.post(
 // =====================================
 
 router.post(
+
   "/logout",
 
   verifyToken,
 
   logout
+
 );
 
 
 
 // =====================================
-// CHECK AUTH / ACTIVE SESSION
+// GET CURRENT USER
 // =====================================
 
 router.get(
+
   "/me",
 
   verifyToken,
@@ -78,132 +86,166 @@ router.get(
           role:
             req.user.role,
 
-          sessionId:
-            req.user.sessionId,
-
         },
 
       });
 
     } catch (error) {
 
-      return res.status(500).json({
-
-        success: false,
-
-        message:
-          error.message,
-
-      });
-
-    }
-
-  }
-);
-
-
-
-// =====================================
-// CLEAR SINGLE SESSION (DEV ONLY)
-// =====================================
-
-router.get(
-  "/clear-session/:id",
-
-  async (
-    req,
-    res
-  ) => {
-
-    try {
-
-      await redisClient.del(
-
-        `session:${req.params.id}`
+      console.log(
+        "ME ROUTE ERROR:",
+        error.message
       );
 
 
 
-      return res.status(200).json({
-
-        success: true,
-
-        message:
-          "Session cleared successfully",
-
-      });
-
-    } catch (error) {
-
       return res.status(500).json({
 
         success: false,
 
         message:
-          error.message,
+          "Failed to fetch user details",
 
       });
 
     }
 
   }
+
 );
 
 
 
 // =====================================
-// CLEAR ALL SESSIONS (DEV ONLY)
+// DEV ONLY - CLEAR SINGLE SESSION
+// =====================================
+
+if (
+  process.env.NODE_ENV !==
+  "production"
+) {
+
+  router.get(
+
+    "/clear-session/:id",
+
+    async (
+      req,
+      res
+    ) => {
+
+      try {
+
+        await redisClient.del(
+
+          `session:${req.params.id}`
+        );
+
+
+
+        return res.status(200).json({
+
+          success: true,
+
+          message:
+            "Session cleared successfully",
+
+        });
+
+      } catch (error) {
+
+        console.log(
+          "CLEAR SESSION ERROR:",
+          error.message
+        );
+
+
+
+        return res.status(500).json({
+
+          success: false,
+
+          message:
+            "Failed to clear session",
+
+        });
+
+      }
+
+    }
+
+  );
+
+
+
+  // =====================================
+  // DEV ONLY - CLEAR ALL SESSIONS
+  // =====================================
+
+  router.get(
+
+    "/clear-all-sessions",
+
+    async (
+      req,
+      res
+    ) => {
+
+      try {
+
+        await redisClient.flushAll();
+
+
+
+        return res.status(200).json({
+
+          success: true,
+
+          message:
+            "All Redis sessions cleared",
+
+        });
+
+      } catch (error) {
+
+        console.log(
+          "CLEAR ALL SESSIONS ERROR:",
+          error.message
+        );
+
+
+
+        return res.status(500).json({
+
+          success: false,
+
+          message:
+            "Failed to clear Redis sessions",
+
+        });
+
+      }
+
+    }
+
+  );
+
+}
+
+
+
+// =====================================
+// HEALTH CHECK
 // =====================================
 
 router.get(
-  "/clear-all-sessions",
 
-  async (
+  "/health",
+
+  (
     req,
     res
   ) => {
-
-    try {
-
-      await redisClient.flushAll();
-
-
-
-      return res.status(200).json({
-
-        success: true,
-
-        message:
-          "All Redis sessions cleared",
-
-      });
-
-    } catch (error) {
-
-      return res.status(500).json({
-
-        success: false,
-
-        message:
-          error.message,
-
-      });
-
-    }
-
-  }
-);
-
-
-
-// =====================================
-// HEALTH CHECK ROUTE
-// =====================================
-
-router.get(
-  "/health",
-
-  (req, res) => {
 
     return res.status(200).json({
 
@@ -215,6 +257,7 @@ router.get(
     });
 
   }
+
 );
 
 
