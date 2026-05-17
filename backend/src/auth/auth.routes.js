@@ -7,11 +7,14 @@ const {
   logout,
 } = require("./auth.controller");
 
-const verifyToken = require("./auth.middleware");
+const verifyToken =
+  require("./auth.middleware");
 
 const {
   redisClient,
 } = require("../config/redis");
+
+
 
 
 
@@ -26,6 +29,8 @@ router.post(
 
 
 
+
+
 // =====================================
 // LOGOUT ROUTE
 // =====================================
@@ -35,6 +40,8 @@ router.post(
   verifyToken,
   logout
 );
+
+
 
 
 
@@ -94,6 +101,8 @@ router.get(
 
 
 
+
+
 // =====================================
 // HEALTH CHECK
 // =====================================
@@ -109,6 +118,9 @@ router.get(
       message:
         "Auth service running successfully",
 
+      timestamp:
+        new Date(),
+
     });
 
   }
@@ -116,99 +128,151 @@ router.get(
 
 
 
+
+
 // =====================================
-// DEV ONLY ROUTES
+// CLEAR SINGLE SESSION
 // =====================================
 
-if (
-  process.env.NODE_ENV !== "production"
-) {
+router.get(
+  "/clear-session/:id",
+  async (req, res) => {
 
-  // CLEAR SINGLE SESSION
+    try {
 
-  router.get(
-    "/clear-session/:id",
-    async (req, res) => {
+      const sessionId =
+        req.params.id;
 
-      try {
 
-        await redisClient.del(
-          `session:${req.params.id}`
-        );
 
-        return res.status(200).json({
 
-          success: true,
 
-          message:
-            "Session cleared successfully",
+      /*
+      |--------------------------------------------------------------------------
+      | VALIDATION
+      |--------------------------------------------------------------------------
+      */
+      if (!sessionId) {
 
-        });
-
-      } catch (error) {
-
-        console.log(
-          "CLEAR SESSION ERROR:",
-          error.message
-        );
-
-        return res.status(500).json({
+        return res.status(400).json({
 
           success: false,
 
           message:
-            "Failed to clear session",
+            "Session ID is required",
 
         });
 
       }
 
+
+
+
+
+      /*
+      |--------------------------------------------------------------------------
+      | DELETE SESSION
+      |--------------------------------------------------------------------------
+      */
+      await redisClient.del(
+        `session:${sessionId}`
+      );
+
+
+
+
+
+      return res.status(200).json({
+
+        success: true,
+
+        message:
+          "Session cleared successfully",
+
+        sessionId,
+
+      });
+
+    } catch (error) {
+
+      console.log(
+        "CLEAR SESSION ERROR:",
+        error.message
+      );
+
+      return res.status(500).json({
+
+        success: false,
+
+        message:
+          error.message,
+
+      });
+
     }
-  );
+
+  }
+);
 
 
 
-  // CLEAR ALL SESSIONS
 
-  router.get(
-    "/clear-all-sessions",
-    async (req, res) => {
 
-      try {
+// =====================================
+// CLEAR ALL SESSIONS
+// =====================================
 
-        await redisClient.flushAll();
+router.get(
+  "/clear-all-sessions",
+  async (req, res) => {
 
-        return res.status(200).json({
+    try {
 
-          success: true,
+      /*
+      |--------------------------------------------------------------------------
+      | CLEAR REDIS
+      |--------------------------------------------------------------------------
+      */
+      await redisClient.flushAll();
 
-          message:
-            "All Redis sessions cleared",
 
-        });
 
-      } catch (error) {
 
-        console.log(
-          "CLEAR ALL SESSIONS ERROR:",
-          error.message
-        );
 
-        return res.status(500).json({
+      return res.status(200).json({
 
-          success: false,
+        success: true,
 
-          message:
-            error.message,
+        message:
+          "All Redis sessions cleared successfully",
 
-        });
+        timestamp:
+          new Date(),
 
-      }
+      });
+
+    } catch (error) {
+
+      console.log(
+        "CLEAR ALL SESSIONS ERROR:",
+        error.message
+      );
+
+      return res.status(500).json({
+
+        success: false,
+
+        message:
+          error.message,
+
+      });
 
     }
-  );
 
-}
+  }
+);
+
+
 
 
 
