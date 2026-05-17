@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/sewac_header.dart';
+import 'dart:io';
 
 class LogsScreen extends StatefulWidget {
   const LogsScreen({super.key});
@@ -18,6 +19,7 @@ class LogsScreen extends StatefulWidget {
 class _LogsScreenState extends State<LogsScreen>
     with SingleTickerProviderStateMixin {
   bool _isTableView = false;
+  String _adminName = "";
 
   final TextEditingController _searchController =
   TextEditingController();
@@ -52,19 +54,22 @@ class _LogsScreenState extends State<LogsScreen>
 
   Future<void> _fetchLogs() async {
     try {
+      final prefs = await SharedPreferences.getInstance();
+
+      String savedUser =
+          prefs.getString("workerId") ??
+              prefs.getString("worker_id") ??
+              prefs.getString("username") ??
+              prefs.getString("user") ??
+              prefs.getString("admin_name") ??
+              "";
 
       final result = await TrackingService.fetchLogs();
 
-
       print("UI Received Logs: ${result.length}");
 
-      for (var item in result) {
-        print(
-            "${item.id} | ${item.workerId} | ${item.status}"
-        );
-      }
-
       setState(() {
+        _adminName = savedUser.trim();
         _logs = result;
         _isLoading = false;
       });
@@ -82,9 +87,7 @@ class _LogsScreenState extends State<LogsScreen>
   }
 
   Future<void> _handleLogout() async {
-
     try {
-
       final prefs =
       await SharedPreferences.getInstance();
 
@@ -95,46 +98,30 @@ class _LogsScreenState extends State<LogsScreen>
 
       final response =
       await http.post(
-
         Uri.parse(
           "https://sewac-helper-app.onrender.com/api/v1/auth/logout",
         ),
-
         headers: {
-
           "Authorization":
           "Bearer $token",
-
           "Content-Type":
           "application/json",
         },
       );
 
-      print(
-        "LOGOUT STATUS => ${response.statusCode}",
-      );
-
-      print(
-        "LOGOUT BODY => ${response.body}",
-      );
-
+      print("LOGOUT STATUS => ${response.statusCode}");
+      print("LOGOUT BODY => ${response.body}");
     } catch (e) {
-
-      print(
-        "LOGOUT ERROR => $e",
-      );
+      print("LOGOUT ERROR => $e");
     }
 
-    final prefs =
-    await SharedPreferences.getInstance();
-
-    await prefs.remove(
-      "auth_token",
-    );
-
-    await prefs.remove(
-      "isLoggedIn",
-    );
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove("auth_token");
+    await prefs.remove("isLoggedIn");
+    await prefs.remove("username");
+    await prefs.remove("workerId");
+    await prefs.remove("worker_id");
+    await prefs.remove("user");
 
     if (!mounted) {
       return;
@@ -148,26 +135,30 @@ class _LogsScreenState extends State<LogsScreen>
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
+    final myTotalLogs = _logs.where((log) {
+      if (_adminName.isEmpty) return false;
+      return log.workerId.trim().toUpperCase() == _adminName.toUpperCase();
+    }).length;
+
     final filteredLogs = _logs.where((log) {
       final searchMatch =
           _searchQuery.isEmpty ||
-
               (log.phoneNumber ?? "")
                   .toLowerCase()
                   .contains(_searchQuery.toLowerCase()) ||
-
               (log.citizenName ?? "")
                   .toLowerCase()
                   .contains(_searchQuery.toLowerCase()) ||
-
               log.workerId
                   .toLowerCase()
                   .contains(_searchQuery.toLowerCase());
+
       final workerMatch =
           _selectedWorker == "All Workers" ||
-              log.workerId.toUpperCase() == _selectedWorker;
+              log.workerId.toUpperCase() == _selectedWorker.toUpperCase();
 
       final statusText = log.status == "FOUND"
           ? "Found"
@@ -195,15 +186,9 @@ class _LogsScreenState extends State<LogsScreen>
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  20,
-                  4,
-                  20,
-                  16,
-                ),
+                padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
                 child: Row(
-                  mainAxisAlignment:
-                  MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
                       "Logs Overview",
@@ -213,158 +198,133 @@ class _LogsScreenState extends State<LogsScreen>
                         color: Color(0xFF2C3E50),
                       ),
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius:
-                        BorderRadius.circular(14),
-                        boxShadow: [
-                          BoxShadow(
-                            color:
-                            Colors.black.withOpacity(
-                              0.06,
-                            ),
-                            blurRadius: 12,
-                            offset:
-                            const Offset(0, 4),
-                          )
-                        ],
-                      ),
-                      child: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _isTableView =
-                            !_isTableView;
-                          });
-                        },
-                        icon: AnimatedSwitcher(
-                          duration:
-                          const Duration(
-                            milliseconds: 400,
+                    Row(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(right: 8),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 18,
+                            vertical: 14,
                           ),
-                          child: Icon(
-                            _isTableView
-                                ? Icons
-                                .view_agenda_rounded
-                                : Icons
-                                .table_chart_rounded,
-                            key: ValueKey(
-                              _isTableView,
-                            ),
-                            color: const Color(
-                              0xFF4CAF50,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF1F8F2),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: Text(
+                            "$myTotalLogs",
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF2E7D32),
                             ),
                           ),
                         ),
-                      ),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(14),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.06),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _isTableView = !_isTableView;
+                                if (_isTableView && _selectedStatus == "All Status") {
+                                  _selectedStatus = "Found";
+                                }
+                              });
+                            },
+                            icon: AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 400),
+                              child: Icon(
+                                _isTableView
+                                    ? Icons.view_agenda_rounded
+                                    : Icons.table_chart_rounded,
+                                key: ValueKey(_isTableView),
+                                color: const Color(0xFF4CAF50),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(
                   controller: _searchController,
-
                   onChanged: (value) {
                     setState(() {
                       _searchQuery = value.trim();
                     });
                   },
-
                   decoration: InputDecoration(
                     hintText: "Search name, phone, worker...",
-
-                    prefixIcon:
-                    const Icon(Icons.search),
-
-                    suffixIcon:
-                    _searchQuery.isNotEmpty
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: _searchQuery.isNotEmpty
                         ? IconButton(
-                      icon: const Icon(
-                        Icons.close,
-                      ),
+                      icon: const Icon(Icons.close),
                       onPressed: () {
                         _searchController.clear();
-
                         setState(() {
                           _searchQuery = "";
                         });
                       },
                     )
                         : null,
-
                     filled: true,
                     fillColor: Colors.white,
-
                     border: OutlineInputBorder(
-                      borderRadius:
-                      BorderRadius.circular(18),
-                      borderSide:
-                      BorderSide.none,
+                      borderRadius: BorderRadius.circular(18),
+                      borderSide: BorderSide.none,
                     ),
                   ),
                 ),
               ),
-
               const SizedBox(height: 16),
-
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Container(
-                  padding:
-                  const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius:
-                    BorderRadius.circular(
-                      24,
-                    ),
+                    borderRadius: BorderRadius.circular(24),
                   ),
                   child: Row(
                     children: [
                       Expanded(
-                        child:
-                        _buildCustomDropdown(
+                        child: _buildCustomDropdown(
                           label: "Worker ID",
-                          value:
-                          _selectedWorker,
-                          items:
-                          _workerIds,
-                          icon: Icons
-                              .badge_outlined,
-                          onChanged:
-                              (val) {
+                          value: _selectedWorker,
+                          items: _workerIds,
+                          icon: Icons.badge_outlined,
+                          onChanged: (val) {
                             setState(() {
-                              _selectedWorker =
-                              val!;
+                              _selectedWorker = val!;
                             });
                           },
                         ),
                       ),
-                      const SizedBox(
-                        width: 16,
-                      ),
+                      const SizedBox(width: 16),
                       Expanded(
-                        child:
-                        _buildCustomDropdown(
+                        child: _buildCustomDropdown(
                           label: "Status",
-                          value:
-                          _selectedStatus,
-                          items:
-                          _statusOptions,
-                          icon: Icons
-                              .analytics_outlined,
-                          onChanged:
-                              (val) {
+                          value: _selectedStatus,
+                          items: _isTableView
+                              ? _statusOptions.where((opt) => opt != "All Status").toList()
+                              : _statusOptions,
+                          icon: Icons.analytics_outlined,
+                          onChanged: (val) {
                             setState(() {
-                              _selectedStatus =
-                              val!;
+                              _selectedStatus = val!;
                             });
                           },
                         ),
@@ -373,27 +333,15 @@ class _LogsScreenState extends State<LogsScreen>
                   ),
                 ),
               ),
-
               const SizedBox(height: 16),
-
               Expanded(
                 child: _isLoading
-                    ? const Center(
-                  child:
-                  CircularProgressIndicator(),
-                )
+                    ? const Center(child: CircularProgressIndicator())
                     : AnimatedSwitcher(
-                  duration:
-                  const Duration(
-                    milliseconds: 600,
-                  ),
+                  duration: const Duration(milliseconds: 600),
                   child: _isTableView
-                      ? _buildTableView(
-                    filteredLogs,
-                  )
-                      : _buildCardView(
-                    filteredLogs,
-                  ),
+                      ? _buildTableView(filteredLogs)
+                      : _buildCardView(filteredLogs),
                 ),
               ),
             ],
@@ -414,6 +362,8 @@ class _LogsScreenState extends State<LogsScreen>
       value: value,
       decoration: InputDecoration(
         labelText: label,
+        prefixIcon: Icon(icon, size: 20),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
         ),
@@ -421,7 +371,7 @@ class _LogsScreenState extends State<LogsScreen>
       items: items.map((item) {
         return DropdownMenuItem(
           value: item,
-          child: Text(item),
+          child: Text(item, style: const TextStyle(fontSize: 13)),
         );
       }).toList(),
       onChanged: onChanged,
@@ -432,142 +382,228 @@ class _LogsScreenState extends State<LogsScreen>
     if (logs.isEmpty) return _buildEmptyState();
 
     return ListView.builder(
-      physics:
-      const AlwaysScrollableScrollPhysics(),
-
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 8,
-      ),
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
       itemCount: logs.length,
       itemBuilder: (context, index) {
         final log = logs[index];
         final isFound = log.status == "FOUND";
 
+        Map<String, dynamic> logMap = {};
+        try {
+          logMap = (log as dynamic).toJson();
+        } catch (_) {}
+
+        final String cardStatus =
+            logMap["status"]?.toString() ?? log.status ?? "";
+
+        final String cardAddress =
+            logMap["address"]?.toString() ?? log.address ?? "";
+
+        final String cardBuildingNo =
+            logMap["buildingNo"]?.toString() ?? log.buildingNo ?? "";
+
+        final String cardFloorNo =
+            logMap["floorNo"]?.toString() ?? log.floorNo ?? "";
+
+        String cardPhotoUrl =
+            logMap["photoUrl"]?.toString() ?? log.photoUrl ?? logMap["photo"]?.toString() ?? "";
+
+        // Normalize variations of stringified database "null" entries
+        if (cardPhotoUrl.trim() == "null" || cardPhotoUrl.trim().isEmpty) {
+          cardPhotoUrl = "";
+        }
+
         return Container(
-          margin: const EdgeInsets.only(
-            bottom: 16,
-          ),
-          padding: const EdgeInsets.all(
-            14,
-          ),
+          margin: const EdgeInsets.only(bottom: 16),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(
-              24,
-            ),
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.03),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              )
+            ],
           ),
           child: Column(
-            crossAxisAlignment:
-            CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
-              // Header
               Row(
-                mainAxisAlignment:
-                MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     isFound
                         ? (log.citizenName ?? "-")
-                        : "Not Found",
-                    style: const TextStyle(
+                        : "House Locked / Absent",
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF1A237E),
+                      color: isFound ? const Color(0xFF1A237E) : const Color(0xFFC62828),
                     ),
                   ),
-
                   _buildStatusBadge(
                     isFound,
-                    isFound
-                        ? "Found"
-                        : "Not Found",
+                    isFound ? "Found" : cardStatus.replaceAll('_', ' '),
                   ),
                 ],
               ),
-
               const SizedBox(height: 8),
               const Divider(height: 8),
-              const SizedBox(height: 8),
-
-              // FOUND
+              const SizedBox(height: 10),
               if (isFound)
                 _buildInfoGrid(log)
-
-              // NOT FOUND
               else
-                Container(
-                  padding: const EdgeInsets.all(8),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            children: [
+                              _buildStructuredMetaRow(Icons.location_on_outlined, "Address", cardAddress),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  Expanded(child: _buildStructuredMetaRow(Icons.apartment_outlined, "Building No", cardBuildingNo)),
+                                  Expanded(child: _buildStructuredMetaRow(Icons.unfold_more_outlined, "Floor No", cardFloorNo)),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Container(
+                          width: 75,
+                          height: 75,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: Colors.black12,
+                            ),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: cardPhotoUrl.trim().isNotEmpty
 
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFF8F8),
-                    borderRadius:
-                    BorderRadius.circular(18),
-                  ),
+                                ? Image.network(
 
-                  child: Column(
-                    children: [
+                              cardPhotoUrl.trim(),
 
-                      // Row 1
-                      Row(
+                              fit: BoxFit.cover,
+
+                              loadingBuilder:
+                                  (
+                                  context,
+                                  child,
+                                  loadingProgress,
+                                  ) {
+
+                                if (
+                                loadingProgress == null
+                                ) {
+
+                                  return child;
+
+                                }
+
+                                return const Center(
+                                  child:
+                                  CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                );
+
+                              },
+
+                              errorBuilder:
+                                  (
+                                  context,
+                                  error,
+                                  stackTrace,
+                                  ) {
+
+                                print(
+                                    "IMAGE LOAD ERROR => $error"
+                                );
+
+                                print(
+                                    "FAILED URL => $cardPhotoUrl"
+                                );
+
+                                return Container(
+                                  color:
+                                  Colors.grey.shade200,
+                                  child: const Icon(
+                                    Icons.broken_image_outlined,
+                                    color: Colors.redAccent,
+                                    size: 26,
+                                  ),
+                                );
+
+                              },
+
+                            )
+
+                                : Container(
+                              color: Colors.grey.shade200,
+                              child: const Icon(
+                                Icons.image_outlined,
+                                color: Colors.black38,
+                                size: 24,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFF5F5),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: const Color(0xFFFFEBEE)),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-
-                          _buildInfoItem(
-                            Icons.badge_rounded,
-                            "Worker ID",
-                            log.workerId.toUpperCase(),
-                          ),
-
-                          _buildInfoItem(
-                            Icons.person,
-                            "Name",
-                            log.citizenName ?? "-",
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(
-                        height: 10,
-                      ),
-
-                      // Row 2
-                      Row(
-                        children: [
-
-                          _buildInfoItem(
-                            Icons.phone,
-                            "Phone",
-                            log.phoneNumber ?? "-",
-                          ),
-
-                          _buildInfoItem(
-                            Icons.warning_amber_rounded,
-                            "Status",
-                            log.status,
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(
-                        height: 10,
-                      ),
-
-                      // Row 3
-                      Row(
-                        children: [
-
+                          const Icon(Icons.assignment_late_outlined, size: 16, color: Color(0xFFC62828)),
+                          const SizedBox(width: 8),
                           Expanded(
-                            child: _buildInfoItem(
-                              Icons.notes_rounded,
-                              "Remarks",
-                              log.remarks ?? "-",
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "REMARKS",
+                                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFFC62828), letterSpacing: 0.5),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  log.remarks ?? "House locked",
+                                  style: const TextStyle(fontSize: 13, color: Colors.black87, fontWeight: FontWeight.w500),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 8),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4),
+                      child: Text(
+                        "Logged By: ${log.workerId.toUpperCase()}",
+                        style: TextStyle(fontSize: 11, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
+                      ),
+                    )
+                  ],
                 )
             ],
           ),
@@ -576,129 +612,96 @@ class _LogsScreenState extends State<LogsScreen>
     );
   }
 
-  Widget _buildStatusBadge(
-      bool isFound,
-      String status,
-      ) {
-    return Container(
-      padding:
-      const EdgeInsets.symmetric(
-        horizontal: 10,
-        vertical: 4,
-      ),
-      decoration: BoxDecoration(
-        color: isFound
-            ? const Color(
-          0xFFE8F5E9,
-        )
-            : const Color(
-          0xFFFFEBEE,
+  Widget _buildStructuredMetaRow(IconData icon, String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, size: 16, color: Colors.black54),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label.toUpperCase(), style: TextStyle(fontSize: 9, color: Colors.grey.shade500, fontWeight: FontWeight.bold, letterSpacing: 0.3)),
+              const SizedBox(height: 1),
+              Text(value, style: const TextStyle(fontSize: 13, color: Color(0xFF2C3E50), fontWeight: FontWeight.w600), maxLines: 2, overflow: TextOverflow.ellipsis),
+            ],
+          ),
         ),
-        borderRadius:
-        BorderRadius.circular(
-          100,
+      ],
+    );
+  }
+
+  Widget _buildStatusBadge(bool isFound, String status) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: isFound ? const Color(0xFFE8F5E9) : const Color(0xFFFFF0F0),
+        borderRadius: BorderRadius.circular(100),
+        border: Border.all(
+          color: isFound ? const Color(0xFFC8E6C9) : const Color(0xFFFFCDD2),
+          width: 1,
         ),
       ),
       child: Text(
         status.toUpperCase(),
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+          color: isFound ? const Color(0xFF2E7D32) : const Color(0xFFC62828),
+        ),
       ),
     );
   }
 
-  Widget _buildInfoGrid(
-      TrackingModel log,
-      ) {
+  Widget _buildInfoGrid(TrackingModel log) {
     return Column(
       children: [
-
         Row(
           children: [
-            _buildInfoItem(
-              Icons.badge_rounded,
-              "Worker ID",
-              log.workerId.toUpperCase(),
-            ),
-
-            _buildInfoItem(
-              Icons.person,
-              "Name",
-              log.citizenName ?? "-",
-            ),
+            _buildInfoItem(Icons.badge_rounded, "Worker ID", log.workerId.toUpperCase()),
+            _buildInfoItem(Icons.person, "Name", log.citizenName ?? "-"),
           ],
         ),
-
         const SizedBox(height: 6),
-
         Row(
           children: [
-            _buildInfoItem(
-              Icons.phone,
-              "Phone",
-              log.phoneNumber ?? "-",
-            ),
-
-            _buildInfoItem(
-              Icons.verified,
-              "Status",
-              log.status,
-            ),
+            _buildInfoItem(Icons.phone, "Phone", log.phoneNumber ?? "-"),
+            _buildInfoItem(Icons.verified, "Status", log.status),
           ],
         ),
-
         const SizedBox(height: 12),
-
         Row(
           children: [
-            _buildInfoItem(
-              Icons.water_drop_rounded,
-              "Wet RFID",
-              log.wetWasteRfid.isEmpty
-                  ? "-"
-                  : log.wetWasteRfid,
-            ),
-
-            _buildInfoItem(
-              Icons.recycling_rounded,
-              "Dry RFID",
-              log.dryWasteRfid.isEmpty
-                  ? "-"
-                  : log.dryWasteRfid,
-            ),
+            _buildInfoItem(Icons.water_drop_rounded, "Wet RFID", log.wetWasteRfid.isEmpty ? "-" : log.wetWasteRfid),
+            _buildInfoItem(Icons.recycling_rounded, "Dry RFID", log.dryWasteRfid.isEmpty ? "-" : log.dryWasteRfid),
           ],
         ),
       ],
     );
   }
 
-  Widget _buildInfoItem(
-      IconData icon,
-      String label,
-      String value,
-      ) {
+  Widget _buildInfoItem(IconData icon, String label, String value) {
     return Expanded(
       child: ListTile(
-        leading: Icon(
-          icon,
-          size: 18,
-        ),
-        title: Text(label),
-        subtitle: Text(value),
+        dense: true,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+        leading: Icon(icon, size: 18, color: const Color(0xFF4CAF50)),
+        title: Text(label, style: const TextStyle(fontSize: 11, color: Colors.grey)),
+        subtitle: Text(value, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.black87)),
       ),
     );
   }
 
-  Widget _buildTableView(
-      List<TrackingModel> logs,
-      ) {
+  Widget _buildTableView(List<TrackingModel> logs) {
     if (logs.isEmpty) {
       return _buildEmptyState();
     }
 
+    final bool rendersFoundTable = _selectedStatus == "Found";
+
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 8,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.92),
@@ -711,171 +714,70 @@ class _LogsScreenState extends State<LogsScreen>
             ),
           ],
         ),
-
         child: ClipRRect(
           borderRadius: BorderRadius.circular(24),
-
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
-
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-
               child: DataTable(
-                headingRowColor:
-                MaterialStateProperty.all(
-                  const Color(0xFFF5F8F7),
-                ),
-
+                headingRowColor: MaterialStateProperty.all(const Color(0xFFF5F8F7)),
                 dataRowMinHeight: 58,
                 dataRowMaxHeight: 70,
-
                 horizontalMargin: 20,
                 columnSpacing: 28,
-
-                columns: const [
-
-                  DataColumn(
-                    label: Text(
-                      "SL",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-
-                  DataColumn(
-                    label: Text(
-                      "Worker",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-
-                  DataColumn(
-                    label: Text(
-                      "Name",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-
-                  DataColumn(
-                    label: Text(
-                      "Wet RFID",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-
-                  DataColumn(
-                    label: Text(
-                      "Dry RFID",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-
-                  DataColumn(
-                    label: Text(
-                      "Phone",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-
-                  DataColumn(
-                    label: Text(
-                      "Status",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                columns: rendersFoundTable
+                    ? const [
+                  DataColumn(label: Text("SL", style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataColumn(label: Text("Worker", style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataColumn(label: Text("Name", style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataColumn(label: Text("Wet RFID", style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataColumn(label: Text("Dry RFID", style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataColumn(label: Text("Phone", style: TextStyle(fontWeight: FontWeight.bold))),
+                ]
+                    : const [
+                  DataColumn(label: Text("SL", style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataColumn(label: Text("Worker", style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataColumn(label: Text("Address Specification", style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataColumn(label: Text("Building No", style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataColumn(label: Text("Floor", style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataColumn(label: Text("Remarks Exception", style: TextStyle(fontWeight: FontWeight.bold))),
                 ],
-
                 rows: logs.map((log) {
+                  Map<String, dynamic> logMap = {};
+                  try {
+                    logMap = (log as dynamic).toJson();
+                  } catch (_) {}
 
-                  final isFound =
-                      log.status == "FOUND";
+                  final String tableAddress =
+                      logMap["address"]?.toString() ?? log.address ?? "";
+
+                  final String tableBuildingNo =
+                      logMap["buildingNo"]?.toString() ?? log.buildingNo ?? "";
+
+                  final String tableFloorNo =
+                      logMap["floorNo"]?.toString() ?? log.floorNo ?? "";
 
                   return DataRow(
-                    cells: [
-
+                    cells: rendersFoundTable
+                        ? [
+                      DataCell(Text(log.id.toString())),
+                      DataCell(Text(log.workerId.toUpperCase())),
+                      DataCell(Text(log.citizenName ?? "-")),
+                      DataCell(Text(log.wetWasteRfid ?? "-")),
+                      DataCell(Text(log.dryWasteRfid ?? "-")),
+                      DataCell(Text(log.phoneNumber ?? "-")),
+                    ]
+                        : [
+                      DataCell(Text(log.id.toString())),
+                      DataCell(Text(log.workerId.toUpperCase())),
+                      DataCell(Text(tableAddress)),
+                      DataCell(Text(tableBuildingNo)),
+                      DataCell(Text(tableFloorNo)),
                       DataCell(
                         Text(
-                          log.id.toString(),
-                        ),
-                      ),
-
-                      DataCell(
-                        Text(
-                          log.workerId.toUpperCase(),
-                        ),
-                      ),
-
-                      DataCell(
-                        Text(
-                          log.citizenName ?? "-",
-                        ),
-                      ),
-
-                      DataCell(
-                        Text(
-                          log.wetWasteRfid ?? "-",
-                        ),
-                      ),
-
-                      DataCell(
-                        Text(
-                          log.dryWasteRfid ?? "-",
-                        ),
-                      ),
-
-                      DataCell(
-                        Text(
-                          log.phoneNumber ?? "-",
-                        ),
-                      ),
-
-                      DataCell(
-                        Container(
-                          padding:
-                          const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
-                          ),
-
-                          decoration: BoxDecoration(
-                            color: isFound
-                                ? const Color(
-                              0xFFE8F5E9,
-                            )
-                                : const Color(
-                              0xFFFFEBEE,
-                            ),
-
-                            borderRadius:
-                            BorderRadius.circular(
-                              100,
-                            ),
-                          ),
-
-                          child: Text(
-                            isFound
-                                ? "FOUND"
-                                : "NOT FOUND",
-                            style: const TextStyle(
-                              fontSize: 11,
-                              fontWeight:
-                              FontWeight.w700,
-                            ),
-                          ),
+                          log.remarks ?? "House locked",
+                          style: const TextStyle(color: Color(0xFFC62828), fontWeight: FontWeight.w500),
                         ),
                       ),
                     ],
@@ -892,25 +794,19 @@ class _LogsScreenState extends State<LogsScreen>
   Widget _buildEmptyState() {
     return Center(
       child: Column(
-        mainAxisAlignment:
-        MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            Icons
-                .find_in_page_rounded,
+            Icons.find_in_page_rounded,
             size: 80,
-            color:
-            Colors.grey.shade300,
+            color: Colors.grey.shade300,
           ),
-          const SizedBox(
-            height: 20,
-          ),
+          const SizedBox(height: 20),
           Text(
             "No matching records found",
             style: TextStyle(
               fontSize: 16,
-              color:
-              Colors.grey.shade500,
+              color: Colors.grey.shade500,
             ),
           ),
         ],

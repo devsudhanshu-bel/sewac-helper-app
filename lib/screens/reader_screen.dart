@@ -29,15 +29,12 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
   Future<void> _saveRFID() async {
 
-    final code =
-    _rfidController.text.trim();
+    final code = _rfidController.text.trim();
 
     // EMPTY FIELD
     if (code.isEmpty) {
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
-
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
             "Please scan RFID first",
@@ -48,42 +45,48 @@ class _ReaderScreenState extends State<ReaderScreen> {
       return;
     }
 
-    // LENGTH CHECK
     try {
 
       setState(() {
         _isSaving = true;
       });
 
-      final response =
-      await http.post(
-
+      final response = await http.post(
         Uri.parse(
           "https://sewac-helper-app.onrender.com/api/v1/rfid/create/$code",
         ),
       );
 
-      final body =
-      response.body.toLowerCase();
+      final result = jsonDecode(response.body);
 
-      // SUCCESS
-      if (response.statusCode == 200 ||
+      final innerMessage =
+      result["data"]["message"]
+          .toString()
+          .toLowerCase();
+
+      final serialNo =
+      result["data"]["data"]["slno"]
+          .toString();
+
+      // RFID ALREADY EXISTS
+      if (innerMessage.contains("already exists")) {
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "RFID already assigned to Serial No: $serialNo",
+            ),
+          ),
+        );
+      }
+
+      // RFID CREATED SUCCESSFULLY
+      else if (response.statusCode == 200 ||
           response.statusCode == 201) {
 
-        final result =
-        jsonDecode(response.body);
-
-        final serialNo =
-        result["data"]["slno"]
-            .toString();
-
-        ScaffoldMessenger.of(context)
-            .showSnackBar(
-
+        ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            backgroundColor:
-            const Color(0xFF4CAF50),
-
+            backgroundColor: const Color(0xFF4CAF50),
             content: Text(
               "RFID assigned to Serial No: $serialNo",
             ),
@@ -93,37 +96,10 @@ class _ReaderScreenState extends State<ReaderScreen> {
         _rfidController.clear();
       }
 
-      // RFID EXISTS
-      else if (
-      body.contains("already exists") ||
-          body.contains("exists") ||
-          body.contains("duplicate")
-      ) {
-
-        final result =
-        jsonDecode(response.body);
-
-        final serialNo =
-        result["data"]["slno"]
-            .toString();
-
-        ScaffoldMessenger.of(context)
-            .showSnackBar(
-
-          SnackBar(
-            content: Text(
-              "RFID already assigned to Serial No: $serialNo",
-            ),
-          ),
-        );
-      }
-
-      // OTHER BACKEND ERROR
+      // OTHER ERROR
       else {
 
-        ScaffoldMessenger.of(context)
-            .showSnackBar(
-
+        ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
               "Failed to save RFID",
@@ -137,9 +113,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
     // INTERNET ISSUE
     on http.ClientException {
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
-
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
             "Failed due to internet connection",
@@ -151,13 +125,9 @@ class _ReaderScreenState extends State<ReaderScreen> {
     // OTHER ERROR
     catch (e) {
 
-      print(
-        "SAVE ERROR => $e",
-      );
+      print("SAVE ERROR => $e");
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
-
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
             "Failed to save RFID",
@@ -261,179 +231,179 @@ class _ReaderScreenState extends State<ReaderScreen> {
           child: SizedBox(
             height: MediaQuery.of(context).size.height,
 
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(
-              24,
-              110,
-              24,
-              24,
-            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                24,
+                110,
+                24,
+                24,
+              ),
 
-            child: Column(
-              crossAxisAlignment:
-              CrossAxisAlignment.start,
+              child: Column(
+                crossAxisAlignment:
+                CrossAxisAlignment.start,
 
-              children: [
+                children: [
 
-                const Text(
-                  "Reader",
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF2C3E50),
-                  ),
-                ),
-
-                const SizedBox(
-                  height: 18,
-                ),
-
-                Container(
-                  width: double.infinity,
-
-                  padding:
-                  const EdgeInsets.all(24),
-
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-
-                    borderRadius:
-                    BorderRadius.circular(28),
+                  const Text(
+                    "Reader",
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF2C3E50),
+                    ),
                   ),
 
-                  child: Column(
-                    children: [
+                  const SizedBox(
+                    height: 18,
+                  ),
 
-                      const Icon(
-                        Icons.nfc_rounded,
-                        size: 64,
-                        color:
-                        Color(0xFF4CAF50),
-                      ),
+                  Container(
+                    width: double.infinity,
 
-                      const SizedBox(
-                        height: 16,
-                      ),
+                    padding:
+                    const EdgeInsets.all(24),
 
-                      const Text(
-                        "Tap RFID Card",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight:
-                          FontWeight.w700,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+
+                      borderRadius:
+                      BorderRadius.circular(28),
+                    ),
+
+                    child: Column(
+                      children: [
+
+                        const Icon(
+                          Icons.nfc_rounded,
+                          size: 64,
+                          color:
+                          Color(0xFF4CAF50),
                         ),
-                      ),
 
-                      const SizedBox(
-                        height: 24,
-                      ),
+                        const SizedBox(
+                          height: 16,
+                        ),
 
-                      TextFormField(
-                        controller: _rfidController,
-
-                        autofocus: true,
-                        showCursor: true,
-
-                        onChanged: (_) {
-                          setState(() {});
-                        },
-
-                        maxLength: requiredRfidLength,
-
-                        decoration: InputDecoration(
-                          hintText:
-                          "Tap RFID card to scan...",
-
-                          counterText: "",
-
-                          filled: true,
-                          fillColor: Colors.white,
-
-                          contentPadding:
-                          const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 16,
-                          ),
-
-                          border:
-                          OutlineInputBorder(
-                            borderRadius:
-                            BorderRadius.circular(
-                                16),
+                        const Text(
+                          "Tap RFID Card",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight:
+                            FontWeight.w700,
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 24,
-                      ),
 
-                      SizedBox(
-                        width:
-                        double.infinity,
+                        const SizedBox(
+                          height: 24,
+                        ),
 
-                        child: Container(
-                          decoration:
-                          BoxDecoration(
-                            borderRadius:
-                            BorderRadius.circular(
-                                16),
+                        TextFormField(
+                          controller: _rfidController,
 
-                            gradient:
-                            const LinearGradient(
-                              colors: [
-                                Color(
-                                    0xFFFFA000),
-                                Color(
-                                    0xFF4CAF50),
-                              ],
+                          autofocus: true,
+                          showCursor: true,
+
+                          onChanged: (_) {
+                            setState(() {});
+                          },
+
+                          maxLength: requiredRfidLength,
+
+                          decoration: InputDecoration(
+                            hintText:
+                            "Tap RFID card to scan...",
+
+                            counterText: "",
+
+                            filled: true,
+                            fillColor: Colors.white,
+
+                            contentPadding:
+                            const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 16,
+                            ),
+
+                            border:
+                            OutlineInputBorder(
+                              borderRadius:
+                              BorderRadius.circular(
+                                  16),
                             ),
                           ),
+                        ),
+                        const SizedBox(
+                          height: 24,
+                        ),
 
-                          child: ElevatedButton(
+                        SizedBox(
+                          width:
+                          double.infinity,
 
-                            onPressed:
-                            _isSaving ||
-                                _rfidController
-                                    .text
-                                    .trim()
-                                    .length !=
-                                    requiredRfidLength
-                                ? null
-                                : _saveRFID,
+                          child: Container(
+                            decoration:
+                            BoxDecoration(
+                              borderRadius:
+                              BorderRadius.circular(
+                                  16),
 
-                            style:
-                            ElevatedButton.styleFrom(
-
-                              backgroundColor:
-                              Colors.transparent,
-
-                              disabledBackgroundColor:
-                              Colors.grey,
-
-                              shadowColor:
-                              Colors.transparent,
+                              gradient:
+                              const LinearGradient(
+                                colors: [
+                                  Color(
+                                      0xFFFFA000),
+                                  Color(
+                                      0xFF4CAF50),
+                                ],
+                              ),
                             ),
 
-                            child:
-                            const Text(
-                              "SAVE",
+                            child: ElevatedButton(
 
-                              style: TextStyle(
-                                color: Colors.white,
+                              onPressed:
+                              _isSaving ||
+                                  _rfidController
+                                      .text
+                                      .trim()
+                                      .length !=
+                                      requiredRfidLength
+                                  ? null
+                                  : _saveRFID,
+
+                              style:
+                              ElevatedButton.styleFrom(
+
+                                backgroundColor:
+                                Colors.transparent,
+
+                                disabledBackgroundColor:
+                                Colors.grey,
+
+                                shadowColor:
+                                Colors.transparent,
+                              ),
+
+                              child:
+                              const Text(
+                                "SAVE",
+
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
       ),
-    ),
     );
   }
 }

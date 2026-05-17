@@ -11,6 +11,12 @@ class TrackingModel {
   final String status;
   final String? remarks;
 
+  // Not Found fields
+  final String? address;
+  final String? buildingNo;
+  final String? floorNo;
+  final String? photoUrl;
+
   final DateTime createdAt;
 
   TrackingModel({
@@ -26,40 +32,55 @@ class TrackingModel {
     required this.status,
     this.remarks,
 
+    this.address,
+    this.buildingNo,
+    this.floorNo,
+    this.photoUrl,
+
     required this.createdAt,
   });
 
   factory TrackingModel.fromJson(
       Map<String, dynamic> json,
       ) {
+
+    // Safety helper function to clean up stringified nulls or empty values from the DB
+    String? cleanString(dynamic val) {
+      if (val == null) return null;
+      String str = val.toString().trim();
+      if (str == "null" || str.isEmpty) return null;
+      return str;
+    }
+
     return TrackingModel(
-      id: json["id"],
+      id: json["id"] ?? 0,
 
-      workerId:
-      json["workerId"] ?? "",
+      workerId: json["workerId"] ?? "",
 
-      wetWasteRfid:
-      json["wetSlno"] ?? "",
+      wetWasteRfid: json["wetSlno"] ?? "",
 
-      dryWasteRfid:
-      json["drySlno"] ?? "",
+      dryWasteRfid: json["drySlno"] ?? "",
 
-      citizenName:
-      json["citizenName"],
+      citizenName: cleanString(json["citizenName"]),
 
-      phoneNumber:
-      json["phoneNumber"],
+      phoneNumber: cleanString(json["phoneNumber"]),
 
-      status:
-      json["status"] ?? "",
+      status: json["status"] ?? "",
 
-      remarks:
-      json["remarks"],
+      remarks: cleanString(json["remarks"]),
 
-      createdAt:
-      DateTime.parse(
-        json["createdAt"],
-      ),
+      // For Not Found cards cleaned globally
+      address: cleanString(json["address"]),
+
+      buildingNo: cleanString(json["buildingNo"]),
+
+      floorNo: cleanString(json["floorNo"]),
+
+      photoUrl: cleanString(json["photoUrl"]),
+
+      createdAt: json["createdAt"] != null
+          ? DateTime.parse(json["createdAt"])
+          : DateTime.now(),
     );
   }
 }

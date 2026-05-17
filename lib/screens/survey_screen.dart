@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:http_parser/http_parser.dart'; // 1. Added import to handle explicit MIME content types
 
 import '../widgets/sewac_background.dart';
 import '../widgets/sewac_header.dart';
@@ -473,18 +474,13 @@ class _SurveyScreenState
           _peopleController.text
               .trim();
 
-      if (_capturedImage !=
-          null) {
-
+      // If a photo was selected, append it. If not, request naturally bypasses it without breaking
+      if (_capturedImage != null) {
         request.files.add(
-
-          await http.MultipartFile
-              .fromPath(
-
+          await http.MultipartFile.fromPath(
             "buildingPhoto",
-
-            _capturedImage!
-                .path,
+            _capturedImage!.path,
+            contentType: MediaType('image', 'jpeg'),
           ),
         );
       }
@@ -650,9 +646,6 @@ class _SurveyScreenState
   @override
   Widget build(
       BuildContext context) {
-
-    // KEEP YOUR EXISTING UI BELOW EXACTLY SAME
-    // (No UI changes made)
 
     return Scaffold(
       extendBodyBehindAppBar: false,
@@ -843,7 +836,7 @@ class _SurveyScreenState
                         alignment:
                         Alignment.centerLeft,
                         child: Text(
-                          "Photo of Building *",
+                          "Photo of Building", // Removed asterisk '*' from label text to show it is unmandatory
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight:
