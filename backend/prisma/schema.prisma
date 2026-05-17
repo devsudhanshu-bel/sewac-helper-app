@@ -7,134 +7,320 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| RFID MAPPING
+|--------------------------------------------------------------------------
+*/
 model RFIDMapping {
-  id          Int        @id @default(autoincrement())
-  /// |--------------------------------------------------------------------------
-  ///   | CITIZEN DATA
-  ///   |--------------------------------------------------------------------------
-  slno        String
+
+  id Int @id @default(autoincrement())
+
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | CITIZEN DATA
+  |--------------------------------------------------------------------------
+  */
+  slno String
+
   phoneNumber String?
-  /// |--------------------------------------------------------------------------
-  ///   | RFID DATA
-  ///   |--------------------------------------------------------------------------
-  rfid        String     @unique
-  wasteType   WasteType?
-  /// |--------------------------------------------------------------------------
-  ///   | META
-  ///   |--------------------------------------------------------------------------
-  createdAt   DateTime   @default(now())
+
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | RFID DATA
+  |--------------------------------------------------------------------------
+  */
+  rfid String @unique
+
+  wasteType WasteType?
+
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | META
+  |--------------------------------------------------------------------------
+  */
+  createdAt DateTime @default(now())
+
+
 
   @@unique([slno, wasteType])
+
 }
 
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| MODERATOR
+|--------------------------------------------------------------------------
+*/
 model Moderator {
-  id        Int      @id @default(autoincrement())
-  username  String   @unique
-  password  String
-  role      String   @default("MODERATOR")
+
+  id Int @id @default(autoincrement())
+
+  username String @unique
+
+  password String
+
+  role String @default("MODERATOR")
+
   createdAt DateTime @default(now())
+
 }
 
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| TRACKING LOG
+|--------------------------------------------------------------------------
+*/
 model TrackingLog {
-  id          Int            @id @default(autoincrement())
-  /// |--------------------------------------------------------------------------
-  ///   | WORKER
-  ///   |--------------------------------------------------------------------------
-  workerId    String
-  /// |--------------------------------------------------------------------------
-  ///   | CITIZEN
-  ///   |--------------------------------------------------------------------------
-  slno        String?
+
+  id Int @id @default(autoincrement())
+
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | WORKER
+  |--------------------------------------------------------------------------
+  */
+  workerId String
+
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | CITIZEN
+  |--------------------------------------------------------------------------
+  */
+  slno String?
+
   citizenName String?
+
   phoneNumber String?
-  remarks     String?
-  /// |--------------------------------------------------------------------------
-  ///   | META
-  ///   |--------------------------------------------------------------------------
-  createdAt   DateTime       @default(now())
-  /// |--------------------------------------------------------------------------
-  ///   | NOT FOUND DETAILS
-  ///   |--------------------------------------------------------------------------
-  address     String?
-  buildingNo  String?
-  /// |--------------------------------------------------------------------------
-  ///   | RFID SNAPSHOT
-  ///   |--------------------------------------------------------------------------
-  drySlno     String?
-  floorNo     String?
-  /// |--------------------------------------------------------------------------
-  ///   | GEO LOCATION
-  ///   |--------------------------------------------------------------------------
-  latitude    Float?
-  longitude   Float?
-  photoUrl    String?
-  updatedAt   DateTime       @updatedAt
-  wetSlno     String?
-  /// |--------------------------------------------------------------------------
-  ///   | STATUS
-  ///   |--------------------------------------------------------------------------
-  status      TrackingStatus @default(FOUND)
+
+  remarks String?
+
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | META
+  |--------------------------------------------------------------------------
+  */
+  createdAt DateTime @default(now())
+
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | NOT FOUND DETAILS
+  |--------------------------------------------------------------------------
+  */
+  address String?
+
+  buildingNo String?
+
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | RFID SNAPSHOT
+  |--------------------------------------------------------------------------
+  */
+  drySlno String?
+
+  floorNo String?
+
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | GEO LOCATION
+  |--------------------------------------------------------------------------
+  */
+  latitude Float?
+
+  longitude Float?
+
+  photoUrl String?
+
+  updatedAt DateTime @updatedAt
+
+  wetSlno String?
+
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | STATUS
+  |--------------------------------------------------------------------------
+  */
+  status TrackingStatus @default(FOUND)
+
 }
 
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| MASTER CITIZEN DATA
+|--------------------------------------------------------------------------
+*/
 model MasterCitizenData {
-  id                  Int      @id @default(autoincrement())
-  /// |--------------------------------------------------------------------------
-  ///   | PRIMARY LINK
-  ///   |--------------------------------------------------------------------------
-  phoneNumber         String   @unique
-  /// |--------------------------------------------------------------------------
-  ///   | SURVEY DATA
-  ///   |--------------------------------------------------------------------------
-  city                String?
-  ward                String?
-  area                String?
+
+  id Int @id @default(autoincrement())
+
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | PRIMARY LINK
+  |--------------------------------------------------------------------------
+  */
+  phoneNumber String @unique
+
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | SURVEY DATA
+  |--------------------------------------------------------------------------
+  */
+  city String?
+
+  ward String?
+
+  area String?
+
   wasteGeneratorTypes String?
-  houseNumber         String?
-  floorNumber         String?
-  householdType       String?
-  personName          String?
-  contactNumber       String?
-  numberOfPeople      String?
-  buildingPhoto       String?
-  /// |--------------------------------------------------------------------------
-  ///   | META
-  ///   |--------------------------------------------------------------------------
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
-  /// |--------------------------------------------------------------------------
-  ///   | RFID DATA
-  ///   |--------------------------------------------------------------------------
-  dryRFID             String?
-  drySlno             String?
-  wetRFID             String?
-  wetSlno             String?
+
+  houseNumber String?
+
+  floorNumber String?
+
+  householdType String?
+
+  personName String?
+
+  contactNumber String?
+
+  numberOfPeople String?
+
+  buildingPhoto String?
+
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | META
+  |--------------------------------------------------------------------------
+  */
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | RFID DATA
+  |--------------------------------------------------------------------------
+  */
+  dryRFID String?
+
+  drySlno String?
+
+  wetRFID String?
+
+  wetSlno String?
+
+
 
   @@map("master_citizen_data")
+
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model survey_attribute_specific {
-  city                String?
-  ward                String?
-  area                String?
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| SURVEY
+|--------------------------------------------------------------------------
+*/
+model Survey {
+
+  id Int @id @default(autoincrement())
+
+  city String?
+
+  ward String?
+
+  area String?
+
   wasteGeneratorTypes String?
-  houseNumber         String?
-  floorNumber         String?
-  householdType       String?
-  personName          String?
-  contactNumber       String?
-  numberOfPeople      String?
-  buildingPhoto       String?
 
-  @@ignore
+  houseNumber String?
+
+  floorNumber String?
+
+  householdType String?
+
+  personName String?
+
+  contactNumber String?
+
+  numberOfPeople String?
+
+  buildingPhoto String?
+
+
+
+  @@map("survey_attribute_specific")
+
 }
 
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| ENUMS
+|--------------------------------------------------------------------------
+*/
 enum WasteType {
+
   DRY
+
   WET
+
 }
 
 enum TrackingStatus {
+
   FOUND
+
   NOT_FOUND
+
 }
