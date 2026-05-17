@@ -1,4 +1,5 @@
-const { prisma } = require("../config/db");
+const { prisma } =
+  require("../config/db");
 
 
 
@@ -9,193 +10,219 @@ const { prisma } = require("../config/db");
 | Sync Master Citizen Data
 |--------------------------------------------------------------------------
 */
-const syncMasterCitizenData = async (
-  phoneNumber
-) => {
+const syncMasterCitizenData =
+  async (phoneNumber) => {
 
-  // =============================
-  // GET ALL RFID DATA
-  // =============================
+    // =============================
+    // GET RFID DATA
+    // =============================
 
-  const rfidMappings =
-    await prisma.rFIDMapping.findMany({
-      where: {
-        phoneNumber,
-      },
-    });
+    const rfidMappings =
+      await prisma.rFIDMapping.findMany({
 
+        where: {
+          phoneNumber,
+        },
 
-
-  if (
-    !rfidMappings ||
-    rfidMappings.length === 0
-  ) {
-    return null;
-  }
+      });
 
 
 
-  // =============================
-  // GET SURVEY DATA
-  // =============================
-
-  const surveyData =
-    await prisma.survey.findFirst({
-      where: {
-        contactNumber: phoneNumber,
-      },
-    });
-
-
-
-  if (!surveyData) {
-    return null;
-  }
-
-
-
-  // =============================
-  // EXTRACT DRY/WET DATA
-  // =============================
-
-  let dryRFID = null;
-  let wetRFID = null;
-
-  let drySlno = null;
-  let wetSlno = null;
-
-
-
-  rfidMappings.forEach((item) => {
-
-    // DRY
     if (
-      item.wasteType === "DRY"
+      !rfidMappings ||
+      rfidMappings.length === 0
     ) {
 
-      dryRFID = item.rfid;
-
-      drySlno = item.slno;
+      return null;
 
     }
 
 
 
-    // WET
-    if (
-      item.wasteType === "WET"
-    ) {
+    // =============================
+    // GET SURVEY DATA
+    // EXTERNAL TABLE
+    // =============================
 
-      wetRFID = item.rfid;
+    const surveyRows =
+      await prisma.$queryRaw`
 
-      wetSlno = item.slno;
+        SELECT *
+        FROM "survey_attribute_specific"
+        WHERE "contactNumber" = ${phoneNumber}
+        LIMIT 1
+
+      `;
+
+
+
+    const surveyData =
+      surveyRows[0];
+
+
+
+    if (!surveyData) {
+
+      return null;
 
     }
 
-  });
+
+
+    // =============================
+    // EXTRACT DRY/WET RFID
+    // =============================
+
+    let dryRFID = null;
+    let wetRFID = null;
+
+    let drySlno = null;
+    let wetSlno = null;
 
 
 
-  // =============================
-  // UPSERT MASTER TABLE
-  // =============================
+    rfidMappings.forEach((item) => {
 
-  const master =
-    await prisma.masterCitizenData.upsert({
+      // DRY
+      if (
+        item.wasteType ===
+        "DRY"
+      ) {
 
-      where: {
-        phoneNumber,
-      },
+        dryRFID =
+          item.rfid;
 
-      update: {
+        drySlno =
+          item.slno;
 
-        dryRFID,
-        wetRFID,
+      }
 
-        drySlno,
-        wetSlno,
 
-        city: surveyData.city,
 
-        ward: surveyData.ward,
+      // WET
+      if (
+        item.wasteType ===
+        "WET"
+      ) {
 
-        area: surveyData.area,
+        wetRFID =
+          item.rfid;
 
-        wasteGeneratorTypes:
-          surveyData.wasteGeneratorTypes,
+        wetSlno =
+          item.slno;
 
-        houseNumber:
-          surveyData.houseNumber,
-
-        floorNumber:
-          surveyData.floorNumber,
-
-        householdType:
-          surveyData.householdType,
-
-        personName:
-          surveyData.personName,
-
-        contactNumber:
-          surveyData.contactNumber,
-
-        numberOfPeople:
-          surveyData.numberOfPeople,
-
-        buildingPhoto:
-          surveyData.buildingPhoto,
-
-      },
-
-      create: {
-
-        phoneNumber,
-
-        dryRFID,
-        wetRFID,
-
-        drySlno,
-        wetSlno,
-
-        city: surveyData.city,
-
-        ward: surveyData.ward,
-
-        area: surveyData.area,
-
-        wasteGeneratorTypes:
-          surveyData.wasteGeneratorTypes,
-
-        houseNumber:
-          surveyData.houseNumber,
-
-        floorNumber:
-          surveyData.floorNumber,
-
-        householdType:
-          surveyData.householdType,
-
-        personName:
-          surveyData.personName,
-
-        contactNumber:
-          surveyData.contactNumber,
-
-        numberOfPeople:
-          surveyData.numberOfPeople,
-
-        buildingPhoto:
-          surveyData.buildingPhoto,
-
-      },
+      }
 
     });
 
 
 
-  return master;
+    // =============================
+    // UPSERT MASTER DATA
+    // =============================
 
-};
+    const master =
+      await prisma.masterCitizenData.upsert({
+
+        where: {
+          phoneNumber,
+        },
+
+        update: {
+
+          dryRFID,
+          wetRFID,
+
+          drySlno,
+          wetSlno,
+
+          city:
+            surveyData.city,
+
+          ward:
+            surveyData.ward,
+
+          area:
+            surveyData.area,
+
+          wasteGeneratorTypes:
+            surveyData.wasteGeneratorTypes,
+
+          houseNumber:
+            surveyData.houseNumber,
+
+          floorNumber:
+            surveyData.floorNumber,
+
+          householdType:
+            surveyData.householdType,
+
+          personName:
+            surveyData.personName,
+
+          contactNumber:
+            surveyData.contactNumber,
+
+          numberOfPeople:
+            surveyData.numberOfPeople,
+
+          buildingPhoto:
+            surveyData.buildingPhoto,
+
+        },
+
+        create: {
+
+          phoneNumber,
+
+          dryRFID,
+          wetRFID,
+
+          drySlno,
+          wetSlno,
+
+          city:
+            surveyData.city,
+
+          ward:
+            surveyData.ward,
+
+          area:
+            surveyData.area,
+
+          wasteGeneratorTypes:
+            surveyData.wasteGeneratorTypes,
+
+          houseNumber:
+            surveyData.houseNumber,
+
+          floorNumber:
+            surveyData.floorNumber,
+
+          householdType:
+            surveyData.householdType,
+
+          personName:
+            surveyData.personName,
+
+          contactNumber:
+            surveyData.contactNumber,
+
+          numberOfPeople:
+            surveyData.numberOfPeople,
+
+          buildingPhoto:
+            surveyData.buildingPhoto,
+
+        },
+
+      });
+
+
+
+    return master;
+
+  };
 
 
 
@@ -210,9 +237,11 @@ const getAllMasterData =
   async () => {
 
     return await prisma.masterCitizenData.findMany({
+
       orderBy: {
         createdAt: "desc",
       },
+
     });
 
   };
@@ -223,16 +252,18 @@ const getAllMasterData =
 
 /*
 |--------------------------------------------------------------------------
-| Get Master By Phone Number
+| Get Master By Phone
 |--------------------------------------------------------------------------
 */
 const getMasterByPhone =
   async (phoneNumber) => {
 
     return await prisma.masterCitizenData.findUnique({
+
       where: {
         phoneNumber,
       },
+
     });
 
   };
@@ -250,16 +281,23 @@ const getMasterBySLNO =
   async (slno) => {
 
     return await prisma.masterCitizenData.findFirst({
+
       where: {
+
         OR: [
+
           {
             drySlno: slno,
           },
+
           {
             wetSlno: slno,
           },
+
         ],
+
       },
+
     });
 
   };
