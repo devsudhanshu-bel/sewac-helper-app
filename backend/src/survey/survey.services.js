@@ -1,108 +1,208 @@
-const { PrismaClient } =
-  require("@prisma/client");
+const {
+  PrismaClient,
+} = require(
+  "@prisma/client"
+);
 
 const prisma =
   new PrismaClient();
 
 
 
+
+
 // ======================================
-// CREATE SURVEY
+// CREATE SURVEY SERVICE
 // ======================================
+
 const createSurvey =
   async (data) => {
 
-    const survey =
-      await prisma.survey.create({
+    try {
 
-        data: {
+      const survey =
+        await prisma.survey.create({
 
-          city: "Bangalore",
+          data: {
 
-          ward: "Ibbanuru-174",
+            // ======================================
+            // DEFAULT LOCATION
+            // ======================================
 
-          area:
-            data.area || null,
+            city:
+              data.city ||
+              "Bangalore",
 
-          wasteGeneratorTypes:
-            data.wasteGeneratorTypes || null,
 
-          houseNumber:
-            data.houseNumber || null,
 
-          floorNumber:
-            data.floorNumber || null,
+            ward:
+              data.ward ||
+              "Ibbanuru-174",
 
-          householdType:
-            data.householdType || null,
 
-          personName:
-            data.personName || null,
 
-          contactNumber:
-            data.contactNumber || null,
+            // ======================================
+            // SURVEY DETAILS
+            // ======================================
 
-          numberOfPeople:
-            data.numberOfPeople || null,
+            area:
+              data.area || null,
 
-          buildingPhoto:
-            data.buildingPhoto || null,
 
-        },
 
-      });
+            wasteGeneratorTypes:
+              data.wasteGeneratorTypes || null,
 
-    return survey;
 
-};
+
+            houseNumber:
+              data.houseNumber || null,
+
+
+
+            floorNumber:
+              data.floorNumber || null,
+
+
+
+            householdType:
+              data.householdType || null,
+
+
+
+            personName:
+              data.personName || null,
+
+
+
+            contactNumber:
+              data.contactNumber || null,
+
+
+
+            numberOfPeople:
+              data.numberOfPeople || null,
+
+
+
+            // ======================================
+            // CLOUDINARY IMAGE URL
+            // ======================================
+
+            buildingPhoto:
+              data.buildingPhoto || null,
+
+          },
+
+        });
+
+
+
+      return survey;
+
+    } catch (error) {
+
+      console.error(
+        "CREATE SURVEY SERVICE ERROR:",
+        error
+      );
+
+      throw error;
+
+    }
+
+  };
+
+
 
 
 
 // ======================================
 // GET ALL SURVEYS
 // ======================================
+
 const getAllSurveys =
   async () => {
 
-    const surveys =
-      await prisma.survey.findMany({
+    try {
 
-        orderBy: {
+      const surveys =
+        await prisma.survey.findMany({
 
-          id: "desc",
+          orderBy: {
 
-        },
+            id:
+              "desc",
 
-      });
+          },
 
-    return surveys;
+        });
 
-};
+
+
+      return surveys;
+
+    } catch (error) {
+
+      console.error(
+        "GET ALL SURVEYS SERVICE ERROR:",
+        error
+      );
+
+      throw error;
+
+    }
+
+  };
+
+
 
 
 
 // ======================================
 // GET SURVEY BY ID
 // ======================================
+
 const getSurveyById =
   async (id) => {
 
-    const survey =
-      await prisma.survey.findUnique({
+    try {
 
-        where: {
+      const survey =
+        await prisma.survey.findUnique({
 
-          id,
+          where: {
 
-        },
+            id,
 
-      });
+          },
 
-    return survey;
-
-};
+        });
 
 
+
+      return survey;
+
+    } catch (error) {
+
+      console.error(
+        "GET SURVEY BY ID SERVICE ERROR:",
+        error
+      );
+
+      throw error;
+
+    }
+
+  };
+
+
+
+
+
+// ======================================
+// EXPORT SERVICES
+// ======================================
 
 module.exports = {
 

@@ -1,6 +1,8 @@
-const express = require("express");
+const express =
+  require("express");
 
-const router = express.Router();
+const router =
+  express.Router();
 
 const verifyToken =
   require("../auth/auth.middleware");
@@ -32,7 +34,7 @@ const {
 |--------------------------------------------------------------------------
 |
 | IMPORTANT:
-| Use multipart/form-data
+| Content-Type => multipart/form-data
 |
 |--------------------------------------------------------------------------
 |
@@ -60,13 +62,28 @@ const {
 |
 |--------------------------------------------------------------------------
 |
-| Cloudinary automatically uploads:
+| IMPORTANT:
+| Flutter multipart field name MUST be:
 |
-| req.file.path
+| "photo"
 |
-| and stores URL inside:
+|--------------------------------------------------------------------------
 |
-| photoUrl
+| Upload Flow:
+|
+| Flutter
+| ↓
+| multer.memoryStorage()
+| ↓
+| req.file.buffer
+| ↓
+| streamifier
+| ↓
+| Cloudinary
+| ↓
+| secure_url
+| ↓
+| Prisma DB
 |
 |--------------------------------------------------------------------------
 */
@@ -113,6 +130,12 @@ router.get(
 |--------------------------------------------------------------------------
 | GET /api/v1/tracking/worker/:workerId
 |--------------------------------------------------------------------------
+|
+| Example:
+|
+| /tracking/worker/sewac01
+|
+|--------------------------------------------------------------------------
 */
 router.get(
 
@@ -140,6 +163,7 @@ router.get(
 | /tracking/status/FOUND
 |
 | /tracking/status/NOT_FOUND
+|
 |--------------------------------------------------------------------------
 */
 router.get(
@@ -156,4 +180,43 @@ router.get(
 
 
 
-module.exports = router;
+/*
+|--------------------------------------------------------------------------
+| Health Check
+|--------------------------------------------------------------------------
+| GET /api/v1/tracking/health
+|--------------------------------------------------------------------------
+*/
+router.get(
+
+  "/health",
+
+  (
+    req,
+    res
+  ) => {
+
+    return res.status(200).json({
+
+      success: true,
+
+      message:
+        "Tracking service running successfully",
+
+    });
+
+  }
+
+);
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Export Router
+|--------------------------------------------------------------------------
+*/
+module.exports =
+  router;

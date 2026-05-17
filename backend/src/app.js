@@ -21,7 +21,7 @@ const app = express();
 // =============================
 
 const upload =
-  require("../middlewares/cloudinary.middleware");
+  require("./middleware/upload.middleware");
 
 const authRoutes =
   require("./auth/auth.routes");

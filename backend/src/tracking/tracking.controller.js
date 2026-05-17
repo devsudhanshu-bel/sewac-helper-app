@@ -10,6 +10,12 @@ const {
 
 } = require("./tracking.service");
 
+const cloudinary =
+  require("../config/cloudinary");
+
+const streamifier =
+  require("streamifier");
+
 
 
 
@@ -98,13 +104,101 @@ const createTrackingLog = async (
 
     /*
     |--------------------------------------------------------------------------
-    | CLOUDINARY PHOTO URL
+    | CLOUDINARY IMAGE URL
     |--------------------------------------------------------------------------
     */
-    const photoUrl =
-      req.file
-        ? req.file.path
-        : null;
+    let photoUrl = null;
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPLOAD IMAGE TO CLOUDINARY
+    |--------------------------------------------------------------------------
+    */
+    if (req.file) {
+
+      console.log(
+        "TRACKING IMAGE RECEIVED"
+      );
+
+
+
+      const streamUpload =
+        () => {
+
+          return new Promise(
+
+            (
+              resolve,
+              reject
+            ) => {
+
+              const stream =
+                cloudinary.uploader.upload_stream(
+
+                  {
+
+                    folder:
+                      "sewac-tracking",
+
+                  },
+
+                  (
+                    error,
+                    result
+                  ) => {
+
+                    if (result) {
+
+                      resolve(result);
+
+                    } else {
+
+                      reject(error);
+
+                    }
+
+                  }
+
+                );
+
+
+
+              streamifier
+
+                .createReadStream(
+                  req.file.buffer
+                )
+
+                .pipe(stream);
+
+            }
+
+          );
+
+        };
+
+
+
+      const uploadedImage =
+        await streamUpload();
+
+
+
+      photoUrl =
+        uploadedImage.secure_url;
+
+
+
+      console.log(
+        "TRACKING PHOTO URL =>",
+        photoUrl
+      );
+
+    }
 
 
 
@@ -125,6 +219,7 @@ const createTrackingLog = async (
           "Status is required",
 
       });
+
     }
 
 
@@ -160,6 +255,7 @@ const createTrackingLog = async (
           "Invalid status value",
 
       });
+
     }
 
 
@@ -193,7 +289,9 @@ const createTrackingLog = async (
             "phoneNumber, citizenName, drySlno and wetSlno are required for FOUND status",
 
         });
+
       }
+
     }
 
 
@@ -231,7 +329,9 @@ const createTrackingLog = async (
             "address, buildingNo, floorNo, remarks, latitude and longitude are required for NOT_FOUND status",
 
         });
+
       }
+
     }
 
 
@@ -395,6 +495,8 @@ const createTrackingLog = async (
       error
     );
 
+
+
     return res.status(500).json({
 
       success: false,
@@ -446,6 +548,8 @@ const getAllTrackingLogs = async (
       "GET ALL TRACKING LOGS ERROR:",
       error
     );
+
+
 
     return res.status(500).json({
 
@@ -505,6 +609,8 @@ const getTrackingLogsByWorker = async (
       error
     );
 
+
+
     return res.status(500).json({
 
       success: false,
@@ -562,6 +668,8 @@ const getTrackingLogsByStatus = async (
       "GET TRACKING LOGS BY STATUS ERROR:",
       error
     );
+
+
 
     return res.status(500).json({
 
