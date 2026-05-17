@@ -18,15 +18,20 @@ const getCitizenByPhoneService =
 
     try {
 
+      const citizens =
+        await prisma.$queryRaw`
+
+          SELECT *
+          FROM "survey_attribute_specific"
+          WHERE "contactNumber" = ${phoneNumber}
+          LIMIT 1
+
+        `;
+
+
+
       const citizen =
-        await prisma.survey.findFirst({
-
-          where: {
-            contactNumber:
-              phoneNumber,
-          },
-
-        });
+        citizens[0];
 
 
 
@@ -111,25 +116,20 @@ const searchCitizenByNameService =
     try {
 
       const citizens =
-        await prisma.survey.findMany({
+        await prisma.$queryRaw`
 
-          where: {
+          SELECT
+            "personName",
+            "contactNumber",
+            "city",
+            "ward",
+            "area"
+          FROM "survey_attribute_specific"
+          WHERE LOWER("personName")
+          LIKE LOWER(${`%${citizenName}%`})
+          LIMIT 20
 
-            personName: {
-
-              contains:
-                citizenName,
-
-              mode:
-                "insensitive",
-
-            },
-
-          },
-
-          take: 20,
-
-        });
+        `;
 
 
 
@@ -184,33 +184,16 @@ const getAllCitizenPhoneNumbersService =
     try {
 
       const citizens =
-        await prisma.survey.findMany({
+        await prisma.$queryRaw`
 
-          where: {
+          SELECT DISTINCT
+            "personName",
+            "contactNumber"
+          FROM "survey_attribute_specific"
+          WHERE "contactNumber" IS NOT NULL
+          LIMIT 1000
 
-            contactNumber: {
-
-              not: null,
-
-            },
-
-          },
-
-          select: {
-
-            contactNumber: true,
-
-            personName: true,
-
-          },
-
-          distinct: [
-            "contactNumber",
-          ],
-
-          take: 1000,
-
-        });
+        `;
 
 
 
@@ -256,31 +239,16 @@ const getAllCitizenNamesService =
     try {
 
       const citizens =
-        await prisma.survey.findMany({
+        await prisma.$queryRaw`
 
-          where: {
-
-            personName: {
-
-              not: null,
-
-            },
-
-          },
-
-          select: {
-
-            personName: true,
-
-          },
-
-          distinct: [
+          SELECT DISTINCT
             "personName",
-          ],
+            "contactNumber"
+          FROM "survey_attribute_specific"
+          WHERE "personName" IS NOT NULL
+          LIMIT 1000
 
-          take: 1000,
-
-        });
+        `;
 
 
 
@@ -289,6 +257,9 @@ const getAllCitizenNamesService =
 
           citizenName:
             citizen.personName,
+
+          phoneNumber:
+            citizen.contactNumber,
 
         })
       );
