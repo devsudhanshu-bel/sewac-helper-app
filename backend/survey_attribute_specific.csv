@@ -1,0 +1,1022 @@
+"city","ward","area","wasteGeneratorTypes","houseNumber","floorNumber","householdType","personName","contactNumber","numberOfPeople","buildingPhoto"
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","3/43","1st","Tenant  ","Reena","6363017075","4",NULL
+"Bangalore","Ibbaluru-174","5th main ","MDUs","69/9","Ground ","Tenant  ","Shivamma ",NULL,"3",NULL
+"Bangalore","Ibbaluru-174","Muniratnamma","Individual HHs",NULL,"1St floor ","Tenant  ","Rathnamma",NULL,"5",NULL
+"Bangalore","Ibbaluru-174","2nd cross","MDUs",NULL,"G","Tenant  ","Deokit","7349367833","1",NULL
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","17/40","3rd ","Tenant  ","Jyothi ","8971432199","3",NULL
+"Bangalore","Ibbaluru-174","20th main ",NULL,"24",NULL,"Owner",NULL,"9591189654","4",NULL
+"Bangalore","Ibbaluru-174","2nd main,1st cross","MDUs","50","Ground","Tenant  ","Abimanyu","9743107993","2",NULL
+"Bangalore","Ibbaluru-174","20th main",NULL,"24",NULL,"Owner",NULL,"9591189654","3",NULL
+"Bangalore","Ibbaluru-174","3rd cross 3rd main","Individual HHs",NULL,"4th floor ","Tenant  ","Ravi","9996309234","3",NULL
+"Bangalore","Ibbaluru-174","3rd cross ","Individual HHs",NULL,"3rd floor ","Tenant  ","Mahesh","7558567686","5",NULL
+"Bangalore","Ibbaluru-174","3rd main road ","Others","110","Ground floor ","Tenant  ","Chandrashekar reddy","9676008018","1","https://api.mwater.co/v3/images/cfb29204ea3c4b8ab10100494e12f2ee"
+"Bangalore","Ibbaluru-174","1st cross ","Individual HHs","333","Ground floor ","Owner","Padmamma ","907972976","5","https://api.mwater.co/v3/images/45f40685baab45eca967e03a2e0f176b"
+"Bangalore","Ibbaluru-174","3rd main 1st cross ","Individual HHs",NULL,"1st floor ","Owner","Timmakka","7406985347","4","https://api.mwater.co/v3/images/6896392c4d164bdaafcfc93929b6e61a"
+"Bangalore","Ibbaluru-174","1st cross ","Individual HHs","9","Ground floor ","Owner","Chinnappa ","9632315968","5","https://api.mwater.co/v3/images/b382981a72924ff89eebd6274f58682d"
+"Bangalore","Ibbaluru-174","3rd main 1st cross ","Individual HHs",NULL,"2nd floor ","Tenant  ","S Abdul","6361327088","3",NULL
+"Bangalore","Ibbaluru-174","3rd main road 1st cross ","Individual HHs",NULL,"3rd floor ","Tenant  ","Arjun","8867733139","5",NULL
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","101","Ground floor ","Tenant  ","Sangeeta ","9127865707","3","https://api.mwater.co/v3/images/476b2a265e8f4ee2932894f108e3aa8b"
+"Bangalore","Ibbaluru-174","3rd main 1st cross ","Individual HHs",NULL,"4th floor ","Tenant  ","Sudharani","9538767312","4",NULL
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","101","Ground floor ","Tenant  ","Dinesh ","9113924259","4","https://api.mwater.co/v3/images/1a3004ba37bc4ac7a6b28f7a9d161754"
+"Bangalore","Ibbaluru-174","1st Cross, ","MDUs","101","G","Tenant  ","Reshma","8317345971","3","https://api.mwater.co/v3/images/878c8e31077d449ca40d37ea86b5e524"
+"Bangalore","Ibbaluru-174","1st Cross ","MDUs","102","1st floor ","Owner","Rajalakshmamma","9886748651","3","https://api.mwater.co/v3/images/d0ce481bd1a741058be952fb84c79f3e"
+"Bangalore","Ibbaluru-174","3rd main road  1st cross","Individual HHs",NULL,"1st floor ","Tenant  ","Laxman","9880807229","5",NULL
+"Bangalore","Ibbaluru-174","3rd main 1st cross ","Individual HHs",NULL,"1st floor ","Tenant  ","Ramu v","9986527033","2",NULL
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","103","2nd floor ","Tenant  ","Arthi ","8050066906","4","https://api.mwater.co/v3/images/62850f4a71df4aedb70b92d8394bfea2"
+"Bangalore","Ibbaluru-174","3rd main 1st cross ","Individual HHs",NULL,"1st floor ","Tenant  ","Sudhakar","9740524189","4",NULL
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","103","2nd floor ","Tenant  ","To be collected ",NULL,"3","https://api.mwater.co/v3/images/1754905816e149bbb1bff67c4f738473"
+"Bangalore","Ibbaluru-174","3rd main 1st cross ","Individual HHs",NULL,"2nd floor ","Tenant  ","Kiran ","8431818938","2",NULL
+"Bangalore","Ibbaluru-174","1st cross ","Individual HHs","101","Ground floor ","Tenant  ","Khushi ","7795303811","3","https://api.mwater.co/v3/images/1ff2ac6d9d7040ed87afe6965497a04d"
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","101","Ground floor ","Tenant  ","Raj yadav","9686026708","1","https://api.mwater.co/v3/images/bd02d2a7f9074754b7551bdc62e4154e"
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","101 ","Ground floor ","Tenant  ","To be collected ",NULL,"0","https://api.mwater.co/v3/images/08796d7792f2435d98ce24e980bca621"
+"Bangalore","Ibbaluru-174","3rd main 1st cross ","Individual HHs",NULL,"3rd floor ","Tenant  ","Dipankardas","9957140643","3",NULL
+"Bangalore","Ibbaluru-174","1st Cross","Others, MDUs","31","G","Tenant  ","Ganesh","8618818458","3","https://api.mwater.co/v3/images/f3d53527ae4b460b9b57a1076b6cbf2d"
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","31","Ground floor ","Tenant  ","Chandan ","8826829918","1","https://api.mwater.co/v3/images/c3c827b1d47d4dd7b8242a255e0d4174"
+"Bangalore","Ibbaluru-174","1st ","MDUs","31 /83","G","Tenant  ","Nitish","9148488410","3","https://api.mwater.co/v3/images/336ac01420e94364aa15d95aa0ff7ea8"
+"Bangalore","Ibbaluru-174","3rdmain1st cross ","Individual HHs",NULL,"4th floor ","Tenant  ","Indrajeeth","8618109393","4",NULL
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","31","Ground floor ","Tenant  ","To be collected ",NULL,"1","https://api.mwater.co/v3/images/fd4333cf7e6f4dce9bf645e48ce0f85f"
+"Bangalore","Ibbaluru-174","1st Cross","Individual HHs","101","G","Owner","Dasharatha","8095701431","4","https://api.mwater.co/v3/images/2a4bf47ca94345dca1ca1df0965c32d0"
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","31","Ground floor ","Tenant  ","2 houses to be collected ",NULL,"1 + 2","https://api.mwater.co/v3/images/d76fd2d04f474c409c65642855ee6989"
+"Bangalore","Ibbaluru-174","3rd main 1st cross ","Provision Store",NULL,"Ground floor ","Tenant  ","Akshatha","8123053881","1","https://api.mwater.co/v3/images/60df9d0e30a3419f911eeb07b309f4e3"
+"Bangalore","Ibbaluru-174","1st cross ","Individual HHs","736","Ground floor ","Owner","Shankar ","9591517734","3","https://api.mwater.co/v3/images/12cd686225244c259b4812d99e786f7b"
+"Bangalore","Ibbaluru-174","1st cross","Individual HHs","736","G","Tenant  ","Ravikumar","9538212557","2","https://api.mwater.co/v3/images/5e09e1b2a5a04b7099f8fb87d617e0da"
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","101","Ground floor ","Tenant  ","Niranjan ","6360575851","2","https://api.mwater.co/v3/images/ef1850af24ba4b43ad96bee92e2de62a"
+"Bangalore","Ibbaluru-174","1st Cross","Individual HHs","735","G","Tenant  ","Chandrika","8050010565","4","https://api.mwater.co/v3/images/9fd5f036591e4e09b7d63fe545ac0721"
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","74/5","Ground floor ","Owner","Chandrashekhar Y","9535006463","3","https://api.mwater.co/v3/images/93e9f808020c48cea0344dd2b5966897"
+"Bangalore","Ibbaluru-174","3rd main 1st cross ","Individual HHs",NULL,"1st floor ","Owner","Ratna","7338681916","4","https://api.mwater.co/v3/images/5fff689cd61c4fb4aba1690d451f4bf3"
+"Bangalore","Ibbaluru-174","1st cross ","Individual HHs","74/5","Ground floor ","Owner","Basavaraju","9916363029","4","https://api.mwater.co/v3/images/d77b62a863d74c7f9ccd3130b72957ac"
+"Bangalore","Ibbaluru-174","1st cross ","Individual HHs","101","Ground floor ","Tenant  ","Mohammad Nozrum ","7019766544","3","https://api.mwater.co/v3/images/110b5319f8374aaa8bdcfe110cb83f01"
+"Bangalore","Ibbaluru-174","1st Cross","Individual HHs","101","G","Tenant  ","Harishkumar V","9916194566","6","https://api.mwater.co/v3/images/381d74d019f64e69a8ac6a24e85bbcf5"
+"Bangalore","Ibbaluru-174","3rd main  1st cross ","Individual HHs",NULL,"Ground floor ","Tenant  ","Mahadevamm","9945975927","4","https://api.mwater.co/v3/images/9663d2b7676f4617829b09f0784ebb51"
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","101","Ground floor ","Owner","Bharath ","6361005803","2","https://api.mwater.co/v3/images/e5d3bab6556c4eaca381138fa3e38ed1"
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","403","4th ","Tenant  ","Veeresh ","7780392265","3",NULL
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","101","Ground floor ","Tenant  ","To be collected ",NULL,"0","https://api.mwater.co/v3/images/15abe1d56e5e473e968d7cab17acdd5c"
+"Bangalore","Ibbaluru-174","1st Cross","Individual HHs","101","G","Tenant  ","Chand Bhadshah","8971379768","4","https://api.mwater.co/v3/images/ebf3486c21fe4eb88ac38876f00841d5"
+"Bangalore","Ibbaluru-174","3rd cross ","Individual HHs",NULL,"4th floor ","Tenant  ","Gourang","8892833726","2",NULL
+"Bangalore","Ibbaluru-174","3rd main 1st cross ","Individual HHs",NULL,"Ground floor ","Tenant  ","Mangala","9141446639","4","https://api.mwater.co/v3/images/b6fe51a70bb941acbda24cb46f9a8b34"
+"Bangalore","Ibbaluru-174","1st Cross","Individual HHs","75/1","1st Floor","Owner","Shwetha C","7411914692","7","https://api.mwater.co/v3/images/3aa66907ee69427b883b0a443004458b"
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","75/1","1st floor ","Tenant  ","To be collected ",NULL,"0","https://api.mwater.co/v3/images/b7a12ca399d249478639c6d3aead2e1c"
+"Bangalore","Ibbaluru-174","3rd main 1st cross ","Individual HHs",NULL,"Ground floor ","Tenant  ","Shamu","8826220418","3",NULL
+"Bangalore","Ibbaluru-174","1st Cross","MDUs","75/1","First","Tenant  ","Avira ","-","4","https://api.mwater.co/v3/images/fcb0d35d960a4c99a7a5658d3999d2cd"
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","75/1","2nd floor ","Tenant  ","Pramod ","9775484350","2","https://api.mwater.co/v3/images/1f4a8805a8a04088b987d6a135fa8696"
+"Bangalore","Ibbaluru-174","1st Cross","MDUs","75/1","SECOND","Tenant  ","Shivu","9148341169","4","https://api.mwater.co/v3/images/9c036e7ef9c94daa811ab1e68bbe00af"
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","75/1","2nd floor ","Tenant  ","To be collected - 2 houses ",NULL,"0","https://api.mwater.co/v3/images/ca9ca814c51f4ab98cfe68234dc415bf"
+"Bangalore","Ibbaluru-174","1st Cross","MDUs",NULL,"3 Floor","Tenant  ","Manojkumar Mahanta","7411463670","4","https://api.mwater.co/v3/images/0e7113ffe3ed4bd0861b7c55dd40dcb2"
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","75/1","3rd floor ","Tenant  ","Benu","9148301344","1","https://api.mwater.co/v3/images/f5b5b158dc3246749ee7f8861dcb8eca"
+"Bangalore","Ibbaluru-174","1st Cross","MDUs","75/1","3 Floor","Tenant  ","Ravi","9986851481","3","https://api.mwater.co/v3/images/402f5e260dad424e89ed290b89bf96fd"
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","75/1","3rd floor ","Tenant  ","Akash ","9641990935","4","https://api.mwater.co/v3/images/48b2cc9979df4758a053611a6b9c08ca"
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","53","Ground floor ","Owner","Venkatesh ","9986763601","5","https://api.mwater.co/v3/images/08001ebbf95d489abd8212da331e1603"
+"Bangalore","Ibbaluru-174","1st Cross","MDUs","53","G","Tenant  ","Narasimhamurthy","9611793357","4","https://api.mwater.co/v3/images/759c8e485d3143e19356c7593718b8cb"
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","53","Ground 6","Tenant  ","Nodi","8618276041","3","https://api.mwater.co/v3/images/ae8ed737a28a425c9bb63b363ecfaaad"
+"Bangalore","Ibbaluru-174","3rd main 1st cross ","Individual HHs",NULL,"2nd floor ","Owner","Anitha","7892869370","2","https://api.mwater.co/v3/images/bd95b312ec0a41ffa45e0b00ea0576ed"
+"Bangalore","Ibbaluru-174","1st Cross","MDUs","53","G","Tenant  ","Md Milan","8147495071","2","https://api.mwater.co/v3/images/4b2250adf5904e0ca88e9de7fff4ac63"
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","53","Ground floor ","Tenant  ","Sharadamma ","9536504897","1","https://api.mwater.co/v3/images/8a61505e4c1b48e485a85ca52ef94237"
+"Bangalore","Ibbaluru-174","3rd main 1St cross ","Individual HHs",NULL,"Ground floor ","Tenant  ","Akil","9108775011","3",NULL
+"Bangalore","Ibbaluru-174","3rd main 1st cross ","Individual HHs",NULL,"3rd floor ","Tenant  ","Renuka","9538101161","1",NULL
+"Bangalore","Ibbaluru-174","3rd main 1st cross ","Individual HHs",NULL,"Ground ","Tenant  ","Manoj","9110461655","2",NULL
+"Bangalore","Ibbaluru-174","1st Cross","MDUs","75","G","Tenant  ","Usha","9071005733","5","https://api.mwater.co/v3/images/d41db3f1114b4fd49aa1ccbde98f6fc9"
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","53","Ground floor ","Owner","Vidya",NULL,"2","https://api.mwater.co/v3/images/70898e4b8223430d8d8b79eb44fb8747"
+"Bangalore","Ibbaluru-174","3Rd main 1st cross ","Individual HHs",NULL,"1st floor ","Tenant  ","Nagesh","8300231013","4","https://api.mwater.co/v3/images/6e6124cd1dca4ce98da8672c3d3788ee"
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","53","Ground floor ","Tenant  ","To be collected - 3 houses ",NULL,"0","https://api.mwater.co/v3/images/9f8d96b82b4844e18c562918b75dd3ad"
+"Bangalore","Ibbaluru-174","1st Cross","MDUs","75","G","Tenant  ","Ruby","9591055105","2","https://api.mwater.co/v3/images/7ebb5e25d63a4231b8531e31ecfe5ef1"
+"Bangalore","Ibbaluru-174","3rd main 1St cross ","Individual HHs",NULL,"2nd floor ","Tenant  ","Alok","9348236631","4",NULL
+"Bangalore","Ibbaluru-174","3rd main 1St cross ","Individual HHs",NULL,"2nd floor ","Tenant  ","Shivamurthi","7812814448","4",NULL
+"Bangalore","Ibbaluru-174","1st Cross","MDUs","174","G","Tenant  ","Ranjitha","6360946495","4","https://api.mwater.co/v3/images/5c0bcd61e9984437a6a27a7b17ac68d1"
+"Bangalore","Ibbaluru-174","2nd cross ","MDUs","101","Ground floor ","Tenant  ","To be collected - 2 houses ",NULL,"0","https://api.mwater.co/v3/images/b3557cb8d78a4abbb3ec5015f420bb50"
+"Bangalore","Ibbaluru-174","2nd cross ","MDUs",NULL,"1st floor ","Tenant  ","Ravinder Das","9606638277","3","https://api.mwater.co/v3/images/7f471fad57dd403e9dbbb1631ff124c1"
+"Bangalore","Ibbaluru-174","3rd main 2nd cross ","Individual HHs",NULL,"Ground floor ","Owner","Venkataraman","9620218767","6","https://api.mwater.co/v3/images/ec9497bf12e94184b061150e6c160bbe"
+"Bangalore","Ibbaluru-174","2nd cross ","MDUs","102","1st floor ","Tenant  ","To be collected - 3 houses ",NULL,"0","https://api.mwater.co/v3/images/b276de1db5394d8fa06012aaaf186397"
+"Bangalore","Ibbaluru-174","3rd main 2nd cross ","Individual HHs",NULL,"1St floor ","Tenant  ","Muniraj","9886400300","4",NULL
+"Bangalore","Ibbaluru-174","1st Cross","MDUs","990","3rd floor","Tenant  ","Kusuma","7624963947","4","https://api.mwater.co/v3/images/1c5aeb68961c46c0aece2876c6f5edaa"
+"Bangalore","Ibbaluru-174","2nd cross ","MDUs","990","2nd floor ","Tenant  ","To be collected - 3 houses ",NULL,"0","https://api.mwater.co/v3/images/74a0f0b931f94f2a88e1391521380acc"
+"Bangalore","Ibbaluru-174","3rd main 2nd cross ","Individual HHs",NULL,"4th floor ","Owner","Srinivas","9916399889","4",NULL
+"Bangalore","Ibbaluru-174","2nd cross 3rd main","Individual HHs",NULL,"3rd floor ","Tenant  ","Bandhana","6361027297","2",NULL
+"Bangalore","Ibbaluru-174","2nd cross 3rd main","Individual HHs",NULL,"1st floor ","Owner","Vijayakumar ","9448880592","5",NULL
+"Bangalore","Ibbaluru-174","3rd main 2nd cross ","Individual HHs",NULL,"Ground floor ","Owner","Babhu","7259805495","4","https://api.mwater.co/v3/images/ce0384dd19eb4fb2ba27237de1d680b8"
+"Bangalore","Ibbaluru-174","3rd main 2nd cross ","Individual HHs",NULL,"2nd floor ","Tenant  ","Premila","6366269755","2",NULL
+"Bangalore","Ibbaluru-174","3rd main 2nd cross ","Individual HHs",NULL,"3rd floor ","Tenant  ","Rakesh","6363026414","2",NULL
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","30/2","Ground floor ","Owner","Mani","9364656695","3","https://api.mwater.co/v3/images/43940a6e19404785a7f37c80e94a052d"
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","204","2nd ","Tenant  ","Devu","9800147838","4",NULL
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","543/44","Ground floor ","Tenant  ","Suman","9749332240","2","https://api.mwater.co/v3/images/f8689e7b38f5495ca9d613ad74a400c4"
+"Bangalore","Ibbaluru-174","3rd main 2nd cross ","Individual HHs",NULL,"1st floor ","Tenant  ","Punam seropina","63633026114","2",NULL
+"Bangalore","Ibbaluru-174","3rd main 2nd cross ","Individual HHs",NULL,"2nd floor ","Tenant  ","Abhijith","7098664964","2",NULL
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","40","Ground floor ","Tenant  ","Narayanappa","9743609469","4","https://api.mwater.co/v3/images/ef44bcf40a654e768b5a90d165882b76"
+"Bangalore","Ibbaluru-174","3rd main 2nd cross ","Individual HHs",NULL,"3rd floor ","Tenant  ","Prathap","9902463738","2",NULL
+"Bangalore","Ibbaluru-174","1st cross ","MDUs","40","Ground floor ","Tenant  ","Banumathi ","7406128619","4",NULL
+"Bangalore","Ibbaluru-174","2nd cross ","MDUs","40","1st floor ","Tenant  ","Susmitha","9035203743","4","https://api.mwater.co/v3/images/6c03476e964b4c4c9bd43af7fb55aa3d"
+"Bangalore","Ibbaluru-174","3rd main","Individual HHs",NULL,"1st floor ","Tenant  ","Rajshekar","8095460950","4","https://api.mwater.co/v3/images/594e6ac06291487faa6c11fa87cb5e4e"
+"Bangalore","Ibbaluru-174","2nd cross ","MDUs","544/40","2nd floor ","Owner","Lokesh","9880344644","5","https://api.mwater.co/v3/images/f7035821b61549fe81b39b43609f2181"
+"Bangalore","Ibbaluru-174","3rd main ","Individual HHs",NULL,"1st floor ","Owner","Tayamma","9008595618","1",NULL
+"Bangalore","Ibbaluru-174","2nd cross ","MDUs","101","Ground floor ","Tenant  ","Srijana","8105336156","2","https://api.mwater.co/v3/images/17d8dc72cd144f0ebb278ba262be0474"
+"Bangalore","Ibbaluru-174","3rd main","Individual HHs",NULL,"2nd floor ","Owner","Raju","8884903632","4",NULL
+"Bangalore","Ibbaluru-174","2nd cross ","Individual HHs","101","Ground floor ","Owner","Prema ","7502272529","3","https://api.mwater.co/v3/images/c945960a5fef47a8a1df03ed2618510a"
+"Bangalore","Ibbaluru-174","2nd cross ","MDUs","101","Ground floor ","Tenant  ","Vikas ","8249475604","4","https://api.mwater.co/v3/images/e23ab04adc6846119000958e0f2754bd"
+"Bangalore","Ibbaluru-174","3rd main","Individual HHs",NULL,"3rd floor ","Tenant  ","Salim","8670591357","4",NULL
+"Bangalore","Ibbaluru-174","2nd cross ","MDUs","57/A","Ground floor ","Tenant  ","Ashwath","9742325856","4","https://api.mwater.co/v3/images/3fe2acd785364464acb51b3a51049c78"
+"Bangalore","Ibbaluru-174","2nd cross ","MDUs","57/A","Ground floor ","Tenant  ","Nirmala ","8197184509","2","https://api.mwater.co/v3/images/c31e374b45e748d1a43d7d013900fdb0"
+"Bangalore","Ibbaluru-174","2nd cross ","MDUs","57/A","1st floor ","Tenant  ","Jyothi ","9611863994","2","https://api.mwater.co/v3/images/892d58d429a044d996afffec9f24fd78"
+"Bangalore","Ibbaluru-174","2nd cross ","MDUs","57/A","1st floor ","Tenant  ","Ramesh ","8147765700","5",NULL
+"Bangalore","Ibbaluru-174","2nd cross ","MDUs","57/a","1st floor ","Tenant  ","Marthi","9972002958","12","https://api.mwater.co/v3/images/57842173a58d43d5ab9801976001e8e4"
+"Bangalore","Ibbaluru-174","2nd cross ","Individual HHs",NULL,"Ground floor ","Owner","Krishnappa","9901015589","12","https://api.mwater.co/v3/images/0decbe57e6f94feba2cc646c2aa9ce1e"
+"Bangalore","Ibbaluru-174","2nd cross ","Individual HHs",NULL,"1st floor ","Tenant  ","Mahadevamma","8296307246","2",NULL
+"Bangalore","Ibbaluru-174","2nd cross ","MDUs","57/A","2nd floor ","Tenant  ","Abel","9366041013","3","https://api.mwater.co/v3/images/deb0714d9fd6409bb123c5848aea3cfb"
+"Bangalore","Ibbaluru-174","First crush ","Individual HHs","57 a","4","Tenant  ","Vivek","4","3","https://api.mwater.co/v3/images/81cabdb6475547edb7c4293665fe4934"
+"Bangalore","Ibbaluru-174","2nd cross ","Individual HHs",NULL,"1st floor ","Tenant  ","Savitha","9845266843","4",NULL
+"Bangalore","Ibbaluru-174","2nd cross ","MDUs","57/a","2rd floor ","Tenant  ","Hema","9743814124","3","https://api.mwater.co/v3/images/e80a52ad50004946860c8fdac9b33db0"
+"Bangalore","Ibbaluru-174","2nd cross ","Individual HHs",NULL,"3rd floor ","Tenant  ","Trupthi","8011427774","3",NULL
+"Bangalore","Ibbaluru-174","2 carr","MDUs","57 A","2","Tenant  ","Santosh Santosh","9902267908","4","https://api.mwater.co/v3/images/6c941a37b8aa4914872d650e494b4982"
+"Bangalore","Ibbaluru-174","2nd cross ","Individual HHs",NULL,"2nd floor ","Tenant  ","Prema","7406242038","4",NULL
+"Bangalore","Ibbaluru-174","Iblur 2nd cross ","Individual HHs","57/A","2nd floor ","Tenant  ","Simon","7975998863","2","https://api.mwater.co/v3/images/1d4dabb03eae4161a0e6a29f76e82b17"
+"Bangalore","Ibbaluru-174","2nd cross ","Individual HHs",NULL,"2nd floor ","Tenant  ","Jumpa","7624971460","2",NULL
+"Bangalore","Ibbaluru-174","2nd cross ","Individual HHs",NULL,"3rd floor ","Tenant  ","Shankar","63611968406","2",NULL
+"Bangalore","Ibbaluru-174","2nd cross ","MDUs","55/1","2nd floor ","Tenant  ","Kunti devi","8553506681","3","https://api.mwater.co/v3/images/c77de61becfe4173ae19d30fb212f815"
+"Bangalore","Ibbaluru-174","2nd cross ","Individual HHs",NULL,"5th floor ","Tenant  ","Amith","7022709357","3",NULL
+"Bangalore","Ibbaluru-174","2nd cross ","MDUs","55/1","3rd ","Tenant  ","Kapil Rai","7085441482","3","https://api.mwater.co/v3/images/ccae50deb3814a7abce29eeeb2115f1a"
+"Bangalore","Ibbaluru-174","3rd cross ","MDUs","66/62","Ground floor ","Owner","Sushma","9742382543","4","https://api.mwater.co/v3/images/c108d6066b5d46fd8e68575989548cb4"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"Ground floor ","Owner","Gangamma","9535707828","4","https://api.mwater.co/v3/images/65647d93da784a2b83d1509eb94149f3"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"Ground floor ","Owner","Laxmi","9620096584","4","https://api.mwater.co/v3/images/28548aa5a0534cfdb6c291b3d5684a73"
+"Bangalore","Ibbaluru-174","3rd cross ","MDUs","17","Ground floor ","Tenant  ","Preeti ","9741529541","4","https://api.mwater.co/v3/images/54184945b4574b64a44235f5949c0af4"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"Ground floor ","Tenant  ","Santosh kumar","7795148968","3",NULL
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"1st floor ","Tenant  ","Kalpna","9964576929","4",NULL
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","17","1st floor ","Tenant  ","Keerthana ","8088276941","3","https://api.mwater.co/v3/images/91b75b0c4a604be7a335fb073e9b8eb3"
+"Bangalore","Ibbaluru-174","3rd cross 3rdain","Individual HHs",NULL,"1st floor ","Tenant  ","Anitha","8904781921","3",NULL
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","17","2nd floor ","Tenant  ","Ratna ","8197082215","3",NULL
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","17","1st floor ","Tenant  ","Chethan ","8431815261","5","https://api.mwater.co/v3/images/6afc86c8c2a1462786af76fc3e7bc9ae"
+"Bangalore","Ibbaluru-174","3rd cross ","Individual HHs",NULL,"Ground floor ","Owner","Ravikala","7899363201","5","https://api.mwater.co/v3/images/821e5085bd2b46b3a8a1eaab03e4394b"
+"Bangalore","Ibbaluru-174","3 carr","MDUs",NULL,"1","Tenant  ","2",NULL,"2","https://api.mwater.co/v3/images/0c1697f22d9e42498eb47acd278049fc"
+"Bangalore","Ibbaluru-174","3 cross ","Individual HHs",NULL,"Ground ","Tenant  ","Piyarali","8638732015","4",NULL
+"Bangalore","Ibbaluru-174","5th main, 3rd cross ","Individual HHs","101","Ground floor ","Owner","Chandrappa ","9900730503","4","https://api.mwater.co/v3/images/1af64c117eb946098dedbe21209a4e10"
+"Bangalore","Ibbaluru-174","3rd cross ","Individual HHs",NULL,"Ground ","Tenant  ","Shameen",NULL,"2",NULL
+"Bangalore","Ibbaluru-174","5th main, 1st cross ","MDUs","101","Ground floor ","Tenant  ","Akhilnath","9028885025","4","https://api.mwater.co/v3/images/0dcbe787368b4f98ade0efde8493adaa"
+"Bangalore","Ibbaluru-174","3rd cross ","Individual HHs",NULL,"Ground ","Tenant  ","Sanjana","7795306170","5","https://api.mwater.co/v3/images/96a194f998e5497e9590ee8eb781e8f9"
+"Bangalore","Ibbaluru-174","3rd cross ","Individual HHs",NULL,"2nd floor ","Tenant  ","Mallikharjun ","7975996371","4","https://api.mwater.co/v3/images/f7ba98e434ef4d7dbd82e7bc55661c34"
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","16","1st ","Tenant  ","Saraswati ","9061889282","3","https://api.mwater.co/v3/images/8a83eba4f4c543008c0053294d9fd444"
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","201","2nd floor ","Tenant  ","Bhagya ","9741355617","3","https://api.mwater.co/v3/images/cee919e341ff454f8a92c4dbec6590f5"
+"Bangalore","Ibbaluru-174","3rd cross ","Individual HHs",NULL,"2nd floor ","Tenant  ","Maybul","9126004831","4",NULL
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","203","2nd floor ","Tenant  ","Shyam","6364618598","2",NULL
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","301","3rd floor ","Tenant  ","Biswajit ","9337985292","4",NULL
+"Bangalore","Ibbaluru-174","3","MDUs","Kishore ","2","Tenant  ","7682091881","3","2","https://api.mwater.co/v3/images/08c4c0ec66e8485f98d95b563b5d188b"
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","303","3rd","Tenant  ","Kishore Devnath ","9686413352","3",NULL
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","402","4th floor ","Tenant  ","Kamraj ","8073126804","5",NULL
+"Bangalore","Ibbaluru-174","5th main ","MDUs","401","4th floor ","Tenant  ","Parvati ","7022858078","4",NULL
+"Bangalore","Ibbaluru-174","3rd cross ","MDUs","#17","4th floor ","Tenant  ","Yuraj( maintenance )","9741529541","13 house","https://api.mwater.co/v3/images/d02bbe4c18db42ecba71d4e4e5380d86"
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","18/40","1st ","Tenant  ","Ratna","9880438253","3","https://api.mwater.co/v3/images/a41ee2ae452a4ce89b937cb7cf3822bb"
+"Bangalore","Ibbaluru-174","3rd cross ","Individual HHs",NULL,"Ground ","Tenant  ","Laxmi","9535564902","2","https://api.mwater.co/v3/images/d3b10f1b96c44e7a86d5ff82e1fb89e0"
+"Bangalore","Ibbaluru-174","3rd cross ","Individual HHs",NULL,"2nd floor ","Tenant  ","Kannaswamy","7829395923","3",NULL
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","18/40","4th ","Tenant  ","Anjali Rana","9123059970","3",NULL
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","18/40","4th floor ","Tenant  ","Gayatri ","7899628934","4",NULL
+"Bangalore","Ibbaluru-174","3rd cross ","Individual HHs",NULL,"Ground loor ","Tenant  ","Ambhika","8822687745","1","https://api.mwater.co/v3/images/b5468fd2c2834a44b4882089df36bd87"
+"Bangalore","Ibbaluru-174","3rd cross ","Individual HHs",NULL,"Ground floor ","Tenant  ","Kushi","7679016518","6",NULL
+"Bangalore","Ibbaluru-174","3rd cross ","Individual HHs",NULL,"Ground floor ","Tenant  ","Sri badri rao",NULL,"5",NULL
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","28/16","Ground floor - Godown ","Owner","Suresh ","9986562666","0","https://api.mwater.co/v3/images/46649fb7ed184781bd913356959be59a"
+"Bangalore","Ibbaluru-174","3rd cross ","Individual HHs","# 141","Ground ","Tenant  ","Abhijith","8073193185","4","https://api.mwater.co/v3/images/09c034456b3b4caf8d036b866798ff85"
+"Bangalore","Ibbaluru-174","3rd cross ","Individual HHs","141","2nd floor ","Tenant  ","mahadev","7760896590","3",NULL
+"Bangalore","Ibbaluru-174","3rd cross ","Individual HHs","141","4th floor ","Tenant  ","Subrotho","9036831169","4","https://api.mwater.co/v3/images/697d2fc8c04540ec9bd6b2eb308dd901"
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","133","1st ","Tenant  ","Kohli","8088127977","4",NULL
+"Bangalore","Ibbaluru-174","3rd cross ","Individual HHs","200","Ground ","Tenant  ","Dodda muniyamma","7795360460","5","https://api.mwater.co/v3/images/26348704e6a14c88858ae4d7f571943b"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs","200","1st floor ","Tenant  ","Rani","6363165806","2",NULL
+"Bangalore","Ibbaluru-174","3rd main, 5th cross ","MDUs","139","1st floor ","Owner","Bharathi ","8197407858","7","https://api.mwater.co/v3/images/00159ec09d6243f3b3665b73de612fc8"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"Ground ","Owner","Kumar",NULL,"5","https://api.mwater.co/v3/images/11d1b92fc3164cbf97f4a3a42006fe36"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"Ground ","Tenant  ","Subhadeep","7872435576","3","https://api.mwater.co/v3/images/f1d01ee364df42788e4cfd440d2c570d"
+"Bangalore","Ibbaluru-174","3rd main, 5th cross ","MDUs","132","2nd floor ","Tenant  ","Abhish","7760308192","4",NULL
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","132","2nd floor ","Tenant  ","Subadramma ",NULL,"1",NULL
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"2ndt floor ","Tenant  ","Prabhugouda","968686290821","4","https://api.mwater.co/v3/images/c2d00ef7cfcd422197f2e881ba8c96d6"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"3rd floor ","Tenant  ","Mala","9986134203","4",NULL
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"4th floor ","Tenant  ","Hanamanta","7483917103","3",NULL
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs","230/231","1st floor ","Owner","Vinayakumar R","9945172953","4",NULL
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs","230/231","2nd floor ","Tenant  ","Prabhulinga","9686290821","4",NULL
+"Bangalore","Ibbaluru-174","4th cross 3rd main","Individual HHs","85/215","1st floor ","Tenant  ","Sevanthi","7022301030","3","https://api.mwater.co/v3/images/94e06f83cd8d4cfea98e046156417dfa"
+"Bangalore","Ibbaluru-174","4th cross ","Individual HHs","85/215","1st floor ","Tenant  ","Biplo","8147838780","3",NULL
+"Bangalore","Ibbaluru-174","4th cross ","Individual HHs","85/215","2nd floor ","Tenant  ","Nanu","9353081255","3",NULL
+"Bangalore","Ibbaluru-174","4th cross 3 rd main","Individual HHs","85/215","4th cross ","Tenant  ","Puthap das","7430058080","4",NULL
+"Bangalore","Ibbaluru-174","4th cross ","Individual HHs","85/215","Ground ","Tenant  ","Radha","9740363574","3",NULL
+"Bangalore","Ibbaluru-174","4th cross ","Individual HHs","62","Ground floor ","Owner","Nagamma","6366114705","5","https://api.mwater.co/v3/images/faf05d597007460d95d6a3a3de6b26e0"
+"Bangalore","Ibbaluru-174","4th cross ","MDUs","64","Ground ","Owner","Yoagesh ","9945302295","7","https://api.mwater.co/v3/images/0cdbefe56ead4ea68dacbd25397ebbed"
+"Bangalore","Ibbaluru-174","4th cross ","Individual HHs","82","Ground ","Owner","Rani","9845236527","3","https://api.mwater.co/v3/images/7ba84da29d514cf0bcec528ce5ea4c7b"
+"Bangalore","Ibbaluru-174","4","MDUs","Aparnamandl","3","Tenant  ","9330767472","4","1","https://api.mwater.co/v3/images/123c70e326c544738cd77a5fbc70e855"
+"Bangalore","Ibbaluru-174","4th cross ","Individual HHs","82","1st floor ","Tenant  ","Usha","9187648643","3",NULL
+"Bangalore","Ibbaluru-174","4th cross ","MDUs","64","1st","Tenant  ","Satish","7349368955","5",NULL
+"Bangalore","Ibbaluru-174","4th cross ","MDUs","64","1st ","Tenant  ","Ashutosh ","7259558264","1","https://api.mwater.co/v3/images/a72b1a6404624f0fb573c5ab9a0d48ac"
+"Bangalore","Ibbaluru-174","4th cross ","Individual HHs","82","1st floor ","Tenant  ","Khajalrakshit","9741344037","2",NULL
+"Bangalore","Ibbaluru-174","4th cross ","MDUs","62","Ground ","Tenant  ","Pilisita","6361468628","4","https://api.mwater.co/v3/images/92188e12e944429381f1532c8749c85a"
+"Bangalore","Ibbaluru-174","4","MDUs","Suntia","3","Tenant  ","7619438663","4","62","https://api.mwater.co/v3/images/fe160977767b4781b64640bd5b0b6af6"
+"Bangalore","Ibbaluru-174","4th cross ","Individual HHs","82","2nd floor ","Tenant  ","Shobha","9538855752","5",NULL
+"Bangalore","Ibbaluru-174","4th cross ","MDUs","62","1st","Owner","Ratnamma ","9845840294","2","https://api.mwater.co/v3/images/2fc95b11f89345c197f547d82a185ec0"
+"Bangalore","Ibbaluru-174","3 ","MDUs","9986759146","5","Owner","Nagaraju ","4","4","https://api.mwater.co/v3/images/dc1b7619990e48528373bebc1708ad5b"
+"Bangalore","Ibbaluru-174","4th cross ","Individual HHs",NULL,"Ground ","Tenant  ","Bhavani shankar","9438582928","4","https://api.mwater.co/v3/images/0e82dfd33cb143c3a018efe18e1389cd"
+"Bangalore","Ibbaluru-174","4th cross ","MDUs",NULL,"Ground ","Owner","Renuka","9845358736","2",NULL
+"Bangalore","Ibbaluru-174","4","MDUs","60","3","Tenant  ","814712643","Chandu","4","https://api.mwater.co/v3/images/225ba3209a57449e942ae8d50eb51bef"
+"Bangalore","Ibbaluru-174","4","MDUs","Anushka ","4","Tenant  ","990190908","3","4","https://api.mwater.co/v3/images/a40916715cc34bdb921a9305dd192d89"
+"Bangalore","Ibbaluru-174","4th cross ","Individual HHs",NULL,"1st floor ","Tenant  ","Bhoomika","9886947801","2",NULL
+"Bangalore","Ibbaluru-174","4","MDUs","Supriya","4","Tenant  ","9380227824","5","4","https://api.mwater.co/v3/images/84417ad3fff348048e59cdcfc7691477"
+"Bangalore","Ibbaluru-174","4th cross ","Individual HHs",NULL,"2nd floor ","Tenant  ","Timmappa","8050171933","5",NULL
+"Bangalore","Ibbaluru-174","1st cross ","Individual HHs",NULL,"1st ","Tenant  ","Jeevan","9008213738","2",NULL
+"Bangalore","Ibbaluru-174","4th cross ","MDUs","101","Ground ","Tenant  ","Vipul","8515881108","2","https://api.mwater.co/v3/images/9d557acc4bbe4b60b1de024bfd692af3"
+"Bangalore","Ibbaluru-174","4th cross ","Individual HHs",NULL,"1st floor ","Tenant  ","Pradeep","9620622509","4",NULL
+"Bangalore","Ibbaluru-174","4th cross ","Individual HHs",NULL,"Ground ","Tenant  ","Subrata das","7063802622","2",NULL
+"Bangalore","Ibbaluru-174","Police station behind road ","Individual HHs","9","Ground ","Tenant  ","Rohath","7795528525","2",NULL
+"Bangalore","Ibbaluru-174","4th cross ","MDUs","992/248","Ground ","Owner","Savita ","7204330574","4","https://api.mwater.co/v3/images/98e3331293d04190b5b248ed25200ec9"
+"Bangalore","Ibbaluru-174","4th cross ","Individual HHs",NULL,"Ground ","Tenant  ","Manishankar","9986194022","3",NULL
+"Bangalore","Ibbaluru-174","4th cross ","MDUs","992","1st floor ","Tenant  ","Padma","9035414460","4",NULL
+"Bangalore","Ibbaluru-174","4th cross ","MDUs","992","1st floor ","Tenant  ","Dev","8310540121","3",NULL
+"Bangalore","Ibbaluru-174","4th cross ","MDUs","992","2nd floor ","Tenant  ","Gowramma ","7899605512","4","https://api.mwater.co/v3/images/817b9f7537174219a5912a22b40d1484"
+"Bangalore","Ibbaluru-174","4th cross ","Individual HHs",NULL,"Ground ","Tenant  ","Rampandith","9987285618","3","https://api.mwater.co/v3/images/488c8ac751d246f595c7d14f1f4cbb66"
+"Bangalore","Ibbaluru-174","4th cross ","MDUs","101","Ground ","Tenant  ","Aryan","8119943314","3","https://api.mwater.co/v3/images/e7a5e6fb60f94853bdfe0f658379b7ba"
+"Bangalore","Ibbaluru-174","4th cross ","Individual HHs",NULL,"1st floor ","Tenant  ","Parshuram","9611961093","8",NULL
+"Bangalore","Ibbaluru-174","4th cross ","MDUs","71","Ground ","Tenant  ","Rajesh Kumar rai","8018480313","2","https://api.mwater.co/v3/images/8a640d46b475413893f7c17ce0392061"
+"Bangalore","Ibbaluru-174","4th cross ","MDUs","71","Ground ","Tenant  ","Sapan","6295551454","4",NULL
+"Bangalore","Ibbaluru-174","4th cross ","MDUs","71","1st ","Tenant  ","Mansvanjan","9437907379","3",NULL
+"Bangalore","Ibbaluru-174","4th cross ","MDUs","71","2nd floor ","Tenant  ","Tapan","8867292105","5",NULL
+"Bangalore","Ibbaluru-174","4th cross ","MDUs","71","2nd floor ","Tenant  ","Tapan Kumar Sutar","7975974628","2",NULL
+"Bangalore","Ibbaluru-174","4th cross ","MDUs","101","Ground ","Tenant  ","Anjana","7975793204","4","https://api.mwater.co/v3/images/91404338a1bf45a0bdfe35a7f555f3be"
+"Bangalore","Ibbaluru-174","4th Cross","MDUs",NULL,"1st","Tenant  ","Srinivas","7022958749","5","https://api.mwater.co/v3/images/70ba043f3a76466da40f26856da4937e"
+"Bangalore","Ibbaluru-174","4th Cross","MDUs","253","Ground Floor ","Tenant  ","Venkatalakshmi","9900960391","4",NULL
+"Bangalore","Ibbaluru-174","4th Cross","MDUs",NULL,"5th","Tenant  ","Sanjay","9867566106","4","https://api.mwater.co/v3/images/3b5b7a15fc814f6987052ab9395b903c"
+"Bangalore","Ibbaluru-174","4th cross ","Individual HHs","252/254","1st floor ","Owner","Upendra ","7899372020","6","https://api.mwater.co/v3/images/3542bd9469504585845d305e6e6c7acd"
+"Bangalore","Ibbaluru-174","4th Cross","MDUs","253","Ground Floor ","Tenant  ","Venkatalakshmi ","9900960391","4","https://api.mwater.co/v3/images/e99bf088963e4828a8592035c93e9c9e"
+"Bangalore","Ibbaluru-174","4th Cross ","MDUs","253","2nd Floor ","Tenant  ","Kishore","9071006446","3","https://api.mwater.co/v3/images/b30264401de64dd290d4c97dd381ac7b"
+"Bangalore","Ibbaluru-174","3","MDUs","3","Kamlakant ","Tenant  ","8596048939","4","97","https://api.mwater.co/v3/images/689f6643a385441bb0fe35e39ee03be5"
+"Bangalore","Ibbaluru-174","4th cross","MDUs","97","1","Tenant  ","Anita","6361769995","4","https://api.mwater.co/v3/images/b5ed8c6fd3604351b91a9d8798b709bd"
+"Bangalore","Ibbaluru-174","4th cross ","MDUs",NULL,"3rd","Tenant  ","Vishwanath ","7975327350","3",NULL
+"Bangalore","Ibbaluru-174","4th cross ","MDUs","173","1st ","Owner","Saraswati ","8296337727","4","https://api.mwater.co/v3/images/14a322e693be42939b91c8e647d04c25"
+"Bangalore","Ibbaluru-174","4th Cross","MDUs",NULL,"4th","Tenant  ","Sanjeev Rayappa","9740153330","4","https://api.mwater.co/v3/images/77710fffb9664605804435594d0df0ad"
+"Bangalore","Ibbaluru-174","4th cross ","MDUs",NULL,"4th","Tenant  ","Srinivas","9591905560","4",NULL
+"Bangalore","Ibbaluru-174","4th Cross ","MDUs","253","5th","Tenant  ","Basha","6303553102","3","https://api.mwater.co/v3/images/49d5f22a49ba445fb7bf0ac546154ead"
+"Bangalore","Ibbaluru-174","4th cross ","MDUs",NULL,"4th","Tenant  ","Girish","6366017403","2",NULL
+"Bangalore","Ibbaluru-174","4th cross ","MDUs","173","5th","Tenant  ","Arjun ","7411471174","4",NULL
+"Bangalore","Ibbaluru-174","4th cross","MDUs","253","4th floor ","Tenant  ","Mani","9901251002","4","https://api.mwater.co/v3/images/1b10db9c76cd4ca0a36707343245a9a9"
+"Bangalore","Ibbaluru-174","4th Cross","MDUs",NULL,"5th","Tenant  ","Raju Pandit","8618501908","3","https://api.mwater.co/v3/images/aea31cd395bb4ab0a1e802b83d493ad7"
+"Bangalore","Ibbaluru-174","4th cross ","MDUs","173","5th","Tenant  ","Ranjeet ","7099256775","7",NULL
+"Bangalore","Ibbaluru-174","4th cross","Individual HHs","101 ","Ground Floor ","Tenant  ","Lakshmi","8792386674","5","https://api.mwater.co/v3/images/3128692d4f424a1587a363e7afc987a5"
+"Bangalore","Ibbaluru-174","4th cross ","MDUs","173","2nd ","Tenant  ","Roopa","9901075738","4",NULL
+"Bangalore","Ibbaluru-174","4th cross ","MDUs","173","3rd floor ","Tenant  ","Sunitha","9606178287","4",NULL
+"Bangalore","Ibbaluru-174","4th cross ","MDUs","101","1","Tenant  ","Bablu Roy","9093993745","2","https://api.mwater.co/v3/images/923ad04e298444959bc84655370f408c"
+"Bangalore","Ibbaluru-174","4th cross ","MDUs","173","4th floor ","Tenant  ","AJ","9366287410","4",NULL
+"Bangalore","Ibbaluru-174","4th","MDUs","138","1st floor ","Owner","Padma ","6360363320","2","https://api.mwater.co/v3/images/caf215fc41ab47778729836ff63bd46b"
+"Bangalore","Ibbaluru-174","4th Cross","Individual HHs",NULL,"G","Tenant  ","Bijay Shankar Sarkar","81297569609","4","https://api.mwater.co/v3/images/daabce0a79c3498b9f2d1f7b85c0b2f1"
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","968","Ground ","Owner","Yashodamma","9916543133","2","https://api.mwater.co/v3/images/42e5b4aa91f04c1eaf34a4005afd65d3"
+"Bangalore","Ibbaluru-174","4th Cross","MDUs","103","GROUND Floor ","Tenant  ","Chiru","8431600841","7","https://api.mwater.co/v3/images/46d189781dd844768b4426282fca0e44"
+"Bangalore","Ibbaluru-174","4th Cross ","Individual HHs, MDUs","103 ","1st Floor ","Tenant  ","Lakshman","7676528817","5","https://api.mwater.co/v3/images/274b7e08a26e4cfb9a9d1cfd2ec1f731"
+"Bangalore","Ibbaluru-174","4th cross ","Individual HHs",NULL,"2","Tenant  ","Lalitha","8095931011","3","https://api.mwater.co/v3/images/16f4fc1499b24280b62948fabbf7f363"
+"Bangalore","Ibbaluru-174","4T","MDUs",NULL,"1st Floor","Owner","Manoj Kumar","9036364242","4","https://api.mwater.co/v3/images/f5516690be5c492883496c36d67b33ea"
+"Bangalore","Ibbaluru-174","4th cross","MDUs","968","1","Tenant  ","Hemanth ","9008459034","3",NULL
+"Bangalore","Ibbaluru-174","4th Cross ","MDUs","103 ","First Floor ","Tenant  ","Abijith","9901039269","1","https://api.mwater.co/v3/images/9bdaf0beeeac43ee84a0ea78dd1df0fd"
+"Bangalore","Ibbaluru-174","4th cross ","Individual HHs",NULL,"2","Tenant  ","Swapna ","8777506946","3","https://api.mwater.co/v3/images/3563fa6736be48158b40e73a1ad693f9"
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","968","3rd","Tenant  ","Prameshwar dev Pandey ","9901042579","3",NULL
+"Bangalore","Ibbaluru-174","5th Cross ","MDUs",NULL,"4th","Tenant  ","Nazeem","6366272115","4","https://api.mwater.co/v3/images/bc5697e486f444ca9c20e3b8ac7a8e46"
+"Bangalore","Ibbaluru-174","5th Cross","MDUs","103","2nd Floor ","Tenant  ","Krishna","8310670835","3","https://api.mwater.co/v3/images/f7a343bd1ff84714bb1a9f6694b44bc3"
+"Bangalore","Ibbaluru-174","5th Cross","MDUs","103 ","2nd Floor ","Tenant  ","Iqbal ","7099372240","2","https://api.mwater.co/v3/images/63f3015edf9e4175a8b2bf57804d6a15"
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","101","Ground ","Tenant  ","Malleshwari ","7671896840","3","https://api.mwater.co/v3/images/4133e995120b40648d56ad9d6519ec26"
+"Bangalore","Ibbaluru-174","5th Main","MDUs","234","G","Owner","Ravi","7337896040","3","https://api.mwater.co/v3/images/156089ea557f43df932a19dfe945fb05"
+"Bangalore","Ibbaluru-174","5th Cross ","MDUs","101","Ground ","Tenant  ","Shruthi ","9798635656","2",NULL
+"Bangalore","Ibbaluru-174","5th main /4T","MDUs","234","2nd","Tenant  ","Jeet","8473970769","5",NULL
+"Bangalore","Ibbaluru-174","5th Cross","MDUs","864/181/179","Commercial+house","Owner","Manjunath R","7204968621","3","https://api.mwater.co/v3/images/0724be3aa9894943b7de3a145c001d7c"
+"Bangalore","Ibbaluru-174","5th Cross","Individual HHs","101","Ground Floor ","Tenant  ","Yallappa","7829442284","5","https://api.mwater.co/v3/images/cb141597f53947fd9f56b71897c9f723"
+"Bangalore","Ibbaluru-174","5th Cross ","MDUs","864/181/179","1","Tenant  ","Lakshmi ","7259218973","4",NULL
+"Bangalore","Ibbaluru-174","5th Cross","MDUs","101","GORUND Floor","Tenant  ","Immadrushan","6002937507","2","https://api.mwater.co/v3/images/980d6bb04f8548e88e32d8494474116a"
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","864/181/179","1st","Tenant  ","Priyanka","8219333892","2",NULL
+"Bangalore","Ibbaluru-174","5","MDUs","Punam Das ","4","Tenant  ","9731948963","3","5","https://api.mwater.co/v3/images/f4d920083d414159bc67d1f64d7231b3"
+"Bangalore","Ibbaluru-174","5th cross","MDUs","864/181/179","2","Tenant  ","M. Yamanuri","9663903606","2",NULL
+"Bangalore","Ibbaluru-174","1st cross ","Individual HHs",NULL,"4th floor ","Tenant  ","Umesh luxm","7204217539","2",NULL
+"Bangalore","Ibbaluru-174","5th Cross","MDUs","101","1st Floor ","Tenant  ","Pushpa","6361096597","2","https://api.mwater.co/v3/images/063a9136af534078b3b62d050c9cd049"
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","864/181/179","2nd","Tenant  ","Prem","8971112024","2",NULL
+"Bangalore","Ibbaluru-174","5th Cross","MDUs","101","First Floor","Tenant  ","Manoj Kumar","6370736801","2","https://api.mwater.co/v3/images/43d7ff6b814b41f0ac4dd6222e450493"
+"Bangalore","Ibbaluru-174","5th Cross ","MDUs","101","First Floor","Tenant  ","Mishan","7411898021","4","https://api.mwater.co/v3/images/c251f012b6a34bb98a5d447e70119ac5"
+"Bangalore","Ibbaluru-174","5th main ","Individual HHs",NULL,"Ground ","Tenant  ","Haleema","101","4","https://api.mwater.co/v3/images/df901c8acafe4e8ca19f1231e911b9bf"
+"Bangalore","Ibbaluru-174","5th main ","MDUs","101","G","Tenant  ","Thimmarsu","6364027285","5","https://api.mwater.co/v3/images/bc2c352a5fbf4d43936000605f63be40"
+"Bangalore","Ibbaluru-174","5th Cross ","MDUs","895","Ground ","Owner","Muni Timmakka",NULL,"1","https://api.mwater.co/v3/images/9bc33a0f460440c4a5235cc61328be40"
+"Bangalore","Ibbaluru-174","5th Main ","MDUs","3","1st","Tenant  ","Sandeep","9071230484","3","https://api.mwater.co/v3/images/798676491da44d1f9239ca0de06732d2"
+"Bangalore","Ibbaluru-174","5th Cross","Individual HHs, MDUs","108","Ground Floor ","Owner","Sarsamma","8792251164","4","https://api.mwater.co/v3/images/2641953a91ee4691bb464d5ab57deab1"
+"Bangalore","Ibbaluru-174","5th main ","Individual HHs","4","1","Tenant  ","Sai leela","8522920869","4","https://api.mwater.co/v3/images/99b09984548f4a26be9722e902c26d93"
+"Bangalore","Ibbaluru-174","5","MDUs","Rose dinner ","6395381469","Tenant  ","4","5","3","https://api.mwater.co/v3/images/d157606b52154a76a138f77b73a578e8"
+"Bangalore","Ibbaluru-174","5th Cross","MDUs","111","1","Tenant  ","Chandrashekhar ","8095580796","4",NULL
+"Bangalore","Ibbaluru-174","5th Cross","MDUs","108","Ground Floor ","Tenant  ","Rasubi","9392107472","2","https://api.mwater.co/v3/images/e0f6dcd4c58a407a9994f56891118783"
+"Bangalore","Ibbaluru-174","5th Cross ","MDUs","111","1","Tenant  ","Chandramma","9980982175","2",NULL
+"Bangalore","Ibbaluru-174","5th Main ","MDUs","68004","G","Owner","Chandan ","7337714160","4","https://api.mwater.co/v3/images/3484f45b30f247968ab7437a045001c3"
+"Bangalore","Ibbaluru-174","5th Cross ","MDUs","111","2","Tenant  ","Athunmandal","8240309966","4",NULL
+"Bangalore","Ibbaluru-174","5th Cross","MDUs","108","First ","Tenant  ","Gurupoduman","8971415460","4","https://api.mwater.co/v3/images/33c3e153454a4164a0bd17dd5ef6bd15"
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","111","3","Tenant  ","Manjunath ","8088315292","4",NULL
+"Bangalore","Ibbaluru-174","5th Cross","MDUs","108","2nd Floor ","Owner","Anand","8088539355","2","https://api.mwater.co/v3/images/0755fedddab34bfc8a2fc9d5116d11d9"
+"Bangalore","Ibbaluru-174","5th Cross ","MDUs","101","Ground ","Tenant  ","Lakshmi ","8861088587","6","https://api.mwater.co/v3/images/a7c3f6cd3c184367a5605471d0556d01"
+"Bangalore","Ibbaluru-174","5th Main ","MDUs","202","2nd Floor","Tenant  ","Bitan Das","7875396854","5","https://api.mwater.co/v3/images/dcabc8ddab4244409581d3b869cffc98"
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","112","Ground ","Owner","Manjula ","9886037889","2","https://api.mwater.co/v3/images/28c957458adb40af87da5c8f5a37abd4"
+"Bangalore","Ibbaluru-174","5th Cross ","MDUs","101","1","Tenant  ","Indar","734903965","4",NULL
+"Bangalore","Ibbaluru-174","5th main ","Individual HHs","941-301","2","Tenant  ","Lulu","8798958350","5","https://api.mwater.co/v3/images/50f040cbd2c84bbc8c5370e17118bfc4"
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","113","Ground ","Owner","Prakash ","9902778359","6","https://api.mwater.co/v3/images/f2c57aa14dfd4e859e3464e3d3f6191f"
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","113","1st floor ","Tenant  ","Manoranjan Hatwa","7890316873","2",NULL
+"Bangalore","Ibbaluru-174","5th cross","MDUs","101","1","Tenant  ","Renuka","7411139502","4",NULL
+"Bangalore","Ibbaluru-174","5th main ","Individual HHs","941-401","3","Tenant  ","Suman","9362257499","2","https://api.mwater.co/v3/images/a03bcbd5830747a88d54aaa47c6deeee"
+"Bangalore","Ibbaluru-174","5th main ","Individual HHs","501","5","Tenant  ","Subrata","7624813697","4","https://api.mwater.co/v3/images/dfc6bffc988b4fccb7d2d6d5ae20f697"
+"Bangalore","Ibbaluru-174","114","Others","Commercial- water supply ","Ground ","Owner","Ravi","9986403405","0","https://api.mwater.co/v3/images/c9604059da954ef2b6b2ec01c5657072"
+"Bangalore","Ibbaluru-174","5th Cross ","MDUs","101","Frist floor ","Tenant  ","Arun","7975184313","5","https://api.mwater.co/v3/images/10618f9a309142fc9832bd12512238ef"
+"Bangalore","Ibbaluru-174","5th cross","MDUs","101","2nd floor ","Tenant  ","Komal ","7488847357","4",NULL
+"Bangalore","Ibbaluru-174","5th main ","Individual HHs","G-1","Ground ","Tenant  ","Jhansi ","9398125746","1","https://api.mwater.co/v3/images/9861eccfab6a4e29b0023f505ce4fa6d"
+"Bangalore","Ibbaluru-174","1","MDUs","Abdul ","4","Tenant  ","88119399472","4","1","https://api.mwater.co/v3/images/98c2a08e95c743b49cf686c7a4d81248"
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","101","Ground ","Tenant  ","Vinay ","6362182490","3","https://api.mwater.co/v3/images/39ca5f57a8f946b6a12c99c7e46519f8"
+"Bangalore","Ibbaluru-174","5th main ","Individual HHs","32362","Ground ","Owner","Chaitra","7259321884","3","https://api.mwater.co/v3/images/121d8eee668f4a1b89209ec85b45f90d"
+"Bangalore","Ibbaluru-174","5th Main ","MDUs","175","3rd","Tenant  ","Anand","9108274948","5","https://api.mwater.co/v3/images/16fd02f25dc74b84bc7e32c266fe7869"
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","102","1st floor ","Tenant  ","Khel Bahadur ","9577117408","4","https://api.mwater.co/v3/images/fd1948afccef4ed9b38b64ee3aad543b"
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","101","1st floor ","Tenant  ","Kalpana Sarkar ","9061653943","3",NULL
+"Bangalore","Ibbaluru-174","5th Main","MDUs","101 Same building taken before","G","Owner","Chandrappa","9900730503","4","https://api.mwater.co/v3/images/57b785a4bddf4677b9be98b794e18f4e"
+"Bangalore","Ibbaluru-174","5th cross","MDUs","101","1","Tenant  ","Nagendra ","9620624014","4",NULL
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","101","Ground ","Tenant  ","Meena Nayak","9611261323","3","https://api.mwater.co/v3/images/d0f5848591054610aa993c708570c80a"
+"Bangalore","Ibbaluru-174","5th Main","Hotel","175","G","Tenant  ","Anand","9108274948","3","https://api.mwater.co/v3/images/65959e2395d94349bf9fb58e25c144bf"
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","101","Ground ","Tenant  ","Bharath ","7975219562","2",NULL
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","101","1st floor ","Tenant  ","Bhoopala","9620378113","2",NULL
+"Bangalore","Ibbaluru-174","5th Main","Others","KTM SERVICE","G","Owner","Praveen GM","8197588885","4","https://api.mwater.co/v3/images/359d5cd191f84a7287927e765eaf9f55"
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","101","3rd floor ","Tenant  ","Anamika ","9606612275","3",NULL
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","101","4th floor ","Tenant  ","Ambika","896198l59276","4",NULL
+"Bangalore","Ibbaluru-174","5th Main ","Others","Bajaj Service Centre ","G","Owner","Umesh Bajaj","9945211438","3","https://api.mwater.co/v3/images/9e97340b6dce4ff8a0f92c93a67b0656"
+"Bangalore","Ibbaluru-174","5th main ","Individual HHs",NULL,"Ground ","Tenant  ","Kalpana","7676255464","4","https://api.mwater.co/v3/images/60466315baa745288cb8d0de9cad2def"
+"Bangalore","Ibbaluru-174","5th Main ","Others","Honda Service ","G","Owner","Vivek Manager","8904253117","6","https://api.mwater.co/v3/images/391ab1f01ee144f9ad6e05c731d5207e"
+"Bangalore","Ibbaluru-174","1st Cross 3rd main","Individual HHs","52/2","2nd floor ","Owner","Doddamuniyappa salyana","8722522226","4","https://api.mwater.co/v3/images/43051dbf88ce47c88294fe40495f715c"
+"Bangalore","Ibbaluru-174","5th main, Honda showroom road","MDUs","56","Ground ","Tenant  ","Kiran","9731787629","3","https://api.mwater.co/v3/images/59747a6d367a41d7b90dac609f42009b"
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom ","Individual HHs",NULL,"Ground ","Tenant  ","Sumi","7795928184","3","https://api.mwater.co/v3/images/fc9829bbd8414964b15a69a2151badf4"
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom ","Individual HHs",NULL,"1st floor ","Tenant  ","Deepali devanath","7326044344","4",NULL
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom ","Individual HHs",NULL,"1st floor ","Tenant  ","Alamin","7795744129","1",NULL
+"Bangalore","Ibbaluru-174","5th main, Honda showroom road ","MDUs","3-A","3rd floor ","Tenant  ","Ria","7980026329","2",NULL
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom ","Individual HHs",NULL,"2nd floor ","Owner","Draksayani","9731110191","3",NULL
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom ","Individual HHs",NULL,"2nd floor ","Tenant  ","Raju","8951518670","4",NULL
+"Bangalore","Ibbaluru-174","5th main, Honda showroom ","MDUs","102","Ground ","Tenant  ","Sumangala","9901015587","4","https://api.mwater.co/v3/images/afd32f4bc5234715aeb456f8cbda50de"
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom ","Others",NULL,"Ground  cuttings shop","Tenant  ","Vasudeva","7411815676","1","https://api.mwater.co/v3/images/c9b6d7fb36054cc3b965c04fd5db3d9d"
+"Bangalore","Ibbaluru-174","5th main, Honda showroom road ","MDUs","103","Ground ","Tenant  ","Karthik ","8147267068","3","https://api.mwater.co/v3/images/d16d0c2394ba45e7acd9e4aea5448f63"
+"Bangalore","Ibbaluru-174","5th main, Honda showroom road ","MDUs","101","Ground ","Tenant  ","Vishwanath Reddy ","9845186397","4","https://api.mwater.co/v3/images/e40bd76792484250b4dd4cbf020d840b"
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom ","Individual HHs",NULL,"Ground floor ","Tenant  ","Manoj","8618060357","4","https://api.mwater.co/v3/images/98d3c99f76ec478c8b968e03ce344b9a"
+"Bangalore","Ibbaluru-174","5th main, 3rd cross ","MDUs","47","Ground ","Owner","Rajathi","9741752931","4","https://api.mwater.co/v3/images/dd8b83fdd6634f609d8c918283cb8174"
+"Bangalore","Ibbaluru-174","5th main, 3rd cross ","MDUs","47","1st","Tenant  ","Bhagyamma","9148279558","3",NULL
+"Bangalore","Ibbaluru-174","5th main, 3rd cross ","MDUs","47","1st floor ","Tenant  ","Mintu Jani","9980003181","4",NULL
+"Bangalore","Ibbaluru-174","5th main ","MDUs","197","Ground ","Tenant  ","Anu","8396151391","2",NULL
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom 3rd cross ","Individual HHs",NULL,"Ground floor ","Tenant  ","Kantaraju","8904457030","4","https://api.mwater.co/v3/images/398ae113c9d24d199294e6a33ab16a8e"
+"Bangalore","Ibbaluru-174","5th main, 3rd cross ","MDUs","47","1st floor ","Tenant  ","Saroja","9743707542","4",NULL
+"Bangalore","Ibbaluru-174","5th Main","MDUs","109","G","Owner","Chandrashekhar ","9980409854","4","https://api.mwater.co/v3/images/13a7863abad34de9b0b85a6929c9b693"
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom  3rd cross ","Individual HHs",NULL,"3rd floor ","Tenant  ","Kumar achem","7353413661","5",NULL
+"Bangalore","Ibbaluru-174","5th main, 3rd cross ","MDUs","47","Ground ","Owner","Saraswati ","9739116180","3","https://api.mwater.co/v3/images/0bb3f73804b64fd28cb276c71d006759"
+"Bangalore","Ibbaluru-174","5th Main","MDUs","194","G","Tenant  ","Krishnamma","9611167916","3","https://api.mwater.co/v3/images/9a71c5baff7546c4aa555caac422b37b"
+"Bangalore","Ibbaluru-174","5th main ","MDUs","194","Ground ","Tenant  ","Jyothi ","7349109850","2","https://api.mwater.co/v3/images/5cf3f7c874ff4f1b814d477a934f2be2"
+"Bangalore","Ibbaluru-174","5th Main ","MDUs","194","G","Tenant  ","Bhaskar","9663682037","2","https://api.mwater.co/v3/images/4665275edd6a4d43822a5c172ade70ef"
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom  2nd cross ","Individual HHs",NULL,"Ground ","Tenant  ","Puttaswamy","9741816801","4","https://api.mwater.co/v3/images/19456548bb6e43a5a1d484ad6a2065dc"
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom  2nd cross ","Individual HHs",NULL,"1st floor ","Tenant  ","Ramesh","9900453708","4",NULL
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom  2nd cross ","Individual HHs",NULL,"1st floor ","Tenant  ","Narottam","9938219030","2",NULL
+"Bangalore","Ibbaluru-174","5thM 4thC","MDUs","42","G","Tenant  ","Vinod","8281300622","3","https://api.mwater.co/v3/images/143595a4cb0848c380327f53b6219f8f"
+"Bangalore","Ibbaluru-174","5th main, 4th cross ","MDUs","43","1st floor ","Owner","Sandhya ","9844765091","5","https://api.mwater.co/v3/images/97f330c238b04cd5b162563be566f08d"
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom  2nd cross ","Individual HHs",NULL,"1St floor ","Tenant  ","Joyjoshaf","9008075754","3",NULL
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom  2nd cross ","Individual HHs",NULL,"2nd floor ","Tenant  ","Udaykumar","7899883977","4",NULL
+"Bangalore","Ibbaluru-174","5th main, 4th cross ","MDUs","40","Ground ","Owner","Baby","8550021611","4",NULL
+"Bangalore","Ibbaluru-174","5th Main 4th Cross","MDUs",NULL,"F","Tenant  ","Ali","7760646965","4",NULL
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom  2nd cross ","Individual HHs",NULL,"2nd floor ","Tenant  ","Sundar","9752003036","2",NULL
+"Bangalore","Ibbaluru-174","5th Main 4th Cross","MDUs","42","F","Owner","Mariappan","9945854625","4","https://api.mwater.co/v3/images/55e120193a6444a392504d89e41804eb"
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom  2nd cross ","Individual HHs",NULL,"2nd floor ","Tenant  ","Manjula",NULL,"3",NULL
+"Bangalore","Ibbaluru-174","5th main, 4th cross ","MDUs","40","1st ","Tenant  ","Naresh ","9380771201","4","https://api.mwater.co/v3/images/8c5bba73b9c94374bdb3b2ee47d4ec84"
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom  2nd cross ","Individual HHs",NULL,"3rd floor ","Tenant  ","Santosh","9972063552","2",NULL
+"Bangalore","Ibbaluru-174","5th main, 4th cross ","MDUs","40","3rd floor ","Tenant  ","Sumathi ","9653321827","3",NULL
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom  2nd cross ","Individual HHs",NULL,"3rd floor ","Tenant  ","Deepansh","8384859776","2",NULL
+"Bangalore","Ibbaluru-174","5th main, 4th cross ","MDUs","40","4th","Tenant  ","Ramesh ","9663188967","3",NULL
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom  2nd cross ","Individual HHs",NULL,"4th floor ","Tenant  ","Manmohan","9805122364","2",NULL
+"Bangalore","Ibbaluru-174","5th Main","MDUs",NULL,"F","Tenant  ","Pavan Kumar","8970020349","2","https://api.mwater.co/v3/images/101d83505d554d3c8cc5e0494b985a0c"
+"Bangalore","Ibbaluru-174","5th main","MDUs","203","S","Tenant  ","Rahul","8447863999","1","https://api.mwater.co/v3/images/160c8be060b6466682e0eadfdf9243d8"
+"Bangalore","Ibbaluru-174","5th Main","MDUs",NULL,"Ground ","Tenant  ","Deepak","7585052667","4","https://api.mwater.co/v3/images/ca0fd3d928654392948267118ea28966"
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom  ","PG","SKV grand","Ground ","Owner","Tirupathi","9886744555","28 house ",NULL
+"Bangalore","Ibbaluru-174","5th main ","MDUs","69/9","Ground ","Tenant  ","Rashmi ","9900446320","2","https://api.mwater.co/v3/images/d5043ebeac854db7a6a243b35c214ca2"
+"Bangalore","Ibbaluru-174","5th main ","MDUs","69/9","Ground ","Tenant  ","Meena","7259416315","3",NULL
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom main road ","Individual HHs",NULL,"Ground ","Tenant  ","Shivaraju","9902156144","4","https://api.mwater.co/v3/images/efc8e2f5c1c54b3484cf96c97a943782"
+"Bangalore","Ibbaluru-174","5th Main ","MDUs",NULL,"T","Tenant  ","Roopa C","8105567477","2","https://api.mwater.co/v3/images/7f2616bbab8e485da71a26153152e025"
+"Bangalore","Ibbaluru-174","5th Main ","MDUs","101 ","1st floor ","Owner","Lakshmi ","9742946210","3","https://api.mwater.co/v3/images/fa1244cda0884b4882b462ee774933ba"
+"Bangalore","Ibbaluru-174","5th main","MDUs","22-23","Ground floor ","Tenant  ","Balamurgan","9986112842","4","https://api.mwater.co/v3/images/bc04c5036a5e4ee68b222d1608b657ae"
+"Bangalore","Ibbaluru-174","5th main ","MDUs","69/9","Ground ","Tenant  ","Roopa","9739755684","2",NULL
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom main road ","Individual HHs",NULL,"Ground ","Tenant  ","Hemadul","7483897823","3",NULL
+"Bangalore","Ibbaluru-174","5th main","MDUs","101","2","Tenant  ","Ravi Kumar","7795698249","5","https://api.mwater.co/v3/images/96277e3a98e04170b51ece26fc9a4599"
+"Bangalore","Ibbaluru-174","5th Main ","MDUs",NULL,"T","Tenant  ","Rajarshi","7005731067","1","https://api.mwater.co/v3/images/f9a556c074e04126b2e0b59ce0df5467"
+"Bangalore","Ibbaluru-174","5th main ","MDUs","05","1st floor ","Tenant  ","Girija","9980287366","2","https://api.mwater.co/v3/images/d5a516c685b948ad8ae59e33ecaa3475"
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom main road ","Individual HHs",NULL,"Ground ","Tenant  ","Sushmitja","8653789901","2",NULL
+"Bangalore","Ibbaluru-174","5th main ","MDUs","69/9","Ground ","Tenant  ","Sabir","8904370316","2",NULL
+"Bangalore","Ibbaluru-174","5th Main ","MDUs","101","2nd floor ","Tenant  ","Sudha","9740839779","4","https://api.mwater.co/v3/images/9283029c2d724af5a5a65395b86c8bbe"
+"Bangalore","Ibbaluru-174","5th Main","MDUs",NULL,"T","Tenant  ","Pavan","9625938268","2","https://api.mwater.co/v3/images/2e55c97cb1f64721a31d9c9b3778b3f7"
+"Bangalore","Ibbaluru-174","5th main ","MDUs","05","2nd ","Tenant  ","Girija ","9980287366","4",NULL
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom main road ","Individual HHs",NULL,"Ground ","Tenant  ","Shivegouda","9902833645","2",NULL
+"Bangalore","Ibbaluru-174","5th main ","MDUs","69/9","Ground ","Tenant  ","Srinivas","9900960832","3",NULL
+"Bangalore","Ibbaluru-174","5th main ","MDUs","101","2","Tenant  ","Bhupendra","8892103097","2",NULL
+"Bangalore","Ibbaluru-174","5th main ","Individual HHs","101","Ground ","Tenant  ","Anantra","9035817266","4","https://api.mwater.co/v3/images/3ef716d5ae7043248c7b28ab02cdf21a"
+"Bangalore","Ibbaluru-174","5th main ","MDUs","69/9","Ground ","Tenant  ","Parasappa ","7899370577","5","https://api.mwater.co/v3/images/99ce927443784019ba518014e8d758cb"
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom main road ","Individual HHs",NULL,"Ground ","Tenant  ","Nagamma","9108084830","3","https://api.mwater.co/v3/images/9b5d27068ce2462293d81985d2562648"
+"Bangalore","Ibbaluru-174","5th main","MDUs","101","3rd floor ","Tenant  ","Uttam","7259281015","3","https://api.mwater.co/v3/images/24ce352e779244ae8b706e1c57a513ba"
+"Bangalore","Ibbaluru-174","5th main ","MDUs","69/9","Ground ","Tenant  ","Suresh ","9591509481","3",NULL
+"Bangalore","Ibbaluru-174","5th Main","MDUs","4th Floor 303","4th","Tenant  ","Asha Koushik","9071016342","3","https://api.mwater.co/v3/images/342f724b5f3147cbb9d2c9eb147f27b2"
+"Bangalore","Ibbaluru-174","5th main ","Individual HHs","101","Ground ","Tenant  ","Ismai","8884816959","3","https://api.mwater.co/v3/images/c5916455dd214a3b8b51cdfa251c741a"
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom main road ","Individual HHs",NULL,"Ground ","Tenant  ","Ramjan","9901005620","2","https://api.mwater.co/v3/images/0ca4195e863141c9b5ad68efb5e6fcf3"
+"Bangalore","Ibbaluru-174","5th main ","MDUs",NULL,"0","Tenant  ","Mallamma","9632664196","6","https://api.mwater.co/v3/images/55844b6cd26042cca8db071a61f5392e"
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom main road ","Individual HHs",NULL,"Ground ","Tenant  ","Ashmitha giri","6364824422","2",NULL
+"Bangalore","Ibbaluru-174","5th main ","Others","Euler","Ground ","Tenant  ","Amaresh ","8098339058","11 employee ","https://api.mwater.co/v3/images/0c3bf2110db541849f13f910743875a6"
+"Bangalore","Ibbaluru-174","5th main","MDUs","101","1","Tenant  ","Jayamma","9686557108","4","https://api.mwater.co/v3/images/afcc27608b9a47a38616d95b2d5ea0c2"
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom main road ","PG","39/12","Ground ","Owner","Adinarayanareddy","7899140442","45 house ","https://api.mwater.co/v3/images/5a478246584d4b53bbcad71213f68e71"
+"Bangalore","Ibbaluru-174","5th main ","MDUs","101","1","Tenant  ","Baharuli","9365317014","4","https://api.mwater.co/v3/images/9e5fda3407c04c16b34d1d66191a4d2c"
+"Bangalore","Ibbaluru-174","5th main ","PG",NULL,"Ground ","Owner","Krishna ","8050604789","24 rooms","https://api.mwater.co/v3/images/fbf77fb5ba9d4abfa01e06b4ebd56026"
+"Bangalore","Ibbaluru-174","5th main","MDUs","101","1","Tenant  ","Raihana","7022105186","3","https://api.mwater.co/v3/images/0b03c3ef05a64527846b4cc5c9543051"
+"Bangalore","Ibbaluru-174","5th main ","MDUs","36","Ground ","Owner","Yashodhamma","7411849441","4","https://api.mwater.co/v3/images/edbe0b1023964aa5848fa7076dc94880"
+"Bangalore","Ibbaluru-174","5th main ","Others","101 - shop","Ground ","Owner","Chowdappa ","9741343177","0","https://api.mwater.co/v3/images/92facf2bc6a348d5998ee7eb39cb5cbf"
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom main road ","Others","Instakart services pvt. Ltd","Ground ","Tenant  ","Akshay","9901112154","Ground floor only ","https://api.mwater.co/v3/images/a19dd14364654db8adfea87c468809c3"
+"Bangalore","Ibbaluru-174","5th main","PG","39/14","PG-3floors (45 rooms)","Owner","Gopal ","8884446026","16","https://api.mwater.co/v3/images/abda5035917940adbd4c25535ea1f354"
+"Bangalore","Ibbaluru-174","5th main ","Hotel","101","Ground ","Tenant  ","Saranbasappa","8970939252","4","https://api.mwater.co/v3/images/98bdb5627074429c9b196cef497cbffa"
+"Bangalore","Ibbaluru-174","5th main ","Hotel","101","4 floors","Owner","Ashma","8050327539 - Namraj","18 rooms","https://api.mwater.co/v3/images/9cb7f2d1a6e1492caab854029b344e65"
+"Bangalore","Ibbaluru-174","5th main","MDUs","101","1st","Tenant  ","Munni","7022660793","4","https://api.mwater.co/v3/images/f70444bb862e4feea72314cefbbd7463"
+"Bangalore","Ibbaluru-174","5th main ","MDUs",NULL,"2nd Floor ","Tenant  ","Mehbub","8927676679","1","https://api.mwater.co/v3/images/cbaae4de3e3846bfb2c4c92ce2b6bc5a"
+"Bangalore","Ibbaluru-174","5th main ","Hotel","15","Ground ","Owner","Akash","9064261997","15","https://api.mwater.co/v3/images/9dd9ff347a5a44dbb5e200bd8a2ad2ef"
+"Bangalore","Ibbaluru-174","5th main ","MDUs","101","2","Tenant  ","Sujan ","8389902885","4","https://api.mwater.co/v3/images/a82b2be85a984602986c649ecdb3b3f8"
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom main road ","Hotel","Hotel smita","1st floor ","Tenant  ","Amitha shetty","7353949999","46 house","https://api.mwater.co/v3/images/7b350bed87da4ca58de6a9d04949c52c"
+"Bangalore","Ibbaluru-174","5th Main","MDUs","101 ","2nd floor","Tenant  ","Yasmina","9679487932","3","https://api.mwater.co/v3/images/e0dfbfd10fe94bb3b6dfbe6325ab721a"
+"Bangalore","Ibbaluru-174","4th Cross","MDUs",NULL,"1st","Tenant  ","Amardeep","7602296777","3",NULL
+"Bangalore","Ibbaluru-174","5th main","MDUs","101","4th floor ","Tenant  ","Janab joshi ","7087149448","2","https://api.mwater.co/v3/images/1a02ebb9e61a4d7bb107a261cbb5bb71"
+"Bangalore","Ibbaluru-174","5th main ","Others","101 - Honda showroom ","Ground ","Tenant  ","Divakar ","9008221212","13 employee ","https://api.mwater.co/v3/images/9b6423f6d16a4f4094e7c571b4b23037"
+"Bangalore","Ibbaluru-174","5th main ananda honda showroom main road sarjapur signal","Others","KTM showroom ","Ground ","Tenant  ","Shankar","8951751746","1","https://api.mwater.co/v3/images/e653479373a745e18b607d0b1239a281"
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","101","1","Tenant  ","Satish","9742774373","2","https://api.mwater.co/v3/images/0092259574f54f839928921266aa3a1a"
+"Bangalore","Ibbaluru-174","5th Main ","MDUs","2nd Floor","1st","Tenant  ","Nitu","8934920790","4",NULL
+"Bangalore","Ibbaluru-174","5th main ","MDUs","101","2","Tenant  ","Ram kisan ","6363779534","3","https://api.mwater.co/v3/images/d336a6e196894698886dff6acd795271"
+"Bangalore","Ibbaluru-174","Doddamma temple road ","Apartment","Urban lake front","Ground ","Owner","Saurav anand( incharge )","7760130303","48 house ","https://api.mwater.co/v3/images/0c31f0919c0841ff9e20bd5e731e4c4d"
+"Bangalore","Ibbaluru-174","5th cross ","MDUs","41/13","2nd floor ","Owner","Kasthuri ","8550844313","5","https://api.mwater.co/v3/images/e5a07460953c445cbc62642488d61203"
+"Bangalore","Ibbaluru-174","1st cross main ","Individual HHs",NULL,"Ground ","Tenant  ","Rasel","7259451861","4","https://api.mwater.co/v3/images/b490dee8004f4b66aeffd41a5fcfbb9d"
+"Bangalore","Ibbaluru-174","5th cross ","Medical Shop","41/13","Ground ","Tenant  ","Mukesh ","7568246709","2 employee ","https://api.mwater.co/v3/images/45238396daf34374950990196ca011c9"
+"Bangalore","Ibbaluru-174","1st cross 3rd main","MDUs","101","4","Owner","Kali","9008090397","4","https://api.mwater.co/v3/images/afe5156f9b594087a331e9c0cd79bd4b"
+"Bangalore","Ibbaluru-174","5th cross","MDUs","101","3","Tenant  ","Janab joshi","7087149448","2",NULL
+"Bangalore","Ibbaluru-174","1st cross main ","Individual HHs",NULL,"Ground ","Owner","Gajalaxmi","9071963045","4","https://api.mwater.co/v3/images/3685784b78bd4dc3a1cccea0b0f3f7cf"
+"Bangalore","Ibbaluru-174","1st cross main ","Individual HHs","177","Ground ","Tenant  ","Narashima","9743404052","3","https://api.mwater.co/v3/images/dba89a3422994618bff5fd5203b56cc5"
+"Bangalore","Ibbaluru-174","1st cross main ","Individual HHs","177","Ground ","Owner","Raju","9743179859","4","https://api.mwater.co/v3/images/be9803be0c57494794882cebe87c6e4d"
+"Bangalore","Ibbaluru-174","5th cross ","Clinic and Hospital","28 Maruti nilaya","Ground ","Tenant  ","Dr Vijay Kumar Sharma ","9987556656","1","https://api.mwater.co/v3/images/e8b85f4560494c3997a3d8d7262406b7"
+"Bangalore","Ibbaluru-174","1st cross main ","Individual HHs",NULL,"Ground ","Tenant  ","Karibasayya","9686270203","4","https://api.mwater.co/v3/images/d07625d67db140ee9e1cd06a09229096"
+"Bangalore","Ibbaluru-174","3rd main 1st cross doddamma temple road ","Individual HHs",NULL,"Ground floor ","Tenant  ","Renuka",NULL,"3","https://api.mwater.co/v3/images/73d51ce913bc4d90a25859449524a34a"
+"Bangalore","Ibbaluru-174","1st cross 3rd main doddamma temple road ","Individual HHs",NULL,"Ground ","Tenant  ","M Chainnappa","7899191578","4",NULL
+"Bangalore","Ibbaluru-174","1st cross 3rd main doddamma temple road","Individual HHs",NULL,"Ground floor ","Tenant  ","Venila","8122421998","10",NULL
+"Bangalore","Ibbaluru-174","1st cross 3rd main doddamma temple road","Individual HHs",NULL,"Ground ","Tenant  ","Payash","6301587285","6",NULL
+"Bangalore","Ibbaluru-174","1st cross 3rd main doddamma temple road","Individual HHs",NULL,"Ground ","Tenant  ","Tuna mahanta","7483625175","8",NULL
+"Bangalore","Ibbaluru-174","1st cross 3rd main doddamma temple road","Individual HHs",NULL,"1st floor ","Tenant  ","Shaahid","9845901747","2",NULL
+"Bangalore","Ibbaluru-174","1st cross 3rd main doddamma temple road","Individual HHs",NULL,"1st floor ","Tenant  ","Vanitha","7259567970","4",NULL
+"Bangalore","Ibbaluru-174","1st cross 3rd main doddamma temple road","Individual HHs",NULL,"1st floor ","Tenant  ","Sharavan tramanik","9339274055","6",NULL
+"Bangalore","Ibbaluru-174","1st cross 3rd main doddamma temple road","Individual HHs",NULL,"1st floor ","Tenant  ","Anushka","9279521316","3",NULL
+"Bangalore","Ibbaluru-174","1st cross 3rd main doddamma temple road","Individual HHs",NULL,"1st floor ","Tenant  ","Mahadev","6362444264","4",NULL
+"Bangalore","Ibbaluru-174","1st cross 3rd main doddamma temple road","Individual HHs",NULL,"1st floor ","Tenant  ","Harish","9071967039","3",NULL
+"Bangalore","Ibbaluru-174","1st cross 3rd main doddamma temple road","Individual HHs",NULL,"1st floor ","Tenant  ","Kushi","7866054881","3",NULL
+"Bangalore","Ibbaluru-174","1st cross 3rd main doddamma temple road","Individual HHs",NULL,"2nd floor ","Tenant  ","Chandramma","9902858714","4",NULL
+"Bangalore","Ibbaluru-174","1st cross 3rd main doddamma temple road","Individual HHs",NULL,"2nd","Tenant  ","Manjula ","8050537902","5",NULL
+"Bangalore","Ibbaluru-174","5th main","MDUs","404","3rd ","Tenant  ","Shankar ","8088607352","6","https://api.mwater.co/v3/images/29757d4d04d34af280c0f50cd954e92a"
+"Bangalore","Ibbaluru-174","1st cross 3rd main doddamma temple road","Individual HHs",NULL,"2nd floor ","Tenant  ","Mushkhankan","8050366331","5",NULL
+"Bangalore","Ibbaluru-174","8050366331","Individual HHs",NULL,"2nd floor ","Tenant  ","Khadar","9652744614","4",NULL
+"Bangalore","Ibbaluru-174","5th main appartment ","MDUs","T110","3rd floor ","Tenant  ","Neha","7022269783","5","https://api.mwater.co/v3/images/9b05dca2f3cb43f6a4e09d4ec3a2bfbf"
+"Bangalore","Ibbaluru-174","1st cross 3rd main doddamma temple road ","Individual HHs",NULL,"2nd floor ","Tenant  ","Babhureddy","9036221818","4",NULL
+"Bangalore","Ibbaluru-174","5th main, apartments ","MDUs","999","3rd","Owner","Mahendra ","9742263143","2","https://api.mwater.co/v3/images/f0bc693cb57841d5b6d39d1e7bfbcc7e"
+"Bangalore","Ibbaluru-174","Doddamm temple road 1st cross 3rd main","Individual HHs",NULL,"2nd floor ","Tenant  ","Madhu","9148866943","4",NULL
+"Bangalore","Ibbaluru-174","5th main, apartments ","MDUs","T-112","3rd","Tenant  ","Shiva kumar ","8073060914","5","https://api.mwater.co/v3/images/41d6646a922f457e8819ad9183a25637"
+"Bangalore","Ibbaluru-174","Doddamma temple road 1st cross 3rd main ","Individual HHs",NULL,"2nd floor ","Tenant  ","Sujatha","8073789423","3",NULL
+"Bangalore","Ibbaluru-174","Doddamma temple road 1st cross 3rd main ","Individual HHs",NULL,"2nd floor ","Tenant  ","Singreygouda",NULL,"9",NULL
+"Bangalore","Ibbaluru-174","5th main, apartments ","MDUs","T 113","3rd","Owner","Madivalayya swamy ","9972245047","4","https://api.mwater.co/v3/images/42d6c47b9d95484dad463326c2cb146c"
+"Bangalore","Ibbaluru-174","Doddamma temple road 1st cross 3rd main ","Individual HHs",NULL,"Ground floor ","Tenant  ","Janson","8638041482","4",NULL
+"Bangalore","Ibbaluru-174","5th Main, apartments ","MDUs","T 61","3rd ","Tenant  ","Ujwal","8459159501","6","https://api.mwater.co/v3/images/6ab1070f8a8c4f52b3127705f09bd981"
+"Bangalore","Ibbaluru-174","5th main, PM residency ","MDUs","G-1","Ground ","Tenant  ","Shivam","8573091269","2","https://api.mwater.co/v3/images/6c633cb7922348f5945c07994190c77d"
+"Bangalore","Ibbaluru-174","Ramdev medical road","MDUs","Marshal lake view","4 floors ","Owner","Hari Bahadur ","8892569792","8 houses","https://api.mwater.co/v3/images/2b1eaa38f798419282daeadbb6d959cc"
+"Bangalore","Ibbaluru-174","Opposite to ibbnur lake, next to ram dev road","PG","Sri adilakshmi residency #19","5","Owner","Shankara","7760475968","25","https://api.mwater.co/v3/images/98b3ff4251ac4209af2a8ddddd81ea4d"
+"Bangalore","Ibbaluru-174","1st cross,19,Sarjapur junction","PG","16","4","Owner","Dinesh","7259820713","16(32)","https://api.mwater.co/v3/images/42b30cfda9fe4034935b53f14f3b76c8"
+"Bangalore","Ibbaluru-174","1st cross 19 sarjapur junction Park opposite road ","Apartment","151/1","Ground ","Tenant  ","Surendraahingh sahu","8454856040 care taker ","11 house","https://api.mwater.co/v3/images/2ab0aea76ef0494d9e8a5f7d70403c32"
+"Bangalore","Ibbaluru-174","1st cross,19,Sarjapur junction ","PG","101","5(45)","Owner","Jayanthi","8105977225","75","https://api.mwater.co/v3/images/2fc6f7a8440c4bee8dd5a78d36779799"
+"Bangalore","Ibbaluru-174","Ramdev medicals road","MDUs","Sri Sai nivas","3 floors","Tenant  ","Kadak singh ","8296705613","6 houses 2 bhk","https://api.mwater.co/v3/images/2c209166a84c4980a6c00ffe2cedc3a1"
+"Bangalore","Ibbaluru-174","1st cross 19 sarjapur junction Park opposite road","Individual HHs","14","1st floor ","Owner","Latha","7259469389","5","https://api.mwater.co/v3/images/e9c87379c8014dabb8efc5dd70b8003a"
+"Bangalore","Ibbaluru-174","1st cross,19, Sarjapur Junction","PG","101","6(52)","Owner","Sonu","6202116321","60","https://api.mwater.co/v3/images/77a02923fd23452fb33dd1ea6199723b"
+"Bangalore","Ibbaluru-174","Oop to ibbaluru lake next to ramdev medical ","PG","Studio Rooms ","6","Owner","Shankar ","7760475968","36",NULL
+"Bangalore","Ibbaluru-174","1st cross 19 sarjapur junction Park opposite road","PG","11","Ground ","Owner","Rajshekar","8105977225","25","https://api.mwater.co/v3/images/d46588d770bb471a95297b08aa7db04f"
+"Bangalore","Ibbaluru-174","38/1-24, Opp Ibblur Park","Hotel","Modak Restaurant ","G","Tenant  ","Jai Kumar Manager","8048143308","4",NULL
+"Bangalore","Ibbaluru-174","Opp Iblur Park","Others","Cart near Lake","Rolling Cart near Lake","Tenant  ","Lohith","9686247266","2","https://api.mwater.co/v3/images/db132e2c35a64482942da754e347ca1f"
+"Bangalore","Ibbaluru-174","Opposite park","Hotel","Food truck ","Opposite park","Tenant  ","Nagaraj ","8095950265","2 employee ","https://api.mwater.co/v3/images/b979f054d34b43e8a05699b2e5e0baf8"
+"Bangalore","Ibbaluru-174","1st cross 19 sarjapur junction Park opposite road","Others","Vaigai cafe","Ground ","Tenant  ","Shekar","8870256231","1 juce carner","https://api.mwater.co/v3/images/b7839ee134e845658616219c7b364420"
+"Bangalore","Ibbaluru-174","Opposite park ","Hotel","Moving cart  tea stall","Ground ","Tenant  ","Umesh Kumar ","7760065119","1","https://api.mwater.co/v3/images/ca5ff88144954267a3b086f047187d6d"
+"Bangalore","Ibbaluru-174"," 1st cross 19th Sarjapur junction opposite to ibbnur park","Others","Shibha Baber shop ","Ground ","Owner","Shibha ","9008749830","2","https://api.mwater.co/v3/images/484fd2eaff604f408dbbc144881019e9"
+"Bangalore","Ibbaluru-174","Opp Ibblur Park","Others","Cart","Cart","Tenant  ","Rambleer","9926985661","2","https://api.mwater.co/v3/images/87168ecb3ad94d7d86a9754467d319fc"
+"Bangalore","Ibbaluru-174","Opposite park","Hotel","Juice shop","Ground ","Tenant  ","Saroj Malik","9611001823","1","https://api.mwater.co/v3/images/c439889b52204c9fa5cdd1c41805d7ea"
+"Bangalore","Ibbaluru-174","1st cross,19,Sarjapur junction,opp to ibbnur","Others","Commercial(litecant)","Ground","Tenant  ","Manjunath","7795252880","1","https://api.mwater.co/v3/images/430fe84e58bb4e719baed839bac42536"
+"Bangalore","Ibbaluru-174","1st cross 19 sarjapur junction Park opposite road","Others",NULL,"Ground ","Tenant  ","Vardharam","6305830271","1 stationery shop ","https://api.mwater.co/v3/images/16b623519a224af189dc8a2c3d97562c"
+"Bangalore","Ibbaluru-174","Opposite park ","Others","Tender coconut Shop ","Ground ","Tenant  ","Ashok ","9019464421","1","https://api.mwater.co/v3/images/8414c9b8c276472fbc364de7ca0ccd24"
+"Bangalore","Ibbaluru-174","1st cross 19 sarjapur junction Park opposite road","Hotel",NULL,"Ground ","Tenant  ","Sunilgouda","7022336712","1 Bangarpet charts ","https://api.mwater.co/v3/images/3eb056e7d14e4003a1fbbafacf1923f0"
+"Bangalore","Ibbaluru-174","Opposite park ","Others","Tender coconut shop","Ground ","Tenant  ","Basavaraju ","9916263029","1","https://api.mwater.co/v3/images/226ed33e8c234efcbadf00d31095172a"
+"Bangalore","Ibbaluru-174","Opposite park ","Others","Petty shop ","Ground ","Tenant  ","Venkatesh ","9900105661","1","https://api.mwater.co/v3/images/d68da3f971c94f65bb874e66c965559a"
+"Bangalore","Ibbaluru-174","Opposite park","Hotel","Food stall ","Ground ","Tenant  ","Umesh ","9880616897","1","https://api.mwater.co/v3/images/c0f5071b921247adafc36fb9635489a0"
+"Bangalore","Ibbaluru-174","1st cross, 19th Sarjapur junction, opposite to ibbnur park ","Others","Fruit ","Ground ","Owner","Selva kumar ","7760600895","1","https://api.mwater.co/v3/images/17fefba4e236462a8c450a19974b3f64"
+"Bangalore","Ibbaluru-174","1st cross 19 sarjapur junction Park opposite road","Others",NULL,"Ground ","Tenant  ","Rajappa",NULL,"1,vegetables shop ","https://api.mwater.co/v3/images/f6bf081e44b04db3b54b2ef108ef2c0b"
+"Bangalore","Ibbaluru-174","Opposite park","Others","Vegetable stall","Ground ","Owner","Padma","9945117972","1","https://api.mwater.co/v3/images/6d59b0544e484d09b7e0269e578070b5"
+"Bangalore","Ibbaluru-174","Indira canteen road","Others","Fish shop ","Ground ","Owner","Sarvana","6360642918","1","https://api.mwater.co/v3/images/a311ed58ede542918c077789fa1cfcac"
+"Bangalore","Ibbaluru-174","5th cross ","Provision Store","Jugal provisional store","Ground ","Tenant  ","Arun Kumar ","9060304055","1","https://api.mwater.co/v3/images/3aa64236623a4f4090d809d807ec6dde"
+"Bangalore","Ibbaluru-174","3rd main","Others","Alshakalpa Organic ","Ground floor.","Tenant  ","Asrab","8296064973","1","https://api.mwater.co/v3/images/29ac5d56fa1d48f9822a325b169a6003"
+"Bangalore","Ibbaluru-174","3rd main road ","Individual HHs",NULL,"Ground ","Owner","Harish","9900847292","12","https://api.mwater.co/v3/images/eb415740ed664a0faba6f327a389d484"
+"Bangalore","Ibbaluru-174","3rd main","Others","101 (commercial)","Ground ","Tenant  ","Tunamahanta","7483625175","1","https://api.mwater.co/v3/images/94494aa545f4488fa7d5d48833c9f90d"
+"Bangalore","Ibbaluru-174","3rd main road","Provision Store","Bharathi provision store","Ground ","Tenant  ","Padeep rana","9620622509","1","https://api.mwater.co/v3/images/367929b37cf145ee87f980e1d089b04e"
+"Bangalore","Ibbaluru-174","3rd main","Individual HHs","101","Ground floor ","Owner","Tanushree","9148468102","5","https://api.mwater.co/v3/images/6cfab08fafbd49ba9775e7207151cd10"
+"Bangalore","Ibbaluru-174","3rd main","Others","101(commercial)","Ground ","Tenant  ","Karthik ","9686729690","1","https://api.mwater.co/v3/images/a22ef38e1eda4db482ded964b3ad66dc"
+"Bangalore","Ibbaluru-174","3rd main road ","Provision Store","Soubhagya provision store ","Ground ","Tenant  ","Sadanadu","7892269394","1","https://api.mwater.co/v3/images/dc9511d783bf434d9fe4d61e41043c03"
+"Bangalore","Ibbaluru-174","3rd main","Others","101 (commercial)","Ground","Tenant  ","Chaitra","6363087779","1","https://api.mwater.co/v3/images/03f03ac4049a45c3aafb3036d286c573"
+"Bangalore","Ibbaluru-174","3rd main road","Others",NULL,"Ground ","Tenant  ","Bharthsingh","872250532","1,clothes shop ","https://api.mwater.co/v3/images/35c005e03c0b4ed7b307cd803ab401f9"
+"Bangalore","Ibbaluru-174","4th Cross","Provision Store","Suresh Provision","G","Tenant  ","Sebati","7022301030","2","https://api.mwater.co/v3/images/cce59102532d44c1a50b7c9ae3f2eeb3"
+"Bangalore","Ibbaluru-174","3rd main road ","Medical Shop","Preeti medicals","Ground ","Tenant  ","Ravi","8217363921","1","https://api.mwater.co/v3/images/f28d57c9122349659bd20d1f21e4f6b8"
+"Bangalore","Ibbaluru-174","3rd main ","Others","H.D Men's Salon ","Ground Floor ","Owner","Ali ","9837991220","2","https://api.mwater.co/v3/images/63ca8fe01530475eb027760869f7645e"
+"Bangalore","Ibbaluru-174","2nd Main Road","Others","Garage 2nd Main Road","G","Tenant  ","Riaz Mullah","9353707940","2","https://api.mwater.co/v3/images/b228ee356628436a968d31159f3eccb7"
+"Bangalore","Ibbaluru-174","3rd main road","Others",NULL,"Ground ","Tenant  ","Athahulla","9742653366","1Chicken shop","https://api.mwater.co/v3/images/422f8501a98c43e693601d206521db12"
+"Bangalore","Ibbaluru-174","101","Others","101(commercial)","Ground","Tenant  ","Dr.Deepanshu","8384859776","1","https://api.mwater.co/v3/images/332a922c77c14221bffad3cb52c284de"
+"Bangalore","Ibbaluru-174","3rd main road ","Provision Store","Ibbalur bazar","Ground ","Tenant  ","Nasir","9108654313","1","https://api.mwater.co/v3/images/798edce4719c4074871b72af4c383834"
+"Bangalore","Ibbaluru-174","3rd main","Others","Pavan's stationary ","Ground floor ","Owner","Savita ","9036077019","1","https://api.mwater.co/v3/images/6faf4497b9784f75893752b1aa409534"
+"Bangalore","Ibbaluru-174","3rd main","Others","101 (flower shop)","Ground ","Owner","Narayanappa",NULL,"1","https://api.mwater.co/v3/images/7996b0319fea4cab8d930c19e5f485e8"
+"Bangalore","Ibbaluru-174","2nd Main","Bekary","Srivari Bakery","G","Tenant  ","Ramesh","9742674784","4","https://api.mwater.co/v3/images/d654d79f621a4e3f97c760e4cc2b5ec3"
+"Bangalore","Ibbaluru-174","3rd main road","Bekary",NULL,"Ground ","Tenant  ","Afsal","9744362822","1,Bakery ","https://api.mwater.co/v3/images/dde6e8d6a2914fd391b0eebd03a5ea14"
+"Bangalore","Ibbaluru-174","3rd main road ","Medical Shop","Sri chowdeshwari medicals","Ground ","Tenant  ","Raju","9611842262","1","https://api.mwater.co/v3/images/d2253fdee22e42229be2e3bc537ffa74"
+"Bangalore","Ibbaluru-174","3rd main","Others","Provitional store ","Ground floor","Owner","Praveen ","8431083545","1","https://api.mwater.co/v3/images/10db7802370641f18eb64a4018227bcb"
+"Bangalore","Ibbaluru-174","3rd main","Clinic and Hospital","101","Ground ","Tenant  ","Dr. Nagaraj","7353936430","1","https://api.mwater.co/v3/images/0ad2d38dc1f249439c30d6a5c4205597"
+"Bangalore","Ibbaluru-174","2nd main road ","Others","Bellandur Traffic Police Station ","Ground floor ","Tenant  ","Nagappa C - Circle Inspector ","08022943153","5","https://api.mwater.co/v3/images/aeeff80cc58f45f0b48d7fe8755dd669"
+"Bangalore","Ibbaluru-174","2nd main road ","Bekary","Maharaja Bekery and fast food ","Ground ","Tenant  ","Girish ","9916424283","1","https://api.mwater.co/v3/images/839e5653f5e7418ba2176c98db232b6d"
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs",NULL,"1st floor ","Tenant  ","Logapriya","8050636885","4","https://api.mwater.co/v3/images/dfe00265200b481496373e60c600528a"
+"Bangalore","Ibbaluru-174","2nd cross opposite traffic police station ","Individual HHs",NULL,"Ground ","Owner","Lagamamma",NULL,"5","https://api.mwater.co/v3/images/b0ed913731e84c86a6d1c7a1e0e39d6b"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","31/28","1st floor ","Tenant  ","Veervan","8302027066","2",NULL
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs",NULL,"1st floor ","Tenant  ","Govinda Soren","7483084734","8","https://api.mwater.co/v3/images/cc9ddd3ba8a242378996ac5597153cdb"
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs",NULL,"1st floor ","Tenant  ","Sipul","7978685452","4","https://api.mwater.co/v3/images/deaab67ae9b74d85ab7ce2269d5688fe"
+"Bangalore","Ibbaluru-174","2nd cross opposite traffic police station ","Individual HHs",NULL,"Ground ","Tenant  ","Sarmani","9148038564","4","https://api.mwater.co/v3/images/36855b1086f345a9bfce8635c23b0c7b"
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs",NULL,"1st ","Tenant  ","Dilip kumar ","7411463282","4","https://api.mwater.co/v3/images/71869d59ec3f4abbbd001d79f92972e6"
+"Bangalore","Ibbaluru-174","2nd cross opposite traffic police station ","Individual HHs",NULL,"Ground ","Owner","Naveenraju","9964906109","3","https://api.mwater.co/v3/images/4d0c3e2aeb1c49a4a377adad23d8b634"
+"Bangalore","Ibbaluru-174","2nd cross opposite traffic police station ","Individual HHs",NULL,"Ground ","Tenant  ","Ranjith","7019548693","3","https://api.mwater.co/v3/images/9f02748e5c0c4de6a20ae427135a45d5"
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","Opposite Ram temple ","Ground ","Owner","Anasuyamma","9916455272","5","https://api.mwater.co/v3/images/63ccbc5c82d64cb0aa3178cab05da8e9"
+"Bangalore","Ibbaluru-174","2nd cross opposite traffic police station ","Individual HHs",NULL,"Ground ","Tenant  ","Sumitra","6360966985","4","https://api.mwater.co/v3/images/1b842ad1c35048efbc4284ac3857216d"
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","Opposite temple ","1st floor ","Owner","Naneen kumar ","7406364858","2","https://api.mwater.co/v3/images/ff87d0c1f5e449bba731ebbd7bfb40fc"
+"Bangalore","Ibbaluru-174","2nd cross opposite traffic police station ","Individual HHs",NULL,"Ground ","Tenant  ","Anand ","8095729946","4","https://api.mwater.co/v3/images/3fa613a0bc7e4d76b6010390f582ec17"
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","Opposite temple ","2nd floor ","Tenant  ","Eshwari ","6380804442","4","https://api.mwater.co/v3/images/559426e57f074b04b7a7b46511aced61"
+"Bangalore","Ibbaluru-174","2nd cross behind traffic police station ","Individual HHs","35","Ground ","Owner","Munikrishna ","9900499878","5","https://api.mwater.co/v3/images/358e0e91ae7c468d9f550444c4b1bbe0"
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","Opposite temple ","2nd floor ","Tenant  ","Sagar","8296394901","4","https://api.mwater.co/v3/images/703cbab52c554e5ba6098e7fd20a7b9d"
+"Bangalore","Ibbaluru-174","2nd cross behind traffic police station ","Individual HHs",NULL,"Ground ","Owner","Shanthamma","7975055741","2","https://api.mwater.co/v3/images/9198509931794238936e4bf9980c4721"
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","Opposite temple ","2nd floor ","Tenant  ","Savitha","7338424278","5","https://api.mwater.co/v3/images/6b65aa9056cc459e82e181e8f2f420a5"
+"Bangalore","Ibbaluru-174","2nd cross behind traffic police station ","Individual HHs",NULL,"1st floor ","Tenant  ","Pranitha","7975934936","2",NULL
+"Bangalore","Ibbaluru-174","2nd cross behind traffic police station ","Individual HHs",NULL,"1St floor ","Tenant  ","Dulal","9663603648","2",NULL
+"Bangalore","Ibbaluru-174","2nd cross behind traffic police station ","Individual HHs",NULL,"2nd floor ","Tenant  ","Lolakshi","8088199029","2",NULL
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","101","Ground floor - opposite temple ","Tenant  ","Bharath Kumar ","9686065157","3","https://api.mwater.co/v3/images/f90444796ee74d97a1c9d9b4e26b1060"
+"Bangalore","Ibbaluru-174","2nd cross behind traffic police station ","Individual HHs","5","Ground ","Owner","Somesh M","9900270041","11","https://api.mwater.co/v3/images/e0430596e1b749079b6ea9c8a7880ede"
+"Bangalore","Ibbaluru-174","2nd main ","MDUs","101","1st floor ","Tenant  ","Adhin","9400910939","1","https://api.mwater.co/v3/images/0dfca2cf35454cffb65f19f39db3a036"
+"Bangalore","Ibbaluru-174","2nd main road","MDUs","101","1","Tenant  ","Raghav","8218571870","2","https://api.mwater.co/v3/images/3d08728e524f450dad04c292f05de346"
+"Bangalore","Ibbaluru-174","2nd main ","MDUs","201","2nd floor ","Tenant  ","Harshitha","6363222243","3","https://api.mwater.co/v3/images/1d2e9b9276c8463eb27cc19d97cf39d3"
+"Bangalore","Ibbaluru-174","2nd cross behind traffic police station ","Individual HHs",NULL,"Ground ","Owner","Latha M","8951354378","2","https://api.mwater.co/v3/images/23169faecef546549b822379dcffecbd"
+"Bangalore","Ibbaluru-174","2nd cross behind traffic police station ","Individual HHs",NULL," Ground ","Owner","Muniratnamma","7406242011","3",NULL
+"Bangalore","Ibbaluru-174","Muniratnamma","Individual HHs",NULL,"1st floor ","Tenant  ","Siddaraju","9535707004","5",NULL
+"Bangalore","Ibbaluru-174","Muniratnamma","Individual HHs",NULL,"2nd floor ","Tenant  ","Mahamadrezaul","8197145921","3",NULL
+"Bangalore","Ibbaluru-174","2nd main 1st cross ","MDUs","26-31","Ground ","Tenant  ","Jayalakshmi ","8105273339","4","https://api.mwater.co/v3/images/c245288cee68479c9cdf8ef882c5eee0"
+"Bangalore","Ibbaluru-174","Police station behind road ","Individual HHs",NULL,"3rd floor ","Tenant  ","Bharth kumar","8296156121","2",NULL
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","26/31","Ground ","Owner","Komala ","9036786970","4",NULL
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","26/31","1st cross ","Tenant  ","Kavita ","7993740372","3",NULL
+"Bangalore","Ibbaluru-174","2nd main road","MDUs","101","2","Tenant  ","Sulochana","8867631898","4","https://api.mwater.co/v3/images/6f6b803232a6499286ef3dcb894dcac4"
+"Bangalore","Ibbaluru-174","Police station behind road ","Individual HHs",NULL,"Ground ","Tenant  ","Sumithra",NULL,"2","https://api.mwater.co/v3/images/e0486f457fe44afa9782664a4b580a95"
+"Bangalore","Ibbaluru-174","Police station behind road ","Individual HHs","7","Ground ","Owner","Nagamma","9741902274","5","https://api.mwater.co/v3/images/9585f345ecc74d5a800d251e1431c693"
+"Bangalore","Ibbaluru-174","2nd main ","MDUs","101","3rd ","Tenant  ","Sultan Ahmed ","9019665926","4","https://api.mwater.co/v3/images/b37c9c393cb445219a83e09f49635299"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","30/27","Ground Floor ","Tenant  ","Manoj","8260783602","1","https://api.mwater.co/v3/images/3d7f96e5afdd4308890251580a392cea"
+"Bangalore","Ibbaluru-174","Police station behind road ","Individual HHs",NULL,"Ground ","Tenant  ","Gopalakrishna ","7760839262","3","https://api.mwater.co/v3/images/212f1f57960c4f3aaf3e56d72abe8808"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","35/30","Ground floor ","Tenant  ","Amarnath reddy ","9916995093","3","https://api.mwater.co/v3/images/7e10835f2d5e4968bafc4e86496f9817"
+"Bangalore","Ibbaluru-174","2nd main,1st cross","MDUs","30/27","Ground","Tenant  ","Amit","9108485812","2","https://api.mwater.co/v3/images/b14ebe57cacc445288cace99631e27a1"
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","101","3rd floor ","Tenant  ","Sk. Monirul","8660776527","3","https://api.mwater.co/v3/images/89d30639a98d4c729307c0d42c75d4df"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","39/27","1st floor ","Owner","Jay ram ","9591758990","6",NULL
+"Bangalore","Ibbaluru-174","Police station behind road ","Individual HHs","9","Ground ","Owner","Ambresh ","9901422538","3","https://api.mwater.co/v3/images/bd6331a892f34055b1c4e8e6007e4d77"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","31/28","Ground ","Tenant  ","Yumam","8258905034","3","https://api.mwater.co/v3/images/6a56f6d386d24fb1b4e5c13863b54ba5"
+"Bangalore","Ibbaluru-174","Police station behind road ","Individual HHs","9","Ground ","Owner","Shivakumar ","7760871082","2","https://api.mwater.co/v3/images/724e69c70f7e43b3aa4993994d04f2ee"
+"Bangalore","Ibbaluru-174","2nd main ","MDUs","101","4","Tenant  ","Diprogit roy","9365959890","2","https://api.mwater.co/v3/images/b8cb46bc5c654d51982ea44366cd8520"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross","MDUs","30/27","2nd Floor ","Tenant  ","Rahul ","7204690851","2",NULL
+"Bangalore","Ibbaluru-174","2nd main,1st cross","MDUs","30/27","2nd floor","Tenant  ","Sameltoppo","6363461497","3",NULL
+"Bangalore","Ibbaluru-174","Police station behind road ","Individual HHs","9","1st floor ","Tenant  ","Kokkunnaik","7624967712","3",NULL
+"Bangalore","Ibbaluru-174","Police station behind road ","Individual HHs","9","1St floor ","Tenant  ","Pavan","9019065976","4",NULL
+"Bangalore","Ibbaluru-174","2nd main ","MDUs","101","Ground ","Tenant  ","Naresh ","7320960568","5","https://api.mwater.co/v3/images/fce38f1b3b4749d39e31e6eba62697b1"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","31/28","1st floor ","Tenant  ","Murugesh ","9500279979","2",NULL
+"Bangalore","Ibbaluru-174","2nd main,1st cross","MDUs","30/27","3rd floor","Tenant  ","Amita","8789740995","3",NULL
+"Bangalore","Ibbaluru-174","Police station behind road ","Individual HHs","9","1St floor ","Tenant  ","Shilpa","9108290562","3",NULL
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","101","Ground ","Tenant  ","Akash","6363803312","4","https://api.mwater.co/v3/images/9f2cdd4878df4468a5d00fa006248915"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","31/28","2nd floor ","Tenant  ","Sawan","8974820051","2",NULL
+"Bangalore","Ibbaluru-174","Police station behind road ","Individual HHs","9","1st floor ","Tenant  ","Chandan","8861029683","3",NULL
+"Bangalore","Ibbaluru-174","2nd Main, 1st cross","MDUs","30/27","3rd floor ","Tenant  ","Sukhtav","6009162002","6",NULL
+"Bangalore","Ibbaluru-174","2nd main ","MDUs","101","1","Tenant  ","Moham kumar savita","8105967495","4","https://api.mwater.co/v3/images/5c75101bd38c4f70bbae374aa67df424"
+"Bangalore","Ibbaluru-174","Police station behind road ","Individual HHs","9","2nd floor ","Tenant  ","Deepak","6362897546","2",NULL
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","101","1","Tenant  ","Kumari Devi","8134945683","4","https://api.mwater.co/v3/images/76f06a76b64e44d48b151b6138fa7f80"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","31/28","2nd floor ","Tenant  ","Manju","9986325919","2",NULL
+"Bangalore","Ibbaluru-174","Police station behind road ","Individual HHs","9","Ground floor ","Owner","Tayamma","9986734853","5","https://api.mwater.co/v3/images/5be517227cbc4c57877baa631402ee61"
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","101","1","Tenant  ","Aisha begum","9181150492","5","https://api.mwater.co/v3/images/7b5fcb26b4ed4070b57ac00b6c4880c4"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","31/28","2nd floor ","Tenant  ","Kamal","8867457720","3",NULL
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","31/28","3rd floor ","Tenant  ","Meena","7708200618","4",NULL
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","101","1","Tenant  ","Sankar Pandey ","8579066564","4","https://api.mwater.co/v3/images/4f37cea02a9d4e10b98451efd3fca231"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","31/28","3rd floor ","Tenant  ","Pamila ","8970272302","2",NULL
+"Bangalore","Ibbaluru-174","Police station behind road ","Individual HHs",NULL,"Ground ","Owner","Timmaraju","9886502918","4","https://api.mwater.co/v3/images/e7f07bd971e64fe4a7b68cff06609b3f"
+"Bangalore","Ibbaluru-174","Police station behind road ","Individual HHs","10","Ground ","Owner","Renuka","7899976154","3","https://api.mwater.co/v3/images/febb942140a24858a67054d40cec86da"
+"Bangalore","Ibbaluru-174","3rd main,5th cross","MDUs","183","2nd floor","Tenant  ","Hidrugy","9113942017","3",NULL
+"Bangalore","Ibbaluru-174","2nd main,1st cross","MDUs","101","Ground","Owner","Srinivas","9241808135","2","https://api.mwater.co/v3/images/989d31407b7446b78cc9a2221e8f93df"
+"Bangalore","Ibbaluru-174","2nd Cross","MDUs",NULL,"F","Tenant  ","Laltu Haldar","9749192255","3","https://api.mwater.co/v3/images/bd6319066a6b465eab3f02140af76735"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross","MDUs","101","1st Floor r ","Owner","Mahalakshmi ","9964387877","5","https://api.mwater.co/v3/images/403b318cb80d47c4ad5886aad611f38c"
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","101","2","Tenant  ","Unba","8618757274","2","https://api.mwater.co/v3/images/38fff591284d4b35bb5cc282d9cdee35"
+"Bangalore","Ibbaluru-174","2nd Cross ","MDUs","Blue Building","F","Tenant  ","Madhu","9901899837","1",NULL
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","101","2","Tenant  ","Bheem Joshi ","9663897852","3","https://api.mwater.co/v3/images/e5682b894c8848c1b4a8ecd1c1862622"
+"Bangalore","Ibbaluru-174","2nd main, first cross","MDUs","101","2nd floor ","Tenant  ","Priya","7289838249","4",NULL
+"Bangalore","Ibbaluru-174","2nd cross Police station  road ","Individual HHs",NULL,"Ground ","Tenant  ","Hajivali","8333961648","2","https://api.mwater.co/v3/images/4f0950c8f324413daf0d3fab4f8e27d3"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","30/31","Ground ","Tenant  ","Subankar saha","9064186257","2","https://api.mwater.co/v3/images/15b733cb667643c0b44be75306ca0029"
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","101","2","Tenant  ","Parwin","8808651370","2","https://api.mwater.co/v3/images/183e7b0169ad4cdcac46628ecaa21682"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","101","2nd floor ","Tenant  ","Santoshi","8421048941","3",NULL
+"Bangalore","Ibbaluru-174","Police station road 2nd cross ","Individual HHs",NULL,"Ground ","Tenant  ","Suresh","9739131234","3",NULL
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","101","2nd ","Tenant  ","Mdhu","7760941562","2","https://api.mwater.co/v3/images/18c88782f55848b38fa2d5c3e4e04c19"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","30/31","1st floor ","Tenant  ","Parimala","7353005179","4","https://api.mwater.co/v3/images/04a593a3723043e0b9cbba78198fa786"
+"Bangalore","Ibbaluru-174","2nd Cross","MDUs",NULL,"2nd Floor","Tenant  ","Surya","9059885405","2","https://api.mwater.co/v3/images/22fef6b1c01844508bed5834dd127031"
+"Bangalore","Ibbaluru-174","2nd main,1st cross","MDUs","30/33","Ground","Tenant  ","Jayashri","8951889103","4","https://api.mwater.co/v3/images/a46d53439f1f41d2959ca57e4f906b57"
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","101","3","Tenant  ","Nijam","6003755901","7","https://api.mwater.co/v3/images/71ec107b5a4143f594701c230de24905"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","30/31","1st floor ","Tenant  ","Srimati Bera","8095727204","4",NULL
+"Bangalore","Ibbaluru-174","2","MDUs","30/33","Ground","Tenant  ","Thomas","7892108194","3",NULL
+"Bangalore","Ibbaluru-174","2nd main, 1st Cross","MDUs","30/33","Ground floor ","Tenant  ","Goutham ","8260764320","2",NULL
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","101","4","Tenant  ","Robyul ","9901448621","3","https://api.mwater.co/v3/images/a7f1134c16cf49aeb4fe292e49c86247"
+"Bangalore","Ibbaluru-174","2nd Cross","MDUs",NULL,"Ground ","Owner","Govindaraju ","9880415935","6",NULL
+"Bangalore","Ibbaluru-174","2ನ್ಯೂಡ್ Cross","MDUs","2ನ್ಯೂಡ್ Floor","2nd","Tenant  ","ಉಮಾ Rani","9566709907","1","https://api.mwater.co/v3/images/110fca3e57e048378c140afeeaddab3c"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","30/31","2nd floor ","Tenant  ","Paravati ","8892147819","3",NULL
+"Bangalore","Ibbaluru-174","2nd main,1st cross","MDUs","30/33","First floor","Tenant  ","Nrusingh","9535471193","3",NULL
+"Bangalore","Ibbaluru-174","2nd main,1st cross","MDUs","30/33","1st floor","Tenant  ","Mithunpradhan","7873251358","3",NULL
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","30/31","3rd floor ","Tenant  ","Bindhu ","9686216271","4",NULL
+"Bangalore","Ibbaluru-174","2nd main, 1st floor ","MDUs","30/33","1st floor ","Tenant  ","Gappun dube","7325839954","3",NULL
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","30/31","4th floor ","Tenant  ","Krishneshwar ","903568849","1",NULL
+"Bangalore","Ibbaluru-174","2nd main,1st cross","MDUs","30/33","1st floor","Tenant  ","Fahim","6002536665","2",NULL
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","30/33","Second Floor ","Tenant  ","Prajwal ","9731954947","3",NULL
+"Bangalore","Ibbaluru-174","2nd Cross","MDUs","23085 ","2nd Floor","Tenant  ","Chandan M ","9071222003","3","https://api.mwater.co/v3/images/3024bc956f194353a9d45ade5097c093"
+"Bangalore","Ibbaluru-174","2nd cross police station road ","Individual HHs",NULL,"Ground ","Tenant  ","Probirsingha","8884464373","3","https://api.mwater.co/v3/images/37f6348891b94cb888f0b2d2503c1f78"
+"Bangalore","Ibbaluru-174","2nd main,1st cross","MDUs","30/33","2nd floor","Tenant  ","Hemamth","8114819024","6",NULL
+"Bangalore","Ibbaluru-174","2nd main road ","Others","101-Commercial+others","Ground ","Owner","Praveen Kumar ","9104468866","4","https://api.mwater.co/v3/images/e7ee853a200b4654a599db64896ee3c8"
+"Bangalore","Ibbaluru-174","2nd cross","MDUs",NULL,"1st floor ","Tenant  ","Avinash ","8121757114","2","https://api.mwater.co/v3/images/3b6a8d85de6041be9ac6f5c020c9b2f9"
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","101","Ground ","Tenant  ","Sanjay ","8169422100","2","https://api.mwater.co/v3/images/c1525b05d30a4e959a91669fa0a5abe9"
+"Bangalore","Ibbaluru-174","2nd Cross ","MDUs","3 73090","2nd Floor","Tenant  ","Mani Ratnam","9787767139","2","https://api.mwater.co/v3/images/fb7755bfebc245a991d9d2785eb55153"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross","MDUs","33/30","2nd floor ","Tenant  ","Vishwajith ","9776111639","3",NULL
+"Bangalore","Ibbaluru-174","Police station road 2nd cross ","Individual HHs",NULL,"1st floor ","Tenant  ","Kumar","7019281337","4",NULL
+"Bangalore","Ibbaluru-174","Police station road 2nd cross ","Individual HHs",NULL,"1st floor ","Tenant  ","Tilak",NULL,"4",NULL
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","101","Ground ","Tenant  ","Mohan","7619681081","2","https://api.mwater.co/v3/images/181f6a8b83944c6db929bb3188792e88"
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","101","Ground ","Owner","Narappa",NULL,"1","https://api.mwater.co/v3/images/dbce1ddff75743ac9755b9ea7446e6dc"
+"Bangalore","Ibbaluru-174","Police station road 2nd cross ","Individual HHs",NULL,"2nd","Tenant  ","Bhagya",NULL,"3",NULL
+"Bangalore","Ibbaluru-174","Police station road 2nd cross ","Individual HHs",NULL,"2nd","Tenant  ","Pavitra","8150912072","1",NULL
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","101","1st ","Tenant  ","Ashika","9663469780","5","https://api.mwater.co/v3/images/7edf3eabcacb4e4ebfea1743734d7e7a"
+"Bangalore","Ibbaluru-174","Police station road 2nd cross ","Individual HHs",NULL,"2nd ","Tenant  ","Neharika","6370563331","2",NULL
+"Bangalore","Ibbaluru-174","2nd main,1st cross","MDUs","42","Ground","Tenant  ","Rajappa","9900388069","3",NULL
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","101","1st ","Tenant  ","Rajendher","7508198595","3","https://api.mwater.co/v3/images/c49e255f35394944a9291e7ad169544c"
+"Bangalore","Ibbaluru-174","2nd cross","Others",NULL,"2nd Floor","Tenant  ","Raju","9448013042","2","https://api.mwater.co/v3/images/db381df3b6894947a912cf4c09ee9a95"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","101","Ground floor ","Owner","Rathnamma ","9901368318","4","https://api.mwater.co/v3/images/d16fe992d3344789b57ae7aef8d5603e"
+"Bangalore","Ibbaluru-174","2nd main,1st cross","Individual HHs","101","Ground","Tenant  ","Yuvashri","9148343010","5","https://api.mwater.co/v3/images/328bf3e4ad034689821789a0b04f379b"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","42","Ground floor ","Owner","Prathima","8197957754","6",NULL
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","57/1","Ground ","Owner","Chethan Kumar","8073275485","4","https://api.mwater.co/v3/images/e59fba2044b342af87d6ace5d0590d9e"
+"Bangalore","Ibbaluru-174","2nd main,1st cross","Individual HHs","42","Ground","Tenant  ","Jaylal","9108792285","1","https://api.mwater.co/v3/images/f72a98b4f1be417297d424ea13d8f93f"
+"Bangalore","Ibbaluru-174","2cross","MDUs","0031","G","Tenant  ","Shantha Raju","9738811675","6","https://api.mwater.co/v3/images/3dc807b21a7a4c84875f7653f1a05904"
+"Bangalore","Ibbaluru-174","2nd main road ","Others, MDUs","26/23","1","Tenant  ","Ram Mohan","7019419584","3","https://api.mwater.co/v3/images/bf1c22c11e10441fb5d05b7fff17b02a"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross","MDUs","42","Ground Floor ","Tenant  ","Munraj","8105666718","3",NULL
+"Bangalore","Ibbaluru-174","Police station road 2nd cross ","Individual HHs",NULL,"1st","Owner","Channarayappa","988099564","9",NULL
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","101","1","Tenant  ","Bipun",NULL,"2","https://api.mwater.co/v3/images/75a3ffde3a28400db57a43c46143beee"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","26/23","1st floor ","Tenant  ","Vijay ","9954976260","3","https://api.mwater.co/v3/images/39eb2502b9694e64acc6d4323a4a9f07"
+"Bangalore","Ibbaluru-174","Police station road 2nd cross ","Individual HHs",NULL,"Ground ","Tenant  ","Munirathnamma",NULL,"4","https://api.mwater.co/v3/images/b7f4916552954a92a7f6c900bc6b434a"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","50 ","Ground Floor ","Owner","Gouramma ","-----------------","2",NULL
+"Bangalore","Ibbaluru-174","Police station road 2nd cross ","Individual HHs",NULL,"1st","Owner","Chinnamma",NULL,"1",NULL
+"Bangalore","Ibbaluru-174","2nd main,1st cross","MDUs","50","Ground","Tenant  ","Raki","8337867192","2",NULL
+"Bangalore","Ibbaluru-174","2nd Cross ","MDUs","Aishwarya Enterprises ","G","Tenant  ","Durgappa","7619265066","4","https://api.mwater.co/v3/images/e76b8cc90ee24b32acd971f2e6e09867"
+"Bangalore","Ibbaluru-174","2nd main 1st cross ","MDUs","50","Ground ","Tenant  ","Vara Prasad ","6364848440","4",NULL
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","24","1","Owner","Venkatesh ","9844434959","6","https://api.mwater.co/v3/images/c4dd579fde9c47a5990aaab39f453290"
+"Bangalore","Ibbaluru-174","2nd main 1st cross ","MDUs","50","1st floor ","Tenant  ","Sunny","9380346748","1",NULL
+"Bangalore","Ibbaluru-174","Police station road 2nd cross ","Individual HHs",NULL,"1st floor ","Tenant  ","Sarasvathi","95353936060","2",NULL
+"Bangalore","Ibbaluru-174","2nd main, 1st floor ","MDUs","50","1st floor ","Owner","Mamatha","9611072583","4",NULL
+"Bangalore","Ibbaluru-174","2nd Cross","MDUs","N26(3) marker greenon gate","G","Owner","Rajeshwari","8618500850","3","https://api.mwater.co/v3/images/c62191aad96c4ce19d3c6b474969be76"
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","24","2","Tenant  ","Malathi","9980720748","4","https://api.mwater.co/v3/images/0e49d22d0fef4dbfbbc5fbcec8d79489"
+"Bangalore","Ibbaluru-174","2nd main,1st cross","MDUs","50","First floor","Tenant  ","Sandeep","8453368052","1",NULL
+"Bangalore","Ibbaluru-174","2nd main 1st cross ","MDUs","50","1st ","Tenant  ","Madhusmitha","6370424368","3",NULL
+"Bangalore","Ibbaluru-174","2nd main,1st cross","MDUs","50","1st floor","Tenant  ","Anbazhagal","9360499167","2",NULL
+"Bangalore","Ibbaluru-174","Police station road 2nd cross ","Individual HHs",NULL,"Ground ","Tenant  ","Duryodhan mahanth","6371239066","2","https://api.mwater.co/v3/images/5912a46436854825a1c7e4115b693c36"
+"Bangalore","Ibbaluru-174","2nd main 1st cross ","MDUs","50","1st floor ","Tenant  ","Sandhya nayak","8431301572","3",NULL
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs",NULL,"1st floor ","Tenant  ","Naveen Kumar ","9640251729","5",NULL
+"Bangalore","Ibbaluru-174","2nd main,1st cross","MDUs","50","2nd floor","Tenant  ","Abimanyu","9886542602","4",NULL
+"Bangalore","Ibbaluru-174","Police station road 2nd cross ","Individual HHs",NULL,"Ground ","Tenant  ","Mohith","8917455506","1","https://api.mwater.co/v3/images/6604bfdf6bef4be9b72ebc7fe65b45a1"
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","Venkatagiriyappa","Ground ","Tenant  ","Venkatagiriyappa","7619461539","3","https://api.mwater.co/v3/images/67133f3e862d498aa7bde67725a728ec"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross","MDUs","50","2nd floor ","Tenant  ","Santosh ","7975264841","5",NULL
+"Bangalore","Ibbaluru-174","2nd main","MDUs","101","Ground","Tenant  ","Nagaraj ","9711258758","6","https://api.mwater.co/v3/images/94a19fbe9bb2453faf9c8326c89cc181"
+"Bangalore","Ibbaluru-174","2nd Cross","MDUs","073 Green Marker","2nd Floor ","Tenant  ","Gopal Chettri","7338062519","2","https://api.mwater.co/v3/images/13773815c6ab403f9d182e244ca16be9"
+"Bangalore","Ibbaluru-174","1st cross 3rd main","Individual HHs",NULL,"Ground ","Owner","Girija",NULL,"6","https://api.mwater.co/v3/images/a9a18bb9feb143e38ba21e85764ec862"
+"Bangalore","Ibbaluru-174","2nd Cross","MDUs","074 Marker","2nd Floor","Tenant  ","Srijana","7602067802","3","https://api.mwater.co/v3/images/50f4623ea4dc485b9664478fe16369df"
+"Bangalore","Ibbaluru-174","2nd main,1st cross","MDUs","51","Ground","Owner","Dodmaniyappa","7349708161","4","https://api.mwater.co/v3/images/9d3c2c5cd93c40438c258540239238aa"
+"Bangalore","Ibbaluru-174","2nd main road ","MDUs","101","2","Tenant  ","Nagaraj ","9108291856","2","https://api.mwater.co/v3/images/e4dd00b71c5940a89c5ef63bd8dd1f06"
+"Bangalore","Ibbaluru-174","2nd main 1st cross ","MDUs","51","Ground ","Tenant  ","Divya","7259275173","2",NULL
+"Bangalore","Ibbaluru-174","2nd Cross ","MDUs","075","3rdFloor","Tenant  ","Rumi","7896114252","3","https://api.mwater.co/v3/images/f61cd4c7fbd74b8fba0eadcbfa887d76"
+"Bangalore","Ibbaluru-174","1st cross ","Individual HHs",NULL,"2nd floor ","Tenant  ","Nagamma","9611991593","2",NULL
+"Bangalore","Ibbaluru-174","2nd main,1st cross","MDUs","51","First floor","Tenant  ","Vikas","8073058474","5",NULL
+"Bangalore","Ibbaluru-174","2nd main, 1st cross","MDUs","51","2nd floor ","Tenant  ","Preethi ","8792594211","4",NULL
+"Bangalore","Ibbaluru-174","1st cross ","Individual HHs",NULL,"3rd floor ","Tenant  ","Keshab","8867455208","3",NULL
+"Bangalore","Ibbaluru-174","2nd Cross","Individual HHs","072 81/17","First Floor","Owner","Shubash","9008092100","3","https://api.mwater.co/v3/images/d4e055710d91450abb8930de8f3c1cfb"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross","MDUs","51","3rd floor ","Tenant  ","Vijayandra ","7795416842","4",NULL
+"Bangalore","Ibbaluru-174","1st cross ","Individual HHs",NULL,"3rd floor ","Tenant  ","Gopal chatri","6900491401","2",NULL
+"Bangalore","Ibbaluru-174","2nd main,1st cross","MDUs","024(acc no)","1st floor","Tenant  ","Sapna","7088160819","6","https://api.mwater.co/v3/images/7f110208086c44debda324caa62dfe41"
+"Bangalore","Ibbaluru-174","2nd main 1st cross ","MDUs","51","3rd floor ","Tenant  ","Akash","9706905115","6",NULL
+"Bangalore","Ibbaluru-174","2nd Cross","MDUs","81/17 ","G","Tenant  ","Aman Tanti","9902480601","1",NULL
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","51","4th floor ","Tenant  ","Nithin","9344807392","3",NULL
+"Bangalore","Ibbaluru-174","1","MDUs","2nd Cross","First","Tenant  ","Suraj","7638945795","2","https://api.mwater.co/v3/images/66cf55c9aba649bd9a2fabf88d30862d"
+"Bangalore","Ibbaluru-174","2nd main,1st cross","MDUs","012(acc no)","First floor","Tenant  ","Narendra","8073520685","4",NULL
+"Bangalore","Ibbaluru-174","1st cross ","Individual HHs",NULL,"4th floor ","Tenant  ","Nivas","7404651620","3",NULL
+"Bangalore","Ibbaluru-174","2nd main 1st cross ","MDUs","51","5","Tenant  ","Trinath","7679761953","3",NULL
+"Bangalore","Ibbaluru-174","2nd main,1st cross","MDUs","965(acc no)","Ground","Owner","Varshini","7019965913","4","https://api.mwater.co/v3/images/f5e0e21ff75b449dbafe489a42c7bad8"
+"Bangalore","Ibbaluru-174","1st cross ","Individual HHs",NULL,"1st floor ","Tenant  ","Sathish","9885843944","3","https://api.mwater.co/v3/images/b275d0f2232e4b37bcff94588eb540b5"
+"Bangalore","Ibbaluru-174","1st cross ","Individual HHs",NULL,"1 floor ","Tenant  ","Ashwini","7483069197","2",NULL
+"Bangalore","Ibbaluru-174","2nd Cross","MDUs","Corner Blue","G","Owner","Devraj","8123116784","4","https://api.mwater.co/v3/images/98cff8fe43c54c1480c63faaf23569dc"
+"Bangalore","Ibbaluru-174","1st cross ","Individual HHs",NULL,"1 floor ","Tenant  ","Madhusudhan","9741576143","2","https://api.mwater.co/v3/images/e8fe5ae33b3d433fb3159e2dce9126ec"
+"Bangalore","Ibbaluru-174","2nd Cross","MDUs","Corner Green Building ","G","Owner","Govindraju","9886164009","4","https://api.mwater.co/v3/images/c0d63bea1ee74028baa2f50cd9fac739"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","101","Ground ","Tenant  ","Sudeep Das","8198554459","4","https://api.mwater.co/v3/images/1bde9100acf54f43905a59a65ff44637"
+"Bangalore","Ibbaluru-174","3rd main 3rd cross ","Individual HHs",NULL,"Ground ","Tenant  ","Ereshappa","9930086602","2","https://api.mwater.co/v3/images/5e296d7384a047e2b9c90ce902743787"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","24","1st","Owner","Pillappa","8971871863","7","https://api.mwater.co/v3/images/376f6aaf06eb4f2b931bbe7678ed884a"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","24","2nd floor ","Tenant  ","Nirmala ","9035479105","3",NULL
+"Bangalore","Ibbaluru-174","3rd main 3rd cross ","Individual HHs",NULL,"Ground ","Tenant  ","Vishwanath","7795162690","2",NULL
+"Bangalore","Ibbaluru-174","3rd main 3rd cross ","Individual HHs","14","Ground ","Owner","Khanchana","6360179784","2","https://api.mwater.co/v3/images/4bff716529d74c6aa437656d92b3877a"
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","Others","23 -  Akshyakalpa organic","Ground ","Tenant  ","Bala","7795718606","2 employee ","https://api.mwater.co/v3/images/8b55585ade52481dad7f173edf9ff031"
+"Bangalore","Ibbaluru-174","3rd main 3rd cross ","Individual HHs","14","Ground ","Tenant  ","Alokdas","8822472932","3",NULL
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","23","1st floor ","Owner","Jayalakshmi ","8095565603","4",NULL
+"Bangalore","Ibbaluru-174","3rd main 3rd cross ","Individual HHs","14","1st floor ","Tenant  ","Pradeep","9093125788","2",NULL
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","23","2nd floor ","Tenant  ","Nandish ","9886331216","5",NULL
+"Bangalore","Ibbaluru-174","3rd main 3rd cross ","Individual HHs","14","1st","Tenant  ","Stella","8116120999","2",NULL
+"Bangalore","Ibbaluru-174","3rd main 3rd cross ","Individual HHs","14","1st","Tenant  ","Panjabai",NULL,"3",NULL
+"Bangalore","Ibbaluru-174","3rd main 3rd cross ","Individual HHs","14","1st","Tenant  ","Pooja",NULL,"4",NULL
+"Bangalore","Ibbaluru-174","2nd main, 1st cross ","MDUs","23","3rd floor ","Tenant  ","Seema","7063149723","4",NULL
+"Bangalore","Ibbaluru-174","3rd main 3rd cross ","Individual HHs",NULL,"1st floor ","Tenant  ","Prakash","8414817397","2",NULL
+"Bangalore","Ibbaluru-174","2nd main, 4th cross ","MDUs","101","Ground ","Tenant  ","Indrajeet ","9800466546","2","https://api.mwater.co/v3/images/3820c3ca1d5b4bf69491467e9c5c367a"
+"Bangalore","Ibbaluru-174","3rd main 3rd cross ","Individual HHs",NULL,"Ground ","Tenant  ","Ashwarya ","6364539351","6","https://api.mwater.co/v3/images/dff6b81b973b4456b937f2684f98ed47"
+"Bangalore","Ibbaluru-174","2nd main, 4th cross ","MDUs","102","Ground ","Tenant  ","Firdoz","6366017593","3","https://api.mwater.co/v3/images/f7429122484749189530e20d0ed46676"
+"Bangalore","Ibbaluru-174","3rd main 3rd cross ","Individual HHs",NULL,"1st floor ","Tenant  ","Balram","6363255108","1",NULL
+"Bangalore","Ibbaluru-174","3rd main 3rd cross ","Individual HHs",NULL,"1st floor ","Tenant  ","Kamana","6364575212","3",NULL
+"Bangalore","Ibbaluru-174","3rd main 3rd cross ","Individual HHs",NULL,"1st floor ","Tenant  ","Jayanti ",NULL,"1",NULL
+"Bangalore","Ibbaluru-174","2nd main, 4th cross ","MDUs","101","Ground ","Owner","Amir","9916229681","5","https://api.mwater.co/v3/images/9c6d1a2d04a143f5ac8f99c609534485"
+"Bangalore","Ibbaluru-174","3rd main 3rd cross ","Individual HHs",NULL,"Ground ","Tenant  ","Vijayakumar ","7406166635","2",NULL
+"Bangalore","Ibbaluru-174","2nd main, 4th cross ","MDUs","101","Ground ","Tenant  ","Jeetram","6374688132","4","https://api.mwater.co/v3/images/ffb2fd0201ed45b49af7b54aef608f91"
+"Bangalore","Ibbaluru-174","3rd main 3rd cross ","Individual HHs",NULL,"Ground ","Tenant  ","Madeppa",NULL,"2","https://api.mwater.co/v3/images/021b3d3c2fd544c18e8a84bd27d070b0"
+"Bangalore","Ibbaluru-174","2nd main, 4th cross ","MDUs","101","Ground ","Tenant  ","Afzal","9901457696","3","https://api.mwater.co/v3/images/5c9b17bcf0a44e09b408458f356c3554"
+"Bangalore","Ibbaluru-174","3rd main 3rd cross ","Individual HHs",NULL,"1St floor ","Owner","Sunitha","8050018567","4",NULL
+"Bangalore","Ibbaluru-174","2nd main, 4th cross ","MDUs","101","Ground ","Tenant  ","Saroja","7795707423","2","https://api.mwater.co/v3/images/c8bc055abeaf45f99e16329a6aa0116c"
+"Bangalore","Ibbaluru-174","2nd main, 4th cross ","MDUs","102","1st floor ","Tenant  ","Rajeev Devdi","6002696983","1",NULL
+"Bangalore","Ibbaluru-174","3rd main 3rd cross ","Individual HHs",NULL,"2nd floor ","Owner","Munilaxmi",NULL,"3",NULL
+"Bangalore","Ibbaluru-174","3rd main 3rd cross ","Individual HHs",NULL,"3rd floor ","Tenant  ","Shankar","8970433365","3",NULL
+"Bangalore","Ibbaluru-174","2nd main, 4th cross ","MDUs","201","2nd floor ","Tenant  ","Parvath","7721838997","4",NULL
+"Bangalore","Ibbaluru-174","3rd main 3rd cross ","Individual HHs",NULL,"3rd floor ","Tenant  ","Supriya","8861385012","4",NULL
+"Bangalore","Ibbaluru-174","2nd main, 4th cross ","MDUs","301","3rd floor ","Tenant  ","Alam","8951518602","1",NULL
+"Bangalore","Ibbaluru-174","3rd main 3rd cross ","Individual HHs",NULL,"4th floor ","Tenant  ","Bngarappa","8660445148","4","https://api.mwater.co/v3/images/d97f2a6f1854432ca8c6b64ffd1420d1"
+"Bangalore","Ibbaluru-174","2nd main,5th cross","MDUs","101","3rd floor ","Tenant  ","Dimple","7695856706","3",NULL
+"Bangalore","Ibbaluru-174","3rd main 3rd cross ","Individual HHs",NULL,"Ground ","Tenant  ","Princekumar","8147429180","5","https://api.mwater.co/v3/images/7e59d9689952409889f39592546e0525"
+"Bangalore","Ibbaluru-174","2nd main 4th cross ","MDUs","101","Ground ","Tenant  ","Rassell","8431684161","3",NULL
+"Bangalore","Ibbaluru-174","3rd main 3rd cross ","Individual HHs",NULL,"Ground ","Tenant  ","Adarsh","7829541605","2",NULL
+"Bangalore","Ibbaluru-174","2nd Main, 4th Cross","MDUs","101","1","Tenant  ","K. Jahnavi","9655888026","2","https://api.mwater.co/v3/images/6fefcad06c6e41ae960cb27e5a53beea"
+"Bangalore","Ibbaluru-174","2nd main 4th cross ","MDUs","101","Ground ","Tenant  ","Gunasekhar","9964359641","4","https://api.mwater.co/v3/images/275254cbbbbe4e3aa63f6c462bcd2697"
+"Bangalore","Ibbaluru-174","3rd main 3rd cross ","Individual HHs",NULL,"1st floor ","Tenant  ","Dinesh","9980547171","1",NULL
+"Bangalore","Ibbaluru-174","2nd Main, 4th Cross","MDUs","101","2","Tenant  ","Mangala ","8497064419","3","https://api.mwater.co/v3/images/f43c49ce179040219d287dd581cef5f0"
+"Bangalore","Ibbaluru-174","2nd Main, 4th Cross","MDUs","101","Ground ","Tenant  ","Jaywan","9611161207","4","https://api.mwater.co/v3/images/95c7e3b8246c44568a339ddef474095b"
+"Bangalore","Ibbaluru-174","2nd main 4th cross ","MDUs","101","1st ","Owner","Santhamma","9611323293","4",NULL
+"Bangalore","Ibbaluru-174","2nd Main, 4th Cross","MDUs","101","Ground ","Tenant  ","Kiran","7892280143","4","https://api.mwater.co/v3/images/ee6c82d63c9f4de4907d74183d732826"
+"Bangalore","Ibbaluru-174","3rd main 3rd cross ","Individual HHs",NULL,"2nd floor ","Owner","Om prakash","9945930017","5",NULL
+"Bangalore","Ibbaluru-174","2nd main 4th cross ","MDUs","201","2nd ","Tenant  ","Jahnavi","8688745722","3","https://api.mwater.co/v3/images/82c3e9e12aaf4508aafac2cb10ae9edc"
+"Bangalore","Ibbaluru-174","2nd main 4th cross ","MDUs","301","3rd ","Tenant  ","Josephi","8974446533","3","https://api.mwater.co/v3/images/4a04d727c5a3437db68d29184e95d27c"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main","Individual HHs",NULL,"2nd floor ","Tenant  ","Sujith","9861810531","3",NULL
+"Bangalore","Ibbaluru-174","2nd Main, 4th Cross","MDUs","101","Ground ","Owner","Veda","9019063682","4","https://api.mwater.co/v3/images/251e8baa82104616af910a66f7605bd7"
+"Bangalore","Ibbaluru-174","2nd Main, 4th Cross","MDUs","101","Ground ","Tenant  ","Renuka","9902414937","4","https://api.mwater.co/v3/images/72c2f9b1e16c40a6b2caffe77385eea6"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"3rd floor ","Tenant  ","Gayatri","7406229890","2",NULL
+"Bangalore","Ibbaluru-174","2nd main,4th cross","MDUs","MGR","Ground","Tenant  ","Thiripdas","8617528081","3","https://api.mwater.co/v3/images/34089f67a92845d88cdebb89ccbd6de5"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"3rd floor ","Tenant  ","Venkat","9880105586","5",NULL
+"Bangalore","Ibbaluru-174","2nd main 4th cross ","MDUs","101","Ground ","Tenant  ","Meenakshi","7364045892","4","https://api.mwater.co/v3/images/62ea2a18408e4eb99a1985f366ba15ac"
+"Bangalore","Ibbaluru-174","2nd main,4th cross","MDUs","MGR","First floor","Tenant  ","Uma","9663787063","3",NULL
+"Bangalore","Ibbaluru-174","2nd Main, 4th Cross","MDUs","101","Ground ","Tenant  ","Latha","7338494749","4","https://api.mwater.co/v3/images/58e85dbbde204255bfd508b7f7cbdcab"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"4th floor ","Tenant  ","Bhagya","9611984127","4",NULL
+"Bangalore","Ibbaluru-174","2nd main 4th cross ","MDUs","102","Ground ","Tenant  ","Molay","9880511640","2","https://api.mwater.co/v3/images/2e42510bffe84e299ad78a4503515fda"
+"Bangalore","Ibbaluru-174","2nd main,4th cross","MDUs","MGR","First floor","Tenant  ","Azar","6003555256","2",NULL
+"Bangalore","Ibbaluru-174","2nd Main, 4th Cross","MDUs","101","1","Owner","Muniyappa","9148493689","5","https://api.mwater.co/v3/images/d84d3a7c0605442f8c979e7a84e1db3b"
+"Bangalore","Ibbaluru-174","2nd main 4th cross ","MDUs","101","Ground ","Tenant  ","Usha Rani ","9535196296","1","https://api.mwater.co/v3/images/c052cd935ade4d85b93e0eeeb04ed009"
+"Bangalore","Ibbaluru-174","2nd main,4th cross","MDUs","MGR","Second floor","Tenant  ","Mohammed Rafid","6363379376","5",NULL
+"Bangalore","Ibbaluru-174","2nd main 4th cross ","MDUs","101","Ground ","Tenant  ","Siraj","9740108632","3","https://api.mwater.co/v3/images/80abe5e4c8d44bb1868a0f99c8f48604"
+"Bangalore","Ibbaluru-174","2nd main,4th cross","MDUs","MGR","Second floor","Tenant  ","Dupali","953863034","1",NULL
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"Ground ","Tenant  ","Manjula ruth","9945543484","4",NULL
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs"," ","Ground ","Tenant  ","Shankar ","9611019513","3","https://api.mwater.co/v3/images/3dcfe7d0808446a095fe4a70453fa269"
+"Bangalore","Ibbaluru-174","2nd main,4th cross","MDUs","MGR","5th floor","Tenant  ","Rinjith","8589936076","3",NULL
+"Bangalore","Ibbaluru-174","3rd main ","MDUs","101","1st floor ","Tenant  ","Balaram","9668387730","2","https://api.mwater.co/v3/images/dcc3fd407ec0461d8903fa69e29ae5a7"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"Ground ","Tenant  ","Prabhakar ","9108631226","4","https://api.mwater.co/v3/images/cf0126b704184b4bbb5a05a2ec8a1c15"
+"Bangalore","Ibbaluru-174","3rd main ","MDUs","201","2nd floor ","Tenant  ","Deep","8609641720","2","https://api.mwater.co/v3/images/94e67f7280954e66a902e645b6e8ce7c"
+"Bangalore","Ibbaluru-174","3rd Main, 5th Cross ","MDUs","101","Ground ","Owner","Navalappa",NULL,"2",NULL
+"Bangalore","Ibbaluru-174","3rd main ","MDUs","201/189","3rd ","Tenant  ","Sunakar","7975179019","2","https://api.mwater.co/v3/images/a49688f7fbf64ef39be4e0ce52773d1b"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"Ground ","Tenant  ","Premananda","9532515726","3","https://api.mwater.co/v3/images/89dc94ae87be408ea590ec047d884a50"
+"Bangalore","Ibbaluru-174","3rd main ","MDUs","201/189","4th","Tenant  ","Julie","9339573084","2","https://api.mwater.co/v3/images/7a9536fb17d14729baaea69d628b40a7"
+"Bangalore","Ibbaluru-174","3nd main,5th cross","MDUs","101","1","Tenant  ","Auta","8348684770","3","https://api.mwater.co/v3/images/99b74dad510245268a84a2e97632acb6"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"Ground ","Tenant  ","Samrat","6361333877","2",NULL
+"Bangalore","Ibbaluru-174","3rd main ","MDUs","201/189","3","Tenant  ","Pravir","9090346041","1","https://api.mwater.co/v3/images/44502781851844d9ad4174fbf3ca22a2"
+"Bangalore","Ibbaluru-174","3rd main ","MDUs","101","Ground ","Owner","Janardhan","9740295995","3","https://api.mwater.co/v3/images/7851dfa6c1d846f59c8cf71c16d61ca6"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"2nd floor ","Tenant  ","Ravi","9740419760","4",NULL
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"2nd","Tenant  ","Monbarman","8197752519","4",NULL
+"Bangalore","Ibbaluru-174","3nd main,5th cross","MDUs","101","1st floor","Tenant  ","Kirthiprasad","9449888090","3","https://api.mwater.co/v3/images/8214200ed4a845ea86fe422b7b99342b"
+"Bangalore","Ibbaluru-174","3rd main ","MDUs","196","First ","Owner","Parashuram","7624951199","5","https://api.mwater.co/v3/images/0eb2c40009134f9d8f45e2fd5df241c2"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"3rd floor ","Tenant  ","Nagraju",NULL,"2",NULL
+"Bangalore","Ibbaluru-174","3nd main,5th cross","MDUs","101","2nd floor","Tenant  ","Pallavi","9741639139","4","https://api.mwater.co/v3/images/611527bcf85e4caabb84712d8c8a8702"
+"Bangalore","Ibbaluru-174","3rd Main, 5th Cross ","MDUs","87","4","Tenant  ","Haradun Sarkar","9734824311","3","https://api.mwater.co/v3/images/a259c0a1403743939fdc75ca2c8a9f40"
+"Bangalore","Ibbaluru-174","3rd main ","MDUs","196","2nd ","Tenant  ","Sumitra","7624942844","4","https://api.mwater.co/v3/images/fb4588a251284583b4f6187113a31648"
+"Bangalore","Ibbaluru-174","3rd main dead end","MDUs","196","3rd floor ","Tenant  ","Manjunath ","9900865033","3",NULL
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"4th floor ","Tenant  ","Karthik","9590173679","3",NULL
+"Bangalore","Ibbaluru-174","3nd main,5th cross","MDUs","101","3nd floor","Tenant  ","Pushpendhu","8348698854","4","https://api.mwater.co/v3/images/a9d2d8494b2f4fb5bac8470517f75f7b"
+"Bangalore","Ibbaluru-174","3rd Main, 5th Cross","MDUs","101","Ground ","Owner","Shobha ","9538495529","4","https://api.mwater.co/v3/images/646e9f5ce1064c2d975c4e338946c12e"
+"Bangalore","Ibbaluru-174","3nd main,5th cross","MDUs","101","3rd floor","Tenant  ","Sunitha","7975723776","3","https://api.mwater.co/v3/images/f0ef3c3891154625b481ff58d7d8b473"
+"Bangalore","Ibbaluru-174","3rd Main, 5th Cross","MDUs","101","Ground ","Tenant  ","Shambu","8307259413","4","https://api.mwater.co/v3/images/689822fa6c274c4ba08ea1a52aa3a06b"
+"Bangalore","Ibbaluru-174","3nd main,5th cross","MDUs","101","4th floor","Tenant  ","Manjunath","9980074059","4","https://api.mwater.co/v3/images/458f23370e0e4db883f5d152490d0dcb"
+"Bangalore","Ibbaluru-174","2nd Main 3rd Cross","MDUs","127/7 ","1st floor","Owner","Ramakrishna Gowda","9845541447","6","https://api.mwater.co/v3/images/286b1d81baf9418f8cc99cc6653d3249"
+"Bangalore","Ibbaluru-174","3rd main ","MDUs","84","1st floor ","Owner","Sumathi ","9449312466","4","https://api.mwater.co/v3/images/76ee763869d04a0ba56be2597696fae4"
+"Bangalore","Ibbaluru-174","3rd main ","MDUs","84","2nd ","Tenant  ","Lakhan","9901108656","7","https://api.mwater.co/v3/images/47ae9b901c5b456ca2c94cf686134eff"
+"Bangalore","Ibbaluru-174","3rd main ","MDUs","84","2nd floor ","Tenant  ","Srikanth ","8317374542","6","https://api.mwater.co/v3/images/597e9e6284714e4fb317cd74e2f85b8e"
+"Bangalore","Ibbaluru-174","2nd Main 3rd Cross","MDUs","0061","2nd Floor","Tenant  ","Prashant Kumar","9123246782","1","https://api.mwater.co/v3/images/a1f501c270c14394b8b0592d8b44676e"
+"Bangalore","Ibbaluru-174","3rd main ","MDUs","84","3rd","Tenant  ","Kiran","7291938705","2","https://api.mwater.co/v3/images/91eed06ed8204839a87f5654ab4aa83f"
+"Bangalore","Ibbaluru-174","3rd main ","MDUs","84","5th floor ","Tenant  ","Ayesha","8951579602","3","https://api.mwater.co/v3/images/52c2209cf1724dddb95928eb41b25ed7"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"Ground ","Tenant  ","Bipul","7022653309","3","https://api.mwater.co/v3/images/dd06c5740fd642418e4a43b10fce1159"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"Ground ","Tenant  ","Balai","8904592742","3",NULL
+"Bangalore","Ibbaluru-174","2nd Main ","MDUs","0064","2nd Floor","Tenant  ","J Ajaykumar","8074831547","3","https://api.mwater.co/v3/images/a8e127c99f0a423a8b81bfd4873b5463"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"Ground ","Tenant  ","Rajudas","8861315227","3",NULL
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"1st floor ","Tenant  ","Vasim","9734253117","3",NULL
+"Bangalore","Ibbaluru-174","2nd Main","MDUs","0065","2nd Floor ","Tenant  ","Sandeep","9652065499","1","https://api.mwater.co/v3/images/f9fed134008c4530bb52ed157ed69b7a"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"1st floor ","Tenant  ","Sandhya","8099623736","5",NULL
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"1st floor ","Tenant  ","Babeen",NULL,"4",NULL
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"1st floor ","Tenant  ","Sangeetha","9101896067","2",NULL
+"Bangalore","Ibbaluru-174","Ibbalur ","Individual HHs",NULL,"1st floor ","Tenant  ","Ramurthi","9686216251","4",NULL
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"1st floor ","Tenant  ","Yuraju","7029272884","3",NULL
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"2nd floor ","Tenant  ","Chidanand","9880220461","4",NULL
+"Bangalore","Ibbaluru-174","2nd main, 5th Cross ","MDUs","102","Ground ","Owner","A.Manjula","9731019491","2","https://api.mwater.co/v3/images/c396af4c05084a73b3b12e0b44c4c266"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main ","Individual HHs",NULL,"2nd floor ","Tenant  ","Bijan",NULL,"3",NULL
+"Bangalore","Ibbaluru-174","2nd Main, 5th Cross","MDUs","101","Ground ","Tenant  ","Reshma","9863241523","2","https://api.mwater.co/v3/images/e60bdfe37e284df7a4b0b05ba278a964"
+"Bangalore","Ibbaluru-174","2 Main 5th Cross","MDUs","13","1st Floor ","Owner","K H Ramakrishna ","9900427519","4","https://api.mwater.co/v3/images/48d1b6c81e3441099ac6b8f7ff1ea346"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main","Individual HHs",NULL,"2nd floor ","Tenant  ","Bjith","8876734034","5",NULL
+"Bangalore","Ibbaluru-174","2nd main, 5th Cross","MDUs","101","1","Tenant  ","Abhishek ","9902555183","3","https://api.mwater.co/v3/images/911c7be8b36d4b6fb10efbb18e276b09"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main","Individual HHs",NULL,"2nd floor","Tenant  ","Hemkanth","9538565977","4",NULL
+"Bangalore","Ibbaluru-174","3nd main,5th cross","MDUs","101","Ground","Tenant  ","Ganesh","6364580787","26","https://api.mwater.co/v3/images/a327ee630c9b419d95fa6e5a5aea6b29"
+"Bangalore","Ibbaluru-174","2nd main, 5th Cross","MDUs","101","1","Tenant  ","Taapa","8099153165","2","https://api.mwater.co/v3/images/68ce8ad1947b4c19ab0c0f22a4166047"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main","Individual HHs",NULL,"2nd floor ","Tenant  ","Kiran","9148253199","3",NULL
+"Bangalore","Ibbaluru-174","2nd Main 5th Cross","MDUs","Pink and cream Building","2nd Floor","Tenant  ","Lokesh","7981193314","3","https://api.mwater.co/v3/images/2384abebc4f345f5871f511388296113"
+"Bangalore","Ibbaluru-174","2nd main, 5th Cross","MDUs","101","2","Tenant  ","Rani","9091295977","3","https://api.mwater.co/v3/images/f482ac6a88c14067a325308fcbc462c6"
+"Bangalore","Ibbaluru-174","2nd Main 5th Cross","MDUs","0078","2nd Floor","Tenant  ","Siddarama","9731334788","3","https://api.mwater.co/v3/images/9ec6f77d65914f86aa62f2561e021aa4"
+"Bangalore","Ibbaluru-174","2nd Main 5th Cross","MDUs","0080","3rd Floor","Tenant  ","Harshal","6361507769","2","https://api.mwater.co/v3/images/36dfc74778104162aedbab85e5f36afd"
+"Bangalore","Ibbaluru-174","2nd main, 5th Cross","MDUs","101","Ground ","Tenant  ","Sumitra","9863766248","2","https://api.mwater.co/v3/images/d168c432de9d4fac9fd270f7083cb86d"
+"Bangalore","Ibbaluru-174","2nd Main 5th cross","MDUs","502","5th Floor","Tenant  ","Sachin","9500792440","1","https://api.mwater.co/v3/images/9254aa5b34cb46099aa4c51341dd0b6f"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main","Individual HHs",NULL,"3rd floor ","Tenant  ","Sandjay","8918156453","2",NULL
+"Bangalore","Ibbaluru-174","Opposite Krishnaappa building ","MDUs","101","Ground ","Tenant  ","Savitri ","7609058654","2","https://api.mwater.co/v3/images/b3d475e12ae24c99afaa2a898dfa92b4"
+"Bangalore","Ibbaluru-174","2nd Main 5th Cross","MDUs","Cream and pink","5th Floor","Tenant  ","Yesudas","7338443154","1","https://api.mwater.co/v3/images/8051e579a6084dbfaa85a2a96a4b65f0"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main","Individual HHs",NULL,"3rd floor ","Tenant  ","Divya das","8951142308","4",NULL
+"Bangalore","Ibbaluru-174","2nd main,5th cross","MDUs","101","First floor","Tenant  ","Ambika","7361992176","5","https://api.mwater.co/v3/images/c7b3149ff1134013a3588fad27fee77f"
+"Bangalore","Ibbaluru-174","2nd main, 5th Cross","MDUs","101","Ground","Tenant  ","Lalita ","9742672471","2","https://api.mwater.co/v3/images/85aba79cdb874900abc751e39e52aae6"
+"Bangalore","Ibbaluru-174","2nd main, 5th cross ","MDUs","Opposite Krishnaappa building ","Ground ","Tenant  ","Shuban","7022996257","2","https://api.mwater.co/v3/images/154dc9af3acd40baadb1ae6cb56dad52"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main","Individual HHs",NULL,"3rd floor ","Tenant  ","Ranjan behera","8088242379","3",NULL
+"Bangalore","Ibbaluru-174","2nd main 5th cross ","MDUs","101","First ","Tenant  ","Shivaraj","7353127451","4","https://api.mwater.co/v3/images/923b761dc4564fe980429532ed9a6f88"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main","Individual HHs",NULL,"3rd floor ","Tenant  ","Adhusmitha",NULL,"2",NULL
+"Bangalore","Ibbaluru-174","2nd main,5th cross","MDUs","101","1st floor ","Tenant  ","Kishna apada mandal","7980238114","3",NULL
+"Bangalore","Ibbaluru-174","2nd main, 5th Cross","MDUs","101","2","Tenant  ","Saima","7586956723","4","https://api.mwater.co/v3/images/433c4efd84a84849b702f8dcad733619"
+"Bangalore","Ibbaluru-174","2nd main, 5th cross ","MDUs","98","Ground ","Owner","Krishnaappa ","9980037180","5","https://api.mwater.co/v3/images/20fe31f1e61c4df58e78b8453f3ef4af"
+"Bangalore","Ibbaluru-174","2nd main 5th cross ","MDUs","101","First ","Tenant  ","Arun","9394118803","2","https://api.mwater.co/v3/images/77946034acd94fb0b4a6cb628df18091"
+"Bangalore","Ibbaluru-174","2nd main, 5th Cross","MDUs","101","2","Tenant  ","Suman ","7760390371","2","https://api.mwater.co/v3/images/1262390894004b80810783671825560b"
+"Bangalore","Ibbaluru-174","2nd main 5th cross ","MDUs","301","Third ","Tenant  ","Prem","8884052159","3","https://api.mwater.co/v3/images/08786ed3fb084ca19dd482b2f1ccad78"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main","Individual HHs",NULL,"4th floor ","Tenant  ","Vivekanand","8908966400","3",NULL
+"Bangalore","Ibbaluru-174","2nd main, 5th Cross","MDUs","101","2","Tenant  ","Gopal Raj","9002935002","2","https://api.mwater.co/v3/images/7854061512c14943b0c7edb2d39d97ba"
+"Bangalore","Ibbaluru-174","2nd main, 5th cross ","MDUs","98","1st floor ","Tenant  ","Shifali ","9198825614","2","https://api.mwater.co/v3/images/b9e6f5ce701542d298efb83343df054d"
+"Bangalore","Ibbaluru-174","2nd Main 5th Cross","Individual HHs","0054","2nd Floor","Tenant  ","Revannappa","9164509927","3","https://api.mwater.co/v3/images/2aaf56ed45154b1ab3c237449effe1b9"
+"Bangalore","Ibbaluru-174","2nd main, 5th cross ","MDUs","98","3rd floor ","Tenant  ","Savitri ","9535110350","4","https://api.mwater.co/v3/images/7bee11159fa647678b2ddba9eb6d0518"
+"Bangalore","Ibbaluru-174","2nd main, 5th Cross","MDUs","101","5","Tenant  ","Vijay ","7259830824","2","https://api.mwater.co/v3/images/82d5d8293c824803a936fc8f465a832f"
+"Bangalore","Ibbaluru-174","3rd cross 3rd main","Individual HHs",NULL,"Ground ","Owner","Muniraju","9611966000","5",NULL
+"Bangalore","Ibbaluru-174","2nd main, 5th cross ","MDUs","98","3rd floor ","Tenant  ","Sudhir ","8308260584","1","https://api.mwater.co/v3/images/e5592f5e737e433985cfb488416ca6bb"
+"Bangalore","Ibbaluru-174","2nd main, 5th cross ","MDUs","86","Ground ","Tenant  ","Lakshmi ","8618738161","2","https://api.mwater.co/v3/images/8c148ad1d1154356a21c95341b3544a9"
+"Bangalore","Ibbaluru-174","2nd main, 5th cross ","MDUs","86","Ground ","Tenant  ","Mohan","7259792196","4","https://api.mwater.co/v3/images/1676affc4e7a46598976643cf031c4fe"
+"Bangalore","Ibbaluru-174","2nd main, 5th cross ","MDUs","86","Ground ","Tenant  ","Reena khatun","9153443581","4",NULL
+"Bangalore","Ibbaluru-174","2nd Main 5th Cross","MDUs","86","G","Owner","Varalakshmi ","9902664934","4","https://api.mwater.co/v3/images/6e5ef3f1cd064e90b8c99a8a76b595df"
+"Bangalore","Ibbaluru-174","2nd main, 5th cross ","MDUs","86","Ground ","Tenant  ","Jyothi Raman","7327931214","3",NULL
+"Bangalore","Ibbaluru-174","2nd main, 5th cross ","MDUs","86","Ground ","Tenant  ","Maimudha ","7337650522","1",NULL
+"Bangalore","Ibbaluru-174","2nd Main 5th Cross","MDUs","CN23","G","Tenant  ","Abhijith","6363662383","1","https://api.mwater.co/v3/images/bcdf4374a4e342d795671bd24b0f9730"
+"Bangalore","Ibbaluru-174","2nd main, 5th cross ","MDUs","101","Ground ","Tenant  ","Manasodhariya","7899159912","4","https://api.mwater.co/v3/images/98ce4292336640859b550f9cc75c93e7"
+"Bangalore","Ibbaluru-174","2nd Main, 5th cross ","MDUs","41","Ground ","Tenant  ","Murali ","9632535279","2","https://api.mwater.co/v3/images/c16608ab4c2443c4abc9cf3384a59b4d"
+"Bangalore","Ibbaluru-174","2nd cross 3rd main road ","Individual HHs",NULL,"1st floor ","Tenant  ","Rahim","9108330980","3","https://api.mwater.co/v3/images/b771816f7c07449ab1d49aeca53a30cc"
+"Bangalore","Ibbaluru-174","2nd cross 3r main","Individual HHs",NULL,"1st floor ","Tenant  ","Sai kiran","7349127244","4",NULL
+"Bangalore","Ibbaluru-174","2nd cross 3r main","Individual HHs",NULL,"1st floor ","Tenant  ","Venkatesh","9623635560","4",NULL
+"Bangalore","Ibbaluru-174","2nd cross 3r main","Individual HHs",NULL,"1st floor ","Tenant  ","Deepthiranjan","9178026262","4",NULL
+"Bangalore","Ibbaluru-174","2nd cross 3r main","Individual HHs",NULL,"3rd floor ","Tenant  ","Gopal","8884339398","4",NULL
+"Bangalore","Ibbaluru-174","2nd main,2nd cross","MDUs","101","1rd floor ","Tenant  ","Manju","8310910980","2","https://api.mwater.co/v3/images/405e96c897c44bdc8a46a0e46d4fd592"
+"Bangalore","Ibbaluru-174","2nd cross 3r main","Individual HHs",NULL,"3rd floor ","Tenant  ","Sunil","9178855104","5",NULL
+"Bangalore","Ibbaluru-174","2nd main ,2nd cross","MDUs","102","1st ","Tenant  ","S Shariff","6303857060","3","https://api.mwater.co/v3/images/57cfbe28a3154b50ba733bda7017fb61"
+"Bangalore","Ibbaluru-174","2ndn main, 2nd floor","MDUs","2nd main, 2nd cross","2nd","Tenant  ","Susheela","8123207245","5","https://api.mwater.co/v3/images/c5892ed31331493ca6bcb9cf34ec368c"
+"Bangalore","Ibbaluru-174","2nd cross 3r main","Individual HHs",NULL,"4th floor ","Tenant  ","Aysha siddike","8822007039","3",NULL
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross","MDUs","102","2nd","Tenant  ","Parimal pradan","7001800076","4","https://api.mwater.co/v3/images/c50d26ed1e3d42bc85c49c524a8b0e03"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross ","MDUs","60","1st floor ","Owner","Vimala","8792812731","4","https://api.mwater.co/v3/images/e1971c0c56e0495aa85fa169864c9e1b"
+"Bangalore","Ibbaluru-174","2nd main , 2nd cross","MDUs","102","3rd floor","Tenant  ","Dhowola","6363817593","4","https://api.mwater.co/v3/images/68a69109a3244423a0ab62839408a749"
+"Bangalore","Ibbaluru-174","2nd cross 3r main","Individual HHs",NULL,"Ground ","Owner","Venkateshappa",NULL,"5","https://api.mwater.co/v3/images/7fa183726dd84b95a3ea33cac5322525"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross","MDUs","102","3rd floor","Tenant  ","Sunitha","988641720","3","https://api.mwater.co/v3/images/77f056cb25fc402fbdc4032e5e36c5ba"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross ","MDUs","101","Ground ","Tenant  ","Deep","8310931792","2","https://api.mwater.co/v3/images/f6155795fa6b437f97d211ff01e92cb6"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross","MDUs","102","4th floor","Tenant  ","Aris","O","2","https://api.mwater.co/v3/images/96fa48459815479a8fc85321a6ef3c6f"
+"Bangalore","Ibbaluru-174","2nd cross 3r main","Individual HHs",NULL,"Ground ","Tenant  ","Banti","8951813860","2","https://api.mwater.co/v3/images/6f6c4019e7094324acc9a19c990325b7"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross ","MDUs","101","0","Tenant  ","Aditya ","7026930802","4","https://api.mwater.co/v3/images/555ae35785ba40d48c89d59e4d645b48"
+"Bangalore","Ibbaluru-174","2nd cross 3r main","Individual HHs",NULL,"Ground ","Tenant  ","Chinnamma ",NULL,"3","https://api.mwater.co/v3/images/a6d1eaedff6f4062b6c7780dff90b555"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross ","MDUs","101","Ground ","Owner","Bishnu Roy","6295123741","1","https://api.mwater.co/v3/images/88ac69d52f314575b62a3424f7b7523b"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross","MDUs","102","0","Owner","Ratnamma",NULL,"4","https://api.mwater.co/v3/images/efc130e069f0494ca4d0c0c745d7b85d"
+"Bangalore","Ibbaluru-174","2nd cross 3r main","Individual HHs",NULL,"Ground ","Owner","Manjesh kumar","9844709720","2","https://api.mwater.co/v3/images/635e8f4edf0c4dafbe9cf2782327f4d1"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross ","MDUs","83","Ground floor ","Owner","Suresh ","9844767078","4","https://api.mwater.co/v3/images/790c8e6a95d3477ca4ec0507b45e7f7d"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross","MDUs","102","1st","Owner","Ratnamma","9845864734","3","https://api.mwater.co/v3/images/1b82fe3ef5b54de38e669da10cd243fa"
+"Bangalore","Ibbaluru-174","2nd cross 3r main","Individual HHs",NULL,"1st floor ","Tenant  ","Suresh","8310057902","6",NULL
+"Bangalore","Ibbaluru-174","2nd cross 3r main","Individual HHs",NULL,"2nd floor ","Tenant  ","Sathish","9986939970","3",NULL
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross ","MDUs","83","1st floor ","Tenant  ","Sunitha ","7566608826","4","https://api.mwater.co/v3/images/91bca4a8ac99422994acbfd3a250931a"
+"Bangalore","Ibbaluru-174","2nd cross 3r main","Individual HHs",NULL,"3rd floor ","Tenant  ","Karun","9148358147","4",NULL
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross ","MDUs","102","2nd ","Tenant  ","Dileep","9304114159","5","https://api.mwater.co/v3/images/404a943947df492d9a23965b64710635"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross ","MDUs","102","3rd floor","Tenant  ","Radhika","7892854697","2","https://api.mwater.co/v3/images/2648546932ad4dc5b2deaf3fe91dcad5"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross ","MDUs","83","2nd floor ","Tenant  ","Prekshan","9486877062","4","https://api.mwater.co/v3/images/a67aca8529ea49c38d918ad8ffe39c8f"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross","MDUs","102","3rd floor","Tenant  ","Bithun","9611239688","2","https://api.mwater.co/v3/images/e88d83add4df4f7e9b7c765c7f2ee19a"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross ","MDUs","83","2nd floor ","Tenant  ","Deepak","8327704696","5","https://api.mwater.co/v3/images/bc41bc440300433783ef6b0bfd5dc940"
+"Bangalore","Ibbaluru-174","2nd main,2nd cross","Provision Store","102","0","Owner","Puneet dasappa","9945975707","1","https://api.mwater.co/v3/images/66067c9f44dd494992a620412e527374"
+"Bangalore","Ibbaluru-174","2nd cross 3r main","Individual HHs",NULL,"Ground ","Tenant  ","Kumarswamy","9880080568","4","https://api.mwater.co/v3/images/7278302cd63f4857af087822211f13bc"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross ","MDUs","52","Ground ","Tenant  ","Revati","9042005204","4","https://api.mwater.co/v3/images/4582a952d5764d7da151b5f686ed7b9b"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross","MDUs","101","0","Tenant  ","Devamma","9741233451","3","https://api.mwater.co/v3/images/66aa014a01c64fb1b3df3638bf93a2d6"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross ","MDUs","52","1st floor ","Tenant  ","Renuka","9036828215","2","https://api.mwater.co/v3/images/f9664e408edb44d5b35b77e854c9a622"
+"Bangalore","Ibbaluru-174","2nd cross 3r main","Individual HHs",NULL,"1st floor ","Owner","Rathnamma","9916810296","2",NULL
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross ","MDUs","52","2nd floor ","Owner","Parvati ","9945975707","5","https://api.mwater.co/v3/images/2c3c061e3d504f859a91f742b3e35231"
+"Bangalore","Ibbaluru-174","2nd main,2nd cross","MDUs","103","2nd floor","Tenant  ","Pradeep","8951282551","3","https://api.mwater.co/v3/images/54546f05e6214d89b63295820a31ce1e"
+"Bangalore","Ibbaluru-174","2nd cross 3r main","Individual HHs",NULL,"2nd floor ","Tenant  ","Anand","7411291974","4",NULL
+"Bangalore","Ibbaluru-174","2nd cross 3r main","Individual HHs",NULL,"2nd floor ","Tenant  ","Chandrashekar","9741744756","4",NULL
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross","MDUs","103","2nd floor","Tenant  ","Shivraj","8971660893","2","https://api.mwater.co/v3/images/38612bc61c364525b39c058c9f18d8b0"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross ","MDUs","52","3rd floor ","Tenant  ","Mamon","6003211423","2","https://api.mwater.co/v3/images/d168e14ed10f4b84b043dadd46e67cf2"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross","MDUs","104","3rd floor","Tenant  ","Dilshad zaydi hyder","9623378699","2","https://api.mwater.co/v3/images/a9ee7be6938147dc9890c3fed30bd5de"
+"Bangalore","Ibbaluru-174","2nd cross 3r main","Individual HHs",NULL,"3rd floor ","Tenant  ","Manu","9900499797","3",NULL
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross ","MDUs","52","4th floor ","Tenant  ","Ramesh parida","8144563656","4","https://api.mwater.co/v3/images/1699c6e71e624db28cce9c0c7661faee"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross","MDUs","103","2nd floor","Tenant  ","Yashoda","7019328169","2","https://api.mwater.co/v3/images/597a149c199c476b9bd1055cb11e2c77"
+"Bangalore","Ibbaluru-174","2nd cross 3r main","Individual HHs",NULL,"Ground ","Owner","Laxmi","9731218270","3","https://api.mwater.co/v3/images/bab3a6b5933d4859b07a34a917b50a0c"
+"Bangalore","Ibbaluru-174","2nd main,2nd cross","Apartment","102","0","Owner","Hikmat","8968113146","14 houses","https://api.mwater.co/v3/images/81ec58a21c744ec0a44371e546026069"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross ","MDUs, Provision Store","19","1st floor + shop","Owner","Ratnamma ","9845065917","5","https://api.mwater.co/v3/images/a5e56e9452254125adbc5382626cfd71"
+"Bangalore","Ibbaluru-174","2nd main,2nd cross","Individual HHs","102","0","Owner","Venkatraja","9880571550","2","https://api.mwater.co/v3/images/07ddb3fcc9104c7a89ab249283ec69a0"
+"Bangalore","Ibbaluru-174","2nd cross 3rd main","Individual HHs",NULL,"1st floor ","Tenant  ","Suma","9731752661","4",NULL
+"Bangalore","Ibbaluru-174","2nd cross 3rd main","Individual HHs",NULL,"1st floor ","Tenant  ","Nagaratna","8315033303","3",NULL
+"Bangalore","Ibbaluru-174","2nd main,2nd cross","Individual HHs","102","0","Owner","Lakshmi","8861229084","3","https://api.mwater.co/v3/images/31258061f05a43168f0a4e7aad056023"
+"Bangalore","Ibbaluru-174","2nd cross 3rd main","Individual HHs",NULL,"2nd floor ","Tenant  ","Manjula","8710055601","2",NULL
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross","MDUs","102","0","Tenant  ","Prasanna","9894096037","4","https://api.mwater.co/v3/images/30a346382a864fa0a52b2db929405c0b"
+"Bangalore","Ibbaluru-174","2nd main,2nd cross ","MDUs","19","3rd floor","Tenant  ","Rajendrabari","6372629542","3","https://api.mwater.co/v3/images/70a0d3c9eb8e4558941386dd68e923e6"
+"Bangalore","Ibbaluru-174","2nd main,2nd cross","MDUs","82/16","1st","Owner","Sajjan","7358032062","5","https://api.mwater.co/v3/images/af43ced705e045e8bd9f59547688eaad"
+"Bangalore","Ibbaluru-174","2nd cross 3rd main","Individual HHs",NULL,"2nd floor ","Tenant  ","Laxmamma",NULL,"1",NULL
+"Bangalore","Ibbaluru-174","2nd cross 3rd main","Individual HHs",NULL,"Ground ","Tenant  ","Laxmamma",NULL,"1","https://api.mwater.co/v3/images/15d05e95dbd34ed2a1b8fa90a9bd2490"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross","Super Market","194/4","0","Owner","Karunanidhi","9900937963","1","https://api.mwater.co/v3/images/cfb72b3d1085498086b67606dd415a4f"
+"Bangalore","Ibbaluru-174","2nd cross 3rd main","Individual HHs",NULL,"Ground ","Tenant  ","Mallesh","7022929374","6",NULL
+"Bangalore","Ibbaluru-174","2nd main,2nd cross ","Individual HHs","101","Ground","Tenant  ","Tariniasen mahantha","7653010772","2","https://api.mwater.co/v3/images/807151a4789c40d5aea89e9075f7c064"
+"Bangalore","Ibbaluru-174","2nd cross 3rd main","Individual HHs",NULL,"Ground ","Tenant  ","Mariyamma",NULL,"6",NULL
+"Bangalore","Ibbaluru-174","2nd main,2nd cross","MDUs","102","0","Tenant  ","Puttu swamy ","9686209096","2","https://api.mwater.co/v3/images/238d738fa76c4326955b1a638fbc20b8"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross ","MDUs","41/23","Ground ","Owner","Kushal","9980077276","4","https://api.mwater.co/v3/images/a342accfcbef4e9ea17e5eef4ee2313d"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross","MDUs","102","0","Tenant  ","Rani","974032717939","3","https://api.mwater.co/v3/images/6af1fd32e5364b27b00c7337b7226c42"
+"Bangalore","Ibbaluru-174","2nd cross 3rd main","Individual HHs",NULL,"Ground ","Tenant  ","Koushalya","7339285242","4","https://api.mwater.co/v3/images/8ecfa3fd879f4df2b1fea367b4d92f27"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross ","MDUs",NULL,"1","Owner","Gita","6362438502","4","https://api.mwater.co/v3/images/6208dfed521646849de68285a2aec101"
+"Bangalore","Ibbaluru-174","2nd cross 3rd main","Individual HHs",NULL,"1st floor ","Owner","Vijayakumar","8151977000","8",NULL
+"Bangalore","Ibbaluru-174","Iblur opposite to indhira canteen","PG","SKV royal","Ground floor ladies pg","Tenant  ","Manipal girls hostel ","+919916131222","100","https://api.mwater.co/v3/images/bb4ae8f975db4e5790564595c0cb2015"
+"Bangalore","Ibbaluru-174","Indira canteen near road","MDUs",NULL,"Ground floor ","Owner","Manjunath/ chakravathi","9845071101","26 Houses ","https://api.mwater.co/v3/images/2e0c1be4e2b34ec8bbc926644ff447e9"
+"Bangalore","Ibbaluru-174","Opposite to indhira canteen ","Provision Store","107","Ground floor ","Tenant  ","Chandrasekar ","8095580796","1","https://api.mwater.co/v3/images/7d5cf3fda03c441eb0f506841981c7b8"
+"Bangalore","Ibbaluru-174","Indira canteen road","Individual HHs","107","Ground floor ","Owner","Ganesh","9611557433","3","https://api.mwater.co/v3/images/6e10a17798f84ea880a414c0db63a872"
+"Bangalore","Ibbaluru-174","3rd main road ","Individual HHs","110","Ground floor ","Owner","Suresh","9035967465","4","https://api.mwater.co/v3/images/92545876e6734cd197d32f3064720386"
+"Bangalore","Ibbaluru-174","3rd main road","Others","20/21/22","Ground floor - Barbar shop ","Tenant  ","Shiva kumar","9964472858","1","https://api.mwater.co/v3/images/0d0a8ae1b8d047e1b3149247e8e4b3d4"
+"Bangalore","Ibbaluru-174","3rd main road ","Others","110","Ground floor ","Tenant  ","Giri","9980222864","1",NULL
+"Bangalore","Ibbaluru-174","1st Cross","Individual HHs","734","G","Owner","Anand","9108274948","5",NULL
+"Bangalore","Ibbaluru-174","Muniratnamma","Individual HHs",NULL,"1St floor ","Tenant  ","Shashikala","9980680503","5",NULL
+"Bangalore","Ibbaluru-174","2nd cross 3r main","Individual HHs",NULL,"Ground ","Tenant  ","Suryanarayana",NULL,"2",NULL
+"Bangalore","Ibbaluru-174","3rd main, 5th cross","MDUs",NULL,"3ed floor ","Tenant  ","Divya","8792144438","4",NULL
+"Bangalore","Ibbaluru-174","2nd main,2nd cross ","MDUs","41/23","1st floor ","Tenant  ","Kowssik","8754823655","2","https://api.mwater.co/v3/images/42ef44eb2ab54724b993bb4f64497077"
+"Bangalore","Ibbaluru-174","2nd main,2nd cross ","Individual HHs","101","Ground ","Tenant  ","Mangal","9326276854","3","https://api.mwater.co/v3/images/063df356f95042ffadbb03e441d53b8a"
+"Bangalore","Ibbaluru-174","2nd main,2nd cross ","Individual HHs","101","Ground","Tenant  ","Asha","9739358539","4","https://api.mwater.co/v3/images/7baf1efbe6b645ca910d5e376a91eaca"
+"Bangalore","Ibbaluru-174","2nd cross 3rd main","Individual HHs",NULL,"3rd floor ","Tenant  ","Promodini","9740134961","3",NULL
+"Bangalore","Ibbaluru-174","2nd cross 3rd main","Individual HHs",NULL,"4 th floor ","Tenant  ","Govinda","7349394862","2",NULL
+"Bangalore","Ibbaluru-174","2nd main, police station road","MDUs","Qp2","0","Tenant  ","Mohit","8917455506","1","https://api.mwater.co/v3/images/9aeb5016931f44c5ba7c0990d1dbb97e"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross ","Individual HHs, Others","21","Ground ","Owner","Narayana","8884895338","4","https://api.mwater.co/v3/images/ddfc0af32f3748b8945faa4647d6ac90"
+"Bangalore","Ibbaluru-174","3rd main, 2nd Cross ","MDUs","101","1","Owner","Muni venkatappa","9845807487","5","https://api.mwater.co/v3/images/eb7f716a5e8345448e9f0afd9c3d16e8"
+"Bangalore","Ibbaluru-174","2nd cross 3rd main","Individual HHs",NULL,"2nd  floor ","Tenant  ","Venkatesh","8971313803","4","https://api.mwater.co/v3/images/50de09c194d343979e2184bc6194948b"
+"Bangalore","Ibbaluru-174","2nd main,2nd cross ","MDUs","53/49","First floor","Tenant  ","Nagbushana","9945589847","5","https://api.mwater.co/v3/images/2a0f644b31e8470eabe932909a987dae"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross","MDUs","102","0","Tenant  ","Santosh somanna","9164474990","2","https://api.mwater.co/v3/images/31ec54a5bcae473498047a12cee4c17a"
+"Bangalore","Ibbaluru-174","3rd main, 2nd Cross ","MDUs","101","2","Tenant  ","Sundari","9353363822","6","https://api.mwater.co/v3/images/12efe4acf794498fab84393972392f13"
+"Bangalore","Ibbaluru-174","2nd main,2nd cross ","MDUs","53/49","Second floor","Tenant  ","Neelavathi","9900361921","2","https://api.mwater.co/v3/images/df2b4223e466478fa7f8936b05e8292c"
+"Bangalore","Ibbaluru-174","2nd cross 3rd main","Individual HHs",NULL,"3rd floor ","Tenant  ","Sudha","9535191218","3",NULL
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross ","MDUs","22","2nd floor ","Tenant  ","Pallavi","8431595683","3","https://api.mwater.co/v3/images/ff7e768baf93488a924e07ffa76174c5"
+"Bangalore","Ibbaluru-174","2nd main,2nd cross ","MDUs","22","1st","Tenant  ","Vijay kumar","9686115151","3","https://api.mwater.co/v3/images/72c3dd73020642dcb65c3a4f55d0e1a1"
+"Bangalore","Ibbaluru-174","3rd main, 2nd Cross ","MDUs","101","4","Tenant  ","Vijayalakshmi ","8088979408","3","https://api.mwater.co/v3/images/9e7d8d1ac28a4f3aab532747eb5a0c60"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross ","MDUs","22","2nd floor ","Tenant  ","Prabhakaran","9840052709","1","https://api.mwater.co/v3/images/789e5904e3ad44a6959c1efc2b9009bf"
+"Bangalore","Ibbaluru-174","2nd main,2nd cross ","MDUs","22","3rd floor","Tenant  ","Ankush","9988162109","2","https://api.mwater.co/v3/images/f256cb134b544856923221af7e6bdd8b"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross ","MDUs","22","3rd floor ","Tenant  ","Budhadham mahanti","9776965452","5",NULL
+"Bangalore","Ibbaluru-174","2nd main,2nd cross","MDUs","22","4th floor","Tenant  ","Smitha","9148216251","1","https://api.mwater.co/v3/images/bddec1ba39074604a877edcd29b5b9c9"
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross ","MDUs","22","4th floor ","Tenant  ","Vachna Ram","9982513878","1",NULL
+"Bangalore","Ibbaluru-174","2nd main, 2nd cross ","MDUs","22","4th floor ","Tenant  ","Nasir ","6296312854","3","https://api.mwater.co/v3/images/48ca605cd1d440b4a0999fd6b665e8ce"
+"Bangalore","Ibbaluru-174","2nd main,2nd cross ","MDUs","53/49","2nd floor","Tenant  ","Malayrajan","8144874645","6","https://api.mwater.co/v3/images/aa91ded78b00497bac44d7c6cf7fcd50"
+"Bangalore","Ibbaluru-174","3rd main, 2nd Cross ","MDUs","101","Ground ","Tenant  ","Sumith","9337538566","5","https://api.mwater.co/v3/images/8b3a4b9b77ae488a9f04c66e232d421d"
+"Bangalore","Ibbaluru-174","3rd main, 2nd cross","MDUs","102","0","Tenant  ","Manmath ","8658875340","6","https://api.mwater.co/v3/images/ad048a2326e84d289b00aa0bab34bfce"
+"Bangalore","Ibbaluru-174","5th Cross, 3rd main ","MDUs","/100","Ground floor ","Owner","Shekar R","9901148313","4","https://api.mwater.co/v3/images/badcd3a31b774d00b6eee4fa216a4024"
+"Bangalore","Ibbaluru-174","3rd main,5th cross","MDUs","101","Ground","Owner","Sirsamma","9886553897","3","https://api.mwater.co/v3/images/1211832eb9b24f30a87d54e6a785985e"
+"Bangalore","Ibbaluru-174","5th cross 3rd main","Individual HHs",NULL,"Ground ","Owner","Vinodhamma",NULL,"5","https://api.mwater.co/v3/images/7b9aa6ea717647dcbce2ec253b0fb44b"
+"Bangalore","Ibbaluru-174","3rd main,2nd cross ","MDUs","101","0","Tenant  ","Lipun","7326849213","5","https://api.mwater.co/v3/images/68fc795a1bf64576bf9c71662e79d741"
+"Bangalore","Ibbaluru-174","5th Cross. 3ed main","MDUs","/100","1st floor ","Tenant  ","Kiran","8050676733","4",NULL
+"Bangalore","Ibbaluru-174","5th Cross, 3rd main ","MDUs","/100","1st floor ","Tenant  ","Priya","6364749722","5",NULL
+"Bangalore","Ibbaluru-174","3rd name, 2nd cross","Individual HHs","101","0","Tenant  ","Jagdish Nayak","7349459324","6","https://api.mwater.co/v3/images/c1bae49931c84fec8da27e606c06bea3"
+"Bangalore","Ibbaluru-174","5th cross 3rd main","Individual HHs",NULL,"1St floor ","Tenant  ","Shadav","7819833626","2",NULL
+"Bangalore","Ibbaluru-174","3rd main 5th cross ","MDUs","101","1st floor ","Tenant  ","Roopa","8970617857","2","https://api.mwater.co/v3/images/94b2488f87fc498c84d0f635e868faca"
+"Bangalore","Ibbaluru-174","5th Cross, 3rd main ","MDUs","/100","2nd floor ","Tenant  ","Mallesh","9740943104","4",NULL
+"Bangalore","Ibbaluru-174","2nd main, 5th cross ","MDUs","266","1st floor ","Tenant  ","Tiken Basnit","7892419038","2",NULL
+"Bangalore","Ibbaluru-174","5th cross 3rd main","Individual HHs",NULL,"1st floor ","Tenant  ","Lokeshwari prasad","8438523268","2",NULL
+"Bangalore","Ibbaluru-174","3rd main,5th cross","MDUs",NULL,"2nd floor","Tenant  ","Arun","8317458058","3","https://api.mwater.co/v3/images/e97e2341a61247549805882ccbf6c076"
+"Bangalore","Ibbaluru-174","5th Cross, 3rd main","MDUs","/100","3rd floor ","Tenant  ","Anand","8123282676","4",NULL
+"Bangalore","Ibbaluru-174","5th cross 3rd main","Individual HHs",NULL,"2nd floor ","Tenant  ","Subham","8378966469","2",NULL
+"Bangalore","Ibbaluru-174","2nd main, 5th cross ","MDUs","266","2nd floor ","Tenant  ","Hanuma gowda","8310329858","5","https://api.mwater.co/v3/images/bccd58489dc84a98b494cc2ad6bacc61"
+"Bangalore","Ibbaluru-174","3rd main,5th cross","MDUs","183","First floor","Owner","Shantamma","8095721871","1","https://api.mwater.co/v3/images/ef249440275844b8af996e89ae721179"
+"Bangalore","Ibbaluru-174","3rd main, 5th cross","Individual HHs","102","0","Owner","Motoappa","9980807662","5","https://api.mwater.co/v3/images/24581c4e87e44171af8f46e8a7253271"
+"Bangalore","Ibbaluru-174","3rd main,5th cross","MDUs","183","Ground","Tenant  ","Deepak","8971412081","4",NULL
+"Bangalore","Ibbaluru-174","3rd main, 5th cross","MDUs","/100","4th floor ","Tenant  ","Nirmalaya das","7978349456","4",NULL
+"Bangalore","Ibbaluru-174","2nd main, 5th cross ","MDUs","266","3rd floor ","Tenant  ","Anuj Sharma ","8762077909","2","https://api.mwater.co/v3/images/3fde34d11e784638ae946bf2a07829fb"
+"Bangalore","Ibbaluru-174","5th cross 3rd main","Individual HHs",NULL,"Ground ","Tenant  ","Ranjith","6370656672","4","https://api.mwater.co/v3/images/dc25456c8174422bb29a059676554807"
+"Bangalore","Ibbaluru-174","2nd main, 5th cross ","MDUs","266","Ground ","Owner","Padmavathi ","7975057438","4","https://api.mwater.co/v3/images/5de08cf657d2440180a38b273c359a6f"
+"Bangalore","Ibbaluru-174","5th cross 3rd main","Individual HHs",NULL,"Ground ","Tenant  ","Sarona","7501149413","2",NULL
+"Bangalore","Ibbaluru-174","5th Cross, 3rd main","MDUs","101","Ground floor ","Owner","Jayamma","8147323816","5","https://api.mwater.co/v3/images/427cb83b7938475aad38bed09a237232"
+"Bangalore","Ibbaluru-174","5th cross 3rd main","Individual HHs",NULL,"Ground ","Tenant  ","Manthu","8431458101","2",NULL
+"Bangalore","Ibbaluru-174","6th main,3rd cross","MDUs","101","Ground ","Tenant  ","Rajkumar ","9082901700","1","https://api.mwater.co/v3/images/268196a5b249446fbaaf3f095dde9d13"
+"Bangalore","Ibbaluru-174","3rd main, 5th cross","MDUs","101","Ground floor","Tenant  ","Baby","9901479673","5","https://api.mwater.co/v3/images/e1004e3be5744fcf9aa1fe7e0f67c8b5"
+"Bangalore","Ibbaluru-174","3rd main, 2nd Cross ","MDUs","101","Ground ","Owner","Suresh","7829179972","4","https://api.mwater.co/v3/images/aab8767b13694e6cb7d20ed3b93ac23d"
+"Bangalore","Ibbaluru-174","3rd main, 5th cross ","MDUs","201","1st floor ","Tenant  ","Susmitha das","9932880758","5","https://api.mwater.co/v3/images/b45f366dbd5944519cc0de4e1769c0f0"
+"Bangalore","Ibbaluru-174","5th cross 3rd main","Others",NULL,"Ground ","Tenant  ","Mohan","7259792196","1 cutting shop ","https://api.mwater.co/v3/images/b557d2ca457f4443a5c8eff171077aab"
+"Bangalore","Ibbaluru-174","6th main, 3rd cross","MDUs","101","0","Tenant  ","Meghraj","7022533890","3","https://api.mwater.co/v3/images/78e5e73acbb4489fba04fa9984c24821"
+"Bangalore","Ibbaluru-174","5th cross 3rd main","Individual HHs",NULL,"1st floor ","Tenant  ","Sumithadas","9126768564","3","https://api.mwater.co/v3/images/0add225dfb9f4e1ba3038d4c6e374132"
+"Bangalore","Ibbaluru-174","3rd main, 5th cross ","MDUs","301","3rd floor ","Tenant  ","Usha","9864679784","3","https://api.mwater.co/v3/images/e0f63593105a4a2d8a6aa699e72e5cf1"
+"Bangalore","Ibbaluru-174","3rd main 5th cross ","MDUs","183","4","Tenant  ","Sanjith","9914783915","1",NULL
+"Bangalore","Ibbaluru-174","5th cross 3rd main","Individual HHs",NULL,"Ground ","Tenant  ","Mohamdakaiman","9591387031","4",NULL
+"Bangalore","Ibbaluru-174","3rd main,5th cross","MDUs","101","1","Tenant  ","Srimanth","8390073146","4","https://api.mwater.co/v3/images/a4c715b8c59c45478d2e86119311e4a5"

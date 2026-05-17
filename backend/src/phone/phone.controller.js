@@ -543,36 +543,19 @@ const getUnmappedPhoneNumbers =
 
       // =============================
       // GET SURVEY DATA
+      // EXTERNAL TABLE USING RAW SQL
       // =============================
 
       const citizens =
-        await prisma.survey.findMany({
+        await prisma.$queryRaw`
 
-          where: {
+          SELECT DISTINCT
+            "personName",
+            "contactNumber"
+          FROM "survey_attribute_specific"
+          WHERE "contactNumber" IS NOT NULL
 
-            contactNumber: {
-              not: null,
-            },
-
-          },
-
-          select: {
-
-            personName: true,
-
-            contactNumber: true,
-
-          },
-
-          distinct: [
-            "contactNumber",
-          ],
-
-          orderBy: {
-            id: "desc",
-          },
-
-        });
+        `;
 
 
 
@@ -689,7 +672,6 @@ const getUnmappedPhoneNumbers =
     }
 
   };
-
 
 
 
