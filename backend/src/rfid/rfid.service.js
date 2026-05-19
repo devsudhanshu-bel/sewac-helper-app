@@ -159,12 +159,22 @@ const createRFIDService =
 
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | GENERATE SLNO
+    |--------------------------------------------------------------------------
+    */
     const nextSLNO =
       await generateNextSLNO();
 
 
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | CREATE RFID
+    |--------------------------------------------------------------------------
+    */
     const newRFID =
       await prisma.rFIDMapping.create({
 
@@ -232,6 +242,12 @@ const getAllRFIDMappingsService =
 |--------------------------------------------------------------------------
 | GET UNMAPPED RFIDS
 |--------------------------------------------------------------------------
+|
+| RFID IS UNMAPPED ONLY IF:
+| - phoneNumber = null
+| - wasteType = null
+|
+|--------------------------------------------------------------------------
 */
 const getUnmappedRFIDsService =
   async () => {
@@ -239,7 +255,19 @@ const getUnmappedRFIDsService =
     return prisma.rFIDMapping.findMany({
 
       where: {
-        phoneNumber: null,
+
+        AND: [
+
+          {
+            phoneNumber: null,
+          },
+
+          {
+            wasteType: null,
+          },
+
+        ],
+
       },
 
       select: {
@@ -248,6 +276,8 @@ const getUnmappedRFIDsService =
 
         rfid: true,
 
+        phoneNumber: true,
+
         wasteType: true,
 
         createdAt: true,
@@ -255,7 +285,7 @@ const getUnmappedRFIDsService =
       },
 
       orderBy: {
-        slno: "desc",
+        slno: "asc",
       },
 
     });
@@ -283,6 +313,7 @@ const getUnmappedRFIDsService =
 | CASE 4:
 | LATER UPDATE
 |
+|--------------------------------------------------------------------------
 */
 const mapRFIDService =
   async (
@@ -344,7 +375,7 @@ const mapRFIDService =
 
     /*
     |--------------------------------------------------------------------------
-    | RFID ALREADY USED BY ANOTHER CITIZEN
+    | RFID ALREADY USED
     |--------------------------------------------------------------------------
     */
     if (
@@ -366,13 +397,8 @@ const mapRFIDService =
 
     /*
     |--------------------------------------------------------------------------
-    | CHECK IF SAME WASTE TYPE EXISTS
+    | CHECK SAME WASTE TYPE
     |--------------------------------------------------------------------------
-    |
-    | EXAMPLE:
-    | Citizen already has DRY
-    | Cannot assign another DRY
-    |
     */
     const existingWasteType =
       await prisma.rFIDMapping.findFirst({
@@ -432,11 +458,8 @@ const mapRFIDService =
 
     /*
     |--------------------------------------------------------------------------
-    | AUTO MASTER DB SYNC
+    | MASTER DB SYNC
     |--------------------------------------------------------------------------
-    |
-    | EVEN IF ONLY ONE RFID EXISTS
-    |
     */
     await syncMasterCitizenData(
       phoneNumber
@@ -447,7 +470,7 @@ const mapRFIDService =
 
     /*
     |--------------------------------------------------------------------------
-    | GET CURRENT CITIZEN RFIDS
+    | GET CURRENT RFIDS
     |--------------------------------------------------------------------------
     */
     const citizenRFIDs =
@@ -497,6 +520,9 @@ const mapRFIDService =
 
         wetRFID:
           wetRFID || null,
+
+        isFullyMapped:
+          !!dryRFID && !!wetRFID,
 
       },
 
@@ -591,6 +617,11 @@ const getCitizenRFIDsService =
 
     rfids.forEach((item) => {
 
+      /*
+      |--------------------------------------------------------------------------
+      | DRY
+      |--------------------------------------------------------------------------
+      */
       if (
         item.wasteType === "DRY"
       ) {
@@ -610,6 +641,11 @@ const getCitizenRFIDsService =
 
 
 
+      /*
+      |--------------------------------------------------------------------------
+      | WET
+      |--------------------------------------------------------------------------
+      */
       if (
         item.wasteType === "WET"
       ) {
