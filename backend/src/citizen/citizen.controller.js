@@ -1,9 +1,15 @@
 const {
+
   getCitizenByPhoneService,
+
   searchCitizenByNameService,
+
   getAllCitizenPhoneNumbersService,
+
   getAllCitizenNamesService,
+
   getUnmappedCitizensService,
+
 } = require("./citizen.service");
 
 
@@ -12,7 +18,7 @@ const {
 
 /*
 |--------------------------------------------------------------------------
-| Get Citizen By Phone Number
+| GET CITIZEN BY PHONE NUMBER
 |--------------------------------------------------------------------------
 | GET /api/v1/citizen/phone/:phoneNumber
 |--------------------------------------------------------------------------
@@ -29,10 +35,12 @@ const getCitizenByPhone = async (
 
 
 
-    // =============================
-    // VALIDATION
-    // =============================
 
+    /*
+    |--------------------------------------------------------------------------
+    | VALIDATION
+    |--------------------------------------------------------------------------
+    */
     if (!phoneNumber) {
 
       return res.status(400).json({
@@ -48,10 +56,12 @@ const getCitizenByPhone = async (
 
 
 
-    // =============================
-    // FETCH CITIZEN
-    // =============================
 
+    /*
+    |--------------------------------------------------------------------------
+    | FETCH CITIZEN
+    |--------------------------------------------------------------------------
+    */
     const citizen =
       await getCitizenByPhoneService(
         phoneNumber
@@ -59,10 +69,12 @@ const getCitizenByPhone = async (
 
 
 
-    // =============================
-    // NOT FOUND
-    // =============================
 
+    /*
+    |--------------------------------------------------------------------------
+    | NOT FOUND
+    |--------------------------------------------------------------------------
+    */
     if (!citizen) {
 
       return res.status(404).json({
@@ -78,15 +90,18 @@ const getCitizenByPhone = async (
 
 
 
-    // =============================
-    // SUCCESS
-    // =============================
 
+    /*
+    |--------------------------------------------------------------------------
+    | SUCCESS
+    |--------------------------------------------------------------------------
+    */
     return res.status(200).json({
 
       success: true,
 
-      data: citizen,
+      data:
+        citizen,
 
     });
 
@@ -99,12 +114,12 @@ const getCitizenByPhone = async (
 
 
 
+
     return res.status(500).json({
 
       success: false,
 
       message:
-        error.message ||
         "Internal Server Error",
 
     });
@@ -119,7 +134,7 @@ const getCitizenByPhone = async (
 
 /*
 |--------------------------------------------------------------------------
-| Search Citizen By Name
+| SEARCH CITIZEN BY NAME
 |--------------------------------------------------------------------------
 | GET /api/v1/citizen/name/:citizenName
 |--------------------------------------------------------------------------
@@ -136,10 +151,12 @@ const searchCitizenByName = async (
 
 
 
-    // =============================
-    // VALIDATION
-    // =============================
 
+    /*
+    |--------------------------------------------------------------------------
+    | VALIDATION
+    |--------------------------------------------------------------------------
+    */
     if (!citizenName) {
 
       return res.status(400).json({
@@ -155,10 +172,12 @@ const searchCitizenByName = async (
 
 
 
-    // =============================
-    // SEARCH
-    // =============================
 
+    /*
+    |--------------------------------------------------------------------------
+    | SEARCH
+    |--------------------------------------------------------------------------
+    */
     const citizens =
       await searchCitizenByNameService(
         citizenName
@@ -166,13 +185,18 @@ const searchCitizenByName = async (
 
 
 
-    // =============================
-    // NOT FOUND
-    // =============================
 
+    /*
+    |--------------------------------------------------------------------------
+    | NOT FOUND
+    |--------------------------------------------------------------------------
+    */
     if (
+
       !citizens ||
+
       citizens.length === 0
+
     ) {
 
       return res.status(404).json({
@@ -188,17 +212,21 @@ const searchCitizenByName = async (
 
 
 
-    // =============================
-    // SUCCESS
-    // =============================
 
+    /*
+    |--------------------------------------------------------------------------
+    | SUCCESS
+    |--------------------------------------------------------------------------
+    */
     return res.status(200).json({
 
       success: true,
 
-      count: citizens.length,
+      count:
+        citizens.length,
 
-      data: citizens,
+      data:
+        citizens,
 
     });
 
@@ -211,12 +239,12 @@ const searchCitizenByName = async (
 
 
 
+
     return res.status(500).json({
 
       success: false,
 
       message:
-        error.message ||
         "Internal Server Error",
 
     });
@@ -231,9 +259,19 @@ const searchCitizenByName = async (
 
 /*
 |--------------------------------------------------------------------------
-| Get All Citizen Phone Numbers
+| GET ALL CITIZEN PHONE NUMBERS
 |--------------------------------------------------------------------------
 | GET /api/v1/citizen/phones
+|--------------------------------------------------------------------------
+|
+| SHOWS:
+| - Citizens with NO RFID
+| - Citizens with ONLY DRY RFID
+| - Citizens with ONLY WET RFID
+|
+| HIDES:
+| - Citizens with BOTH DRY + WET RFIDs
+|
 |--------------------------------------------------------------------------
 */
 const getAllCitizenPhoneNumbers =
@@ -243,6 +281,7 @@ const getAllCitizenPhoneNumbers =
 
       const phoneNumbers =
         await getAllCitizenPhoneNumbersService();
+
 
 
 
@@ -267,12 +306,12 @@ const getAllCitizenPhoneNumbers =
 
 
 
+
       return res.status(500).json({
 
         success: false,
 
         message:
-          error.message ||
           "Internal Server Error",
 
       });
@@ -287,9 +326,19 @@ const getAllCitizenPhoneNumbers =
 
 /*
 |--------------------------------------------------------------------------
-| Get All Citizen Names
+| GET ALL CITIZEN NAMES
 |--------------------------------------------------------------------------
 | GET /api/v1/citizen/names
+|--------------------------------------------------------------------------
+|
+| SHOWS:
+| - Citizens with NO RFID
+| - Citizens with ONLY DRY RFID
+| - Citizens with ONLY WET RFID
+|
+| HIDES:
+| - Citizens with BOTH DRY + WET RFIDs
+|
 |--------------------------------------------------------------------------
 */
 const getAllCitizenNames =
@@ -299,6 +348,7 @@ const getAllCitizenNames =
 
       const citizenNames =
         await getAllCitizenNamesService();
+
 
 
 
@@ -323,12 +373,12 @@ const getAllCitizenNames =
 
 
 
+
       return res.status(500).json({
 
         success: false,
 
         message:
-          error.message ||
           "Internal Server Error",
 
       });
@@ -343,9 +393,19 @@ const getAllCitizenNames =
 
 /*
 |--------------------------------------------------------------------------
-| Get Unmapped Citizens
+| GET UNMAPPED CITIZENS
 |--------------------------------------------------------------------------
 | GET /api/v1/citizen/unmapped
+|--------------------------------------------------------------------------
+|
+| SHOWS:
+| - Citizens with NO RFID
+| - Citizens with ONLY DRY RFID
+| - Citizens with ONLY WET RFID
+|
+| HIDES:
+| - Citizens with BOTH DRY + WET RFIDs
+|
 |--------------------------------------------------------------------------
 */
 const getUnmappedCitizens =
@@ -355,6 +415,7 @@ const getUnmappedCitizens =
 
       const citizens =
         await getUnmappedCitizensService();
+
 
 
 
@@ -379,12 +440,12 @@ const getUnmappedCitizens =
 
 
 
+
       return res.status(500).json({
 
         success: false,
 
         message:
-          error.message ||
           "Internal Server Error",
 
       });

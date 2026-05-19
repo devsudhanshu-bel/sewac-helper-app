@@ -27,15 +27,63 @@ const {
 
 /*
 |--------------------------------------------------------------------------
-| Get Citizen By Phone Number
+| HEALTH CHECK
+|--------------------------------------------------------------------------
+| GET /api/v1/citizen/health
+|--------------------------------------------------------------------------
+| Useful For:
+| - Render
+| - Railway
+| - UptimeRobot
+|--------------------------------------------------------------------------
+*/
+router.get(
+
+  "/health",
+
+  (req, res) => {
+
+    return res.status(200).json({
+
+      success: true,
+
+      message:
+        "Citizen service is running",
+
+      timestamp:
+        new Date(),
+
+    });
+
+  }
+
+);
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| GET CITIZEN BY PHONE NUMBER
 |--------------------------------------------------------------------------
 | GET /api/v1/citizen/phone/:phoneNumber
 |--------------------------------------------------------------------------
+|
+| RETURNS:
+| - Full Citizen Details
+| - Survey Data
+|
+|--------------------------------------------------------------------------
 */
 router.get(
+
   "/phone/:phoneNumber",
+
   verifyToken,
+
   getCitizenByPhone
+
 );
 
 
@@ -44,15 +92,29 @@ router.get(
 
 /*
 |--------------------------------------------------------------------------
-| Get All Citizen Phone Numbers
+| GET ALL CITIZEN PHONE NUMBERS
 |--------------------------------------------------------------------------
 | GET /api/v1/citizen/phones
 |--------------------------------------------------------------------------
+|
+| SHOWS:
+| - Citizens with NO RFID
+| - Citizens with ONLY DRY RFID
+| - Citizens with ONLY WET RFID
+|
+| HIDES:
+| - Citizens with BOTH DRY + WET RFIDs
+|
+|--------------------------------------------------------------------------
 */
 router.get(
+
   "/phones",
+
   verifyToken,
+
   getAllCitizenPhoneNumbers
+
 );
 
 
@@ -61,15 +123,29 @@ router.get(
 
 /*
 |--------------------------------------------------------------------------
-| Get All Citizen Names
+| GET ALL CITIZEN NAMES
 |--------------------------------------------------------------------------
 | GET /api/v1/citizen/names
 |--------------------------------------------------------------------------
+|
+| SHOWS:
+| - Citizens with NO RFID
+| - Citizens with ONLY DRY RFID
+| - Citizens with ONLY WET RFID
+|
+| HIDES:
+| - Citizens with BOTH DRY + WET RFIDs
+|
+|--------------------------------------------------------------------------
 */
 router.get(
+
   "/names",
+
   verifyToken,
+
   getAllCitizenNames
+
 );
 
 
@@ -78,15 +154,33 @@ router.get(
 
 /*
 |--------------------------------------------------------------------------
-| Get Unmapped Citizens
+| GET UNMAPPED CITIZENS
 |--------------------------------------------------------------------------
 | GET /api/v1/citizen/unmapped
 |--------------------------------------------------------------------------
+|
+| PARTIAL MAPPING ARCHITECTURE
+|--------------------------------------------------------------------------
+|
+| SHOWS:
+| - No RFID
+| - Only DRY RFID
+| - Only WET RFID
+|
+| HIDES:
+| - Fully mapped citizens
+|   (Both DRY + WET RFIDs)
+|
+|--------------------------------------------------------------------------
 */
 router.get(
+
   "/unmapped",
+
   verifyToken,
+
   getUnmappedCitizens
+
 );
 
 
@@ -95,15 +189,24 @@ router.get(
 
 /*
 |--------------------------------------------------------------------------
-| Search Citizen By Name
+| SEARCH CITIZEN BY NAME
 |--------------------------------------------------------------------------
 | GET /api/v1/citizen/name/:citizenName
 |--------------------------------------------------------------------------
+|
+| EXAMPLE:
+| /api/v1/citizen/name/Ramesh
+|
+|--------------------------------------------------------------------------
 */
 router.get(
+
   "/name/:citizenName",
+
   verifyToken,
+
   searchCitizenByName
+
 );
 
 

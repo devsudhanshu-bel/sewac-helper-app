@@ -1,4 +1,5 @@
-const { prisma } = require("../config/db");
+const { prisma } =
+  require("../config/db");
 
 
 
@@ -6,193 +7,340 @@ const { prisma } = require("../config/db");
 
 /*
 |--------------------------------------------------------------------------
-| Map Phone Number To RFID
+| MAP PHONE NUMBER TO RFID
+|--------------------------------------------------------------------------
+|
+| SUPPORTS:
+|
+| CASE 1:
+| ONLY DRY
+|
+| CASE 2:
+| ONLY WET
+|
+| CASE 3:
+| BOTH
+|
+| CASE 4:
+| LATER SECOND RFID
+|
 |--------------------------------------------------------------------------
 */
-const mapPhoneNumberService = async (
-  slno,
-  phoneNumber
-) => {
+const mapPhoneNumberService =
+  async (
 
-  // =============================
-  // CHECK IF SLNO EXISTS
-  // =============================
+    slno,
 
-  const existingRecord =
-    await prisma.rFIDMapping.findUnique({
+    phoneNumber
 
-      where: {
-        slno,
-      },
+  ) => {
 
-    });
+    /*
+    |--------------------------------------------------------------------------
+    | CHECK SLNO EXISTS
+    |--------------------------------------------------------------------------
+    */
+    const existingRecord =
+      await prisma.rFIDMapping.findUnique({
 
+        where: {
+          slno,
+        },
 
-
-  if (!existingRecord) {
-
-    throw new Error(
-      "SLNO not found"
-    );
-
-  }
+      });
 
 
 
-  // =============================
-  // CHECK IF RFID ALREADY MAPPED
-  // =============================
 
-  if (
-    existingRecord.phoneNumber
-  ) {
+    if (!existingRecord) {
 
-    throw new Error(
-      "This RFID is already mapped"
-    );
-
-  }
-
-
-
-  // =============================
-  // GET EXISTING PHONE MAPPINGS
-  // =============================
-
-  const existingPhoneMappings =
-    await prisma.rFIDMapping.findMany({
-
-      where: {
-        phoneNumber,
-      },
-
-      select: {
-        wasteType: true,
-      },
-
-    });
-
-
-
-  let hasDry = false;
-
-  let hasWet = false;
-
-
-
-  existingPhoneMappings.forEach(
-    (item) => {
-
-      if (
-        item.wasteType
-          ?.toLowerCase() ===
-        "dry"
-      ) {
-
-        hasDry = true;
-
-      }
-
-
-
-      if (
-        item.wasteType
-          ?.toLowerCase() ===
-        "wet"
-      ) {
-
-        hasWet = true;
-
-      }
+      throw new Error(
+        "SLNO not found"
+      );
 
     }
-  );
 
 
 
-  // =============================
-  // BLOCK IF BOTH EXIST
-  // =============================
 
-  if (
-    hasDry &&
-    hasWet
-  ) {
+    /*
+    |--------------------------------------------------------------------------
+    | RFID ALREADY USED
+    |--------------------------------------------------------------------------
+    */
+    if (
 
-    throw new Error(
-      "Phone number already mapped for both Dry and Wet waste"
+      existingRecord.phoneNumber &&
+
+      existingRecord.phoneNumber !==
+      phoneNumber
+
+    ) {
+
+      throw new Error(
+        "This RFID is already mapped"
+      );
+
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | GET ALL EXISTING PHONE MAPPINGS
+    |--------------------------------------------------------------------------
+    */
+    const existingPhoneMappings =
+      await prisma.rFIDMapping.findMany({
+
+        where: {
+          phoneNumber,
+        },
+
+        select: {
+
+          wasteType: true,
+
+          slno: true,
+
+        },
+
+      });
+
+
+
+
+    let hasDry = false;
+
+    let hasWet = false;
+
+
+
+
+
+    existingPhoneMappings.forEach(
+      (item) => {
+
+        /*
+        |--------------------------------------------------------------------------
+        | DRY
+        |--------------------------------------------------------------------------
+        */
+        if (
+
+          item.wasteType
+            ?.toLowerCase() ===
+          "dry"
+
+        ) {
+
+          hasDry = true;
+
+        }
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | WET
+        |--------------------------------------------------------------------------
+        */
+        if (
+
+          item.wasteType
+            ?.toLowerCase() ===
+          "wet"
+
+        ) {
+
+          hasWet = true;
+
+        }
+
+      }
     );
 
-  }
 
 
 
-  // =============================
-  // BLOCK DUPLICATE DRY
-  // =============================
+    /*
+    |--------------------------------------------------------------------------
+    | BLOCK DUPLICATE DRY
+    |--------------------------------------------------------------------------
+    */
+    if (
 
-  if (
+      existingRecord.wasteType
+        ?.toLowerCase() ===
+        "dry" &&
 
-    existingRecord.wasteType
-      ?.toLowerCase() ===
-      "dry" &&
+      hasDry
 
-    hasDry
+    ) {
 
-  ) {
+      throw new Error(
+        "Phone number already mapped to a Dry RFID"
+      );
 
-    throw new Error(
-      "Phone number already mapped to a Dry RFID"
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | BLOCK DUPLICATE WET
+    |--------------------------------------------------------------------------
+    */
+    if (
+
+      existingRecord.wasteType
+        ?.toLowerCase() ===
+        "wet" &&
+
+      hasWet
+
+    ) {
+
+      throw new Error(
+        "Phone number already mapped to a Wet RFID"
+      );
+
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE PHONE NUMBER
+    |--------------------------------------------------------------------------
+    */
+    const updatedRecord =
+      await prisma.rFIDMapping.update({
+
+        where: {
+          slno,
+        },
+
+        data: {
+          phoneNumber,
+        },
+
+      });
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | GET CURRENT STATUS
+    |--------------------------------------------------------------------------
+    */
+    const updatedMappings =
+      await prisma.rFIDMapping.findMany({
+
+        where: {
+          phoneNumber,
+        },
+
+      });
+
+
+
+
+    let dryRFID = null;
+
+    let wetRFID = null;
+
+
+
+
+
+    updatedMappings.forEach(
+      (item) => {
+
+        /*
+        |--------------------------------------------------------------------------
+        | DRY
+        |--------------------------------------------------------------------------
+        */
+        if (
+          item.wasteType === "DRY"
+        ) {
+
+          dryRFID = {
+
+            slno:
+              item.slno,
+
+            rfid:
+              item.rfid,
+
+          };
+
+        }
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | WET
+        |--------------------------------------------------------------------------
+        */
+        if (
+          item.wasteType === "WET"
+        ) {
+
+          wetRFID = {
+
+            slno:
+              item.slno,
+
+            rfid:
+              item.rfid,
+
+          };
+
+        }
+
+      }
     );
 
-  }
 
 
 
-  // =============================
-  // BLOCK DUPLICATE WET
-  // =============================
+    /*
+    |--------------------------------------------------------------------------
+    | RESPONSE
+    |--------------------------------------------------------------------------
+    */
+    return {
 
-  if (
+      success: true,
 
-    existingRecord.wasteType
-      ?.toLowerCase() ===
-      "wet" &&
-
-    hasWet
-
-  ) {
-
-    throw new Error(
-      "Phone number already mapped to a Wet RFID"
-    );
-
-  }
-
-
-
-  // =============================
-  // UPDATE PHONE NUMBER
-  // =============================
-
-  const updatedRecord =
-    await prisma.rFIDMapping.update({
-
-      where: {
-        slno,
-      },
+      message:
+        "Phone number mapped successfully",
 
       data: {
+
         phoneNumber,
+
+        dryRFID,
+
+        wetRFID,
+
+        isFullyMapped:
+          !!dryRFID && !!wetRFID,
+
       },
 
-    });
+    };
 
-
-
-  return updatedRecord;
-
-};
+  };
 
 
 
@@ -200,7 +348,7 @@ const mapPhoneNumberService = async (
 
 /*
 |--------------------------------------------------------------------------
-| Get Phone Mapping By SLNO
+| GET PHONE MAPPING BY SLNO
 |--------------------------------------------------------------------------
 */
 const getPhoneMappingBySLNOService =
@@ -217,6 +365,7 @@ const getPhoneMappingBySLNOService =
 
 
 
+
     if (!record) {
 
       throw new Error(
@@ -224,6 +373,7 @@ const getPhoneMappingBySLNOService =
       );
 
     }
+
 
 
 
@@ -237,7 +387,7 @@ const getPhoneMappingBySLNOService =
 
 /*
 |--------------------------------------------------------------------------
-| Get All Phone Mappings
+| GET ALL PHONE MAPPINGS
 |--------------------------------------------------------------------------
 */
 const getAllPhoneMappingsService =
@@ -254,6 +404,7 @@ const getAllPhoneMappingsService =
 
 
 
+
     return records;
 
   };
@@ -264,7 +415,7 @@ const getAllPhoneMappingsService =
 
 /*
 |--------------------------------------------------------------------------
-| Get Only Mapped Phone Records
+| GET ONLY MAPPED PHONE RECORDS
 |--------------------------------------------------------------------------
 */
 const getMappedPhoneRecordsService =
@@ -289,6 +440,7 @@ const getMappedPhoneRecordsService =
 
 
 
+
     return records;
 
   };
@@ -299,16 +451,26 @@ const getMappedPhoneRecordsService =
 
 /*
 |--------------------------------------------------------------------------
-| Get Available / Unmapped Phone Numbers
+| GET AVAILABLE / UNMAPPED PHONE NUMBERS
+|--------------------------------------------------------------------------
+|
+| SHOWS:
+| - NO RFID
+| - ONLY DRY
+| - ONLY WET
+|
+| HIDES:
+| - BOTH DRY + WET
 |--------------------------------------------------------------------------
 */
 const getUnmappedPhoneNumbersService =
   async () => {
 
-    // =============================
-    // GET ALL RFID MAPPINGS
-    // =============================
-
+    /*
+    |--------------------------------------------------------------------------
+    | GET ALL RFID MAPPINGS
+    |--------------------------------------------------------------------------
+    */
     const mappings =
       await prisma.rFIDMapping.findMany({
 
@@ -332,11 +494,14 @@ const getUnmappedPhoneNumbersService =
 
 
 
-    // =============================
-    // TRACK DRY/WET STATUS
-    // =============================
 
+    /*
+    |--------------------------------------------------------------------------
+    | TRACK MAPPING STATUS
+    |--------------------------------------------------------------------------
+    */
     const tracker = {};
+
 
 
 
@@ -358,11 +523,18 @@ const getUnmappedPhoneNumbersService =
 
 
 
-      // DRY
+
+      /*
+      |--------------------------------------------------------------------------
+      | DRY
+      |--------------------------------------------------------------------------
+      */
       if (
+
         item.wasteType
           ?.toLowerCase() ===
         "dry"
+
       ) {
 
         tracker[
@@ -373,11 +545,18 @@ const getUnmappedPhoneNumbersService =
 
 
 
-      // WET
+
+      /*
+      |--------------------------------------------------------------------------
+      | WET
+      |--------------------------------------------------------------------------
+      */
       if (
+
         item.wasteType
           ?.toLowerCase() ===
         "wet"
+
       ) {
 
         tracker[
@@ -390,11 +569,12 @@ const getUnmappedPhoneNumbersService =
 
 
 
-    // =============================
-    // GET ALL SURVEY CITIZENS
-    // EXTERNAL TABLE USING RAW SQL
-    // =============================
 
+    /*
+    |--------------------------------------------------------------------------
+    | GET ALL SURVEY CITIZENS
+    |--------------------------------------------------------------------------
+    */
     const citizens =
       await prisma.$queryRaw`
 
@@ -408,10 +588,12 @@ const getUnmappedPhoneNumbersService =
 
 
 
-    // =============================
-    // FILTER CITIZENS
-    // =============================
 
+    /*
+    |--------------------------------------------------------------------------
+    | FILTER INCOMPLETE CITIZENS
+    |--------------------------------------------------------------------------
+    */
     const filteredCitizens =
       citizens.filter(
         (citizen) => {
@@ -423,14 +605,25 @@ const getUnmappedPhoneNumbersService =
 
 
 
-          // NEVER MAPPED
+          /*
+          |--------------------------------------------------------------------------
+          | NEVER MAPPED
+          |--------------------------------------------------------------------------
+          */
           if (!status) {
+
             return true;
+
           }
 
 
 
-          // ONLY ONE EXISTS
+
+          /*
+          |--------------------------------------------------------------------------
+          | ONLY ONE RFID EXISTS
+          |--------------------------------------------------------------------------
+          */
           if (
 
             (
@@ -451,7 +644,12 @@ const getUnmappedPhoneNumbersService =
 
 
 
-          // BOTH EXIST
+
+          /*
+          |--------------------------------------------------------------------------
+          | BOTH EXIST
+          |--------------------------------------------------------------------------
+          */
           return false;
 
         }
@@ -459,28 +657,26 @@ const getUnmappedPhoneNumbersService =
 
 
 
-    // =============================
-    // FORMAT RESPONSE
-    // =============================
 
-    const formattedData =
-      filteredCitizens.map(
-        (citizen) => ({
+    /*
+    |--------------------------------------------------------------------------
+    | RESPONSE
+    |--------------------------------------------------------------------------
+    */
+    return filteredCitizens.map(
+      (citizen) => ({
 
-          citizenName:
-            citizen.personName,
+        citizenName:
+          citizen.personName,
 
-          phoneNumber:
-            citizen.contactNumber,
+        phoneNumber:
+          citizen.contactNumber,
 
-        })
-      );
-
-
-
-    return formattedData;
+      })
+    );
 
   };
+
 
 
 

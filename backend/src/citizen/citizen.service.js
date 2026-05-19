@@ -10,7 +10,7 @@ const prisma =
 
 /*
 |--------------------------------------------------------------------------
-| Get Citizen By Phone Number
+| GET CITIZEN BY PHONE NUMBER
 |--------------------------------------------------------------------------
 */
 const getCitizenByPhoneService =
@@ -30,25 +30,32 @@ const getCitizenByPhoneService =
 
 
 
+
       const citizen =
         citizens[0];
 
 
 
-      // =============================
-      // NOT FOUND
-      // =============================
 
+      /*
+      |--------------------------------------------------------------------------
+      | NOT FOUND
+      |--------------------------------------------------------------------------
+      */
       if (!citizen) {
+
         return null;
+
       }
 
 
 
-      // =============================
-      // RESPONSE
-      // =============================
 
+      /*
+      |--------------------------------------------------------------------------
+      | RESPONSE
+      |--------------------------------------------------------------------------
+      */
       return {
 
         citizenName:
@@ -107,7 +114,7 @@ const getCitizenByPhoneService =
 
 /*
 |--------------------------------------------------------------------------
-| Search Citizen By Name
+| SEARCH CITIZEN BY NAME
 |--------------------------------------------------------------------------
 */
 const searchCitizenByNameService =
@@ -130,6 +137,7 @@ const searchCitizenByNameService =
           LIMIT 20
 
         `;
+
 
 
 
@@ -175,7 +183,16 @@ const searchCitizenByNameService =
 
 /*
 |--------------------------------------------------------------------------
-| Get All Citizen Phone Numbers
+| GET ALL CITIZEN PHONE NUMBERS
+|--------------------------------------------------------------------------
+|
+| SHOWS:
+| - Citizens with NO RFID
+| - Citizens with ONLY DRY
+| - Citizens with ONLY WET
+|
+| HIDES:
+| - Citizens with BOTH DRY + WET
 |--------------------------------------------------------------------------
 */
 const getAllCitizenPhoneNumbersService =
@@ -183,6 +200,119 @@ const getAllCitizenPhoneNumbersService =
 
     try {
 
+      /*
+      |--------------------------------------------------------------------------
+      | GET ALL RFID MAPPINGS
+      |--------------------------------------------------------------------------
+      */
+      const allMappings =
+        await prisma.rFIDMapping.findMany({
+
+          where: {
+
+            phoneNumber: {
+              not: null,
+            },
+
+          },
+
+          select: {
+
+            phoneNumber: true,
+
+            wasteType: true,
+
+          },
+
+        });
+
+
+
+
+      /*
+      |--------------------------------------------------------------------------
+      | GROUP MAPPING STATUS
+      |--------------------------------------------------------------------------
+      */
+      const mappingStatus = {};
+
+
+
+
+      allMappings.forEach((item) => {
+
+        if (!mappingStatus[item.phoneNumber]) {
+
+          mappingStatus[item.phoneNumber] = {
+
+            hasDry: false,
+
+            hasWet: false,
+
+          };
+
+        }
+
+
+
+
+        if (
+          item.wasteType === "DRY"
+        ) {
+
+          mappingStatus[
+            item.phoneNumber
+          ].hasDry = true;
+
+        }
+
+
+
+
+        if (
+          item.wasteType === "WET"
+        ) {
+
+          mappingStatus[
+            item.phoneNumber
+          ].hasWet = true;
+
+        }
+
+      });
+
+
+
+
+      /*
+      |--------------------------------------------------------------------------
+      | FULLY MAPPED PHONES
+      |--------------------------------------------------------------------------
+      */
+      const fullyMappedPhones =
+        Object.keys(mappingStatus)
+          .filter((phone) => {
+
+            return (
+
+              mappingStatus[phone]
+                .hasDry &&
+
+              mappingStatus[phone]
+                .hasWet
+
+            );
+
+          });
+
+
+
+
+      /*
+      |--------------------------------------------------------------------------
+      | GET ALL CITIZENS
+      |--------------------------------------------------------------------------
+      */
       const citizens =
         await prisma.$queryRaw`
 
@@ -197,7 +327,30 @@ const getAllCitizenPhoneNumbersService =
 
 
 
-      return citizens.map(
+
+      /*
+      |--------------------------------------------------------------------------
+      | FILTER INCOMPLETE CITIZENS
+      |--------------------------------------------------------------------------
+      */
+      const filteredCitizens =
+        citizens.filter(
+          (citizen) =>
+
+            !fullyMappedPhones.includes(
+              citizen.contactNumber
+            )
+        );
+
+
+
+
+      /*
+      |--------------------------------------------------------------------------
+      | RESPONSE
+      |--------------------------------------------------------------------------
+      */
+      return filteredCitizens.map(
         (citizen) => ({
 
           citizenName:
@@ -230,7 +383,16 @@ const getAllCitizenPhoneNumbersService =
 
 /*
 |--------------------------------------------------------------------------
-| Get All Citizen Names
+| GET ALL CITIZEN NAMES
+|--------------------------------------------------------------------------
+|
+| SHOWS:
+| - Citizens with NO RFID
+| - Citizens with ONLY DRY
+| - Citizens with ONLY WET
+|
+| HIDES:
+| - Citizens with BOTH DRY + WET
 |--------------------------------------------------------------------------
 */
 const getAllCitizenNamesService =
@@ -238,6 +400,119 @@ const getAllCitizenNamesService =
 
     try {
 
+      /*
+      |--------------------------------------------------------------------------
+      | GET ALL RFID MAPPINGS
+      |--------------------------------------------------------------------------
+      */
+      const allMappings =
+        await prisma.rFIDMapping.findMany({
+
+          where: {
+
+            phoneNumber: {
+              not: null,
+            },
+
+          },
+
+          select: {
+
+            phoneNumber: true,
+
+            wasteType: true,
+
+          },
+
+        });
+
+
+
+
+      /*
+      |--------------------------------------------------------------------------
+      | GROUP MAPPING STATUS
+      |--------------------------------------------------------------------------
+      */
+      const mappingStatus = {};
+
+
+
+
+      allMappings.forEach((item) => {
+
+        if (!mappingStatus[item.phoneNumber]) {
+
+          mappingStatus[item.phoneNumber] = {
+
+            hasDry: false,
+
+            hasWet: false,
+
+          };
+
+        }
+
+
+
+
+        if (
+          item.wasteType === "DRY"
+        ) {
+
+          mappingStatus[
+            item.phoneNumber
+          ].hasDry = true;
+
+        }
+
+
+
+
+        if (
+          item.wasteType === "WET"
+        ) {
+
+          mappingStatus[
+            item.phoneNumber
+          ].hasWet = true;
+
+        }
+
+      });
+
+
+
+
+      /*
+      |--------------------------------------------------------------------------
+      | FULLY MAPPED PHONES
+      |--------------------------------------------------------------------------
+      */
+      const fullyMappedPhones =
+        Object.keys(mappingStatus)
+          .filter((phone) => {
+
+            return (
+
+              mappingStatus[phone]
+                .hasDry &&
+
+              mappingStatus[phone]
+                .hasWet
+
+            );
+
+          });
+
+
+
+
+      /*
+      |--------------------------------------------------------------------------
+      | GET ALL CITIZENS
+      |--------------------------------------------------------------------------
+      */
       const citizens =
         await prisma.$queryRaw`
 
@@ -252,7 +527,30 @@ const getAllCitizenNamesService =
 
 
 
-      return citizens.map(
+
+      /*
+      |--------------------------------------------------------------------------
+      | FILTER INCOMPLETE CITIZENS
+      |--------------------------------------------------------------------------
+      */
+      const filteredCitizens =
+        citizens.filter(
+          (citizen) =>
+
+            !fullyMappedPhones.includes(
+              citizen.contactNumber
+            )
+        );
+
+
+
+
+      /*
+      |--------------------------------------------------------------------------
+      | RESPONSE
+      |--------------------------------------------------------------------------
+      */
+      return filteredCitizens.map(
         (citizen) => ({
 
           citizenName:
@@ -285,7 +583,16 @@ const getAllCitizenNamesService =
 
 /*
 |--------------------------------------------------------------------------
-| Get Unmapped Citizens
+| GET UNMAPPED CITIZENS
+|--------------------------------------------------------------------------
+|
+| SHOWS:
+| - No RFID
+| - Only DRY
+| - Only WET
+|
+| HIDES:
+| - BOTH DRY + WET
 |--------------------------------------------------------------------------
 */
 const getUnmappedCitizensService =
@@ -293,11 +600,12 @@ const getUnmappedCitizensService =
 
     try {
 
-      // =============================
-      // GET MAPPED PHONE NUMBERS
-      // =============================
-
-      const mappedPhones =
+      /*
+      |--------------------------------------------------------------------------
+      | GET ALL RFID MAPPINGS
+      |--------------------------------------------------------------------------
+      */
+      const allMappings =
         await prisma.rFIDMapping.findMany({
 
           where: {
@@ -309,28 +617,102 @@ const getUnmappedCitizensService =
           },
 
           select: {
+
             phoneNumber: true,
+
+            wasteType: true,
+
           },
 
         });
 
 
 
-      // =============================
-      // CONVERT TO ARRAY
-      // =============================
 
-      const mappedPhoneNumbers =
-        mappedPhones.map(
-          (item) => item.phoneNumber
-        );
-
+      /*
+      |--------------------------------------------------------------------------
+      | GROUP MAPPING STATUS
+      |--------------------------------------------------------------------------
+      */
+      const mappingStatus = {};
 
 
-      // =============================
-      // GET ALL CITIZENS
-      // =============================
 
+
+      allMappings.forEach((item) => {
+
+        if (!mappingStatus[item.phoneNumber]) {
+
+          mappingStatus[item.phoneNumber] = {
+
+            hasDry: false,
+
+            hasWet: false,
+
+          };
+
+        }
+
+
+
+
+        if (
+          item.wasteType === "DRY"
+        ) {
+
+          mappingStatus[
+            item.phoneNumber
+          ].hasDry = true;
+
+        }
+
+
+
+
+        if (
+          item.wasteType === "WET"
+        ) {
+
+          mappingStatus[
+            item.phoneNumber
+          ].hasWet = true;
+
+        }
+
+      });
+
+
+
+
+      /*
+      |--------------------------------------------------------------------------
+      | FULLY MAPPED PHONES
+      |--------------------------------------------------------------------------
+      */
+      const fullyMappedPhones =
+        Object.keys(mappingStatus)
+          .filter((phone) => {
+
+            return (
+
+              mappingStatus[phone]
+                .hasDry &&
+
+              mappingStatus[phone]
+                .hasWet
+
+            );
+
+          });
+
+
+
+
+      /*
+      |--------------------------------------------------------------------------
+      | GET ALL CITIZENS
+      |--------------------------------------------------------------------------
+      */
       const citizens =
         await prisma.$queryRaw`
 
@@ -344,25 +726,29 @@ const getUnmappedCitizensService =
 
 
 
-      // =============================
-      // FILTER UNMAPPED
-      // =============================
 
+      /*
+      |--------------------------------------------------------------------------
+      | FILTER INCOMPLETE CITIZENS
+      |--------------------------------------------------------------------------
+      */
       const unmappedCitizens =
         citizens.filter(
           (citizen) =>
 
-            !mappedPhoneNumbers.includes(
+            !fullyMappedPhones.includes(
               citizen.contactNumber
             )
         );
 
 
 
-      // =============================
-      // FORMAT RESPONSE
-      // =============================
 
+      /*
+      |--------------------------------------------------------------------------
+      | RESPONSE
+      |--------------------------------------------------------------------------
+      */
       return unmappedCitizens.map(
         (citizen) => ({
 

@@ -17,11 +17,6 @@ const {
 const generateNextSLNO =
   async () => {
 
-    /*
-    |--------------------------------------------------------------------------
-    | GET HIGHEST SLNO
-    |--------------------------------------------------------------------------
-    */
     const lastRFID =
       await prisma.rFIDMapping.findFirst({
 
@@ -38,11 +33,6 @@ const generateNextSLNO =
 
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | FIRST RFID
-    |--------------------------------------------------------------------------
-    */
     if (
       !lastRFID ||
       !lastRFID.slno
@@ -55,11 +45,6 @@ const generateNextSLNO =
 
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | CONVERT TO NUMBER
-    |--------------------------------------------------------------------------
-    */
     const currentNumber =
       parseInt(
         lastRFID.slno,
@@ -69,22 +54,12 @@ const generateNextSLNO =
 
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | NEXT NUMBER
-    |--------------------------------------------------------------------------
-    */
     const nextNumber =
       currentNumber + 1;
 
 
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | PAD ZEROES
-    |--------------------------------------------------------------------------
-    */
     return String(nextNumber)
       .padStart(8, "0");
 
@@ -96,19 +71,12 @@ const generateNextSLNO =
 
 /*
 |--------------------------------------------------------------------------
-| Create RFID
-|--------------------------------------------------------------------------
-| Auto Continues Sequence
+| CREATE RFID
 |--------------------------------------------------------------------------
 */
 const createRFIDService =
   async (rfid) => {
 
-    /*
-    |--------------------------------------------------------------------------
-    | VALIDATE RFID
-    |--------------------------------------------------------------------------
-    */
     if (
       !rfid ||
       rfid.trim() === ""
@@ -120,6 +88,29 @@ const createRFIDService =
 
         message:
           "RFID code is required",
+
+      };
+
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | RFID LENGTH VALIDATION
+    |--------------------------------------------------------------------------
+    */
+    if (
+      rfid.length !== 24
+    ) {
+
+      return {
+
+        success: false,
+
+        message:
+          "RFID must be exactly 24 characters",
 
       };
 
@@ -145,11 +136,6 @@ const createRFIDService =
 
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | RFID ALREADY EXISTS
-    |--------------------------------------------------------------------------
-    */
     if (existingRFID) {
 
       return {
@@ -173,22 +159,12 @@ const createRFIDService =
 
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | GENERATE NEXT SLNO
-    |--------------------------------------------------------------------------
-    */
     const nextSLNO =
       await generateNextSLNO();
 
 
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | CREATE RFID
-    |--------------------------------------------------------------------------
-    */
     const newRFID =
       await prisma.rFIDMapping.create({
 
@@ -212,11 +188,6 @@ const createRFIDService =
 
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | SUCCESS RESPONSE
-    |--------------------------------------------------------------------------
-    */
     return {
 
       success: true,
@@ -237,7 +208,7 @@ const createRFIDService =
 
 /*
 |--------------------------------------------------------------------------
-| Get All RFID Mappings
+| GET ALL RFID MAPPINGS
 |--------------------------------------------------------------------------
 */
 const getAllRFIDMappingsService =
@@ -259,7 +230,7 @@ const getAllRFIDMappingsService =
 
 /*
 |--------------------------------------------------------------------------
-| Get Unmapped RFIDs
+| GET UNMAPPED RFIDS
 |--------------------------------------------------------------------------
 */
 const getUnmappedRFIDsService =
@@ -297,8 +268,21 @@ const getUnmappedRFIDsService =
 
 /*
 |--------------------------------------------------------------------------
-| Map RFID To Citizen
+| MAP RFID TO CITIZEN
 |--------------------------------------------------------------------------
+|
+| CASE 1:
+| WET ONLY
+|
+| CASE 2:
+| DRY ONLY
+|
+| CASE 3:
+| BOTH
+|
+| CASE 4:
+| LATER UPDATE
+|
 */
 const mapRFIDService =
   async (
@@ -313,7 +297,26 @@ const mapRFIDService =
 
     /*
     |--------------------------------------------------------------------------
-    | VALIDATE RFID EXISTS
+    | VALIDATE WASTE TYPE
+    |--------------------------------------------------------------------------
+    */
+    if (
+      wasteType !== "DRY" &&
+      wasteType !== "WET"
+    ) {
+
+      throw new Error(
+        "Waste type must be DRY or WET"
+      );
+
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | FIND RFID
     |--------------------------------------------------------------------------
     */
     const existingRFID =
@@ -341,37 +344,15 @@ const mapRFIDService =
 
     /*
     |--------------------------------------------------------------------------
-    | RFID ALREADY MAPPED
+    | RFID ALREADY USED BY ANOTHER CITIZEN
     |--------------------------------------------------------------------------
     */
     if (
-      existingRFID.phoneNumber
+      existingRFID.phoneNumber &&
+      existingRFID.phoneNumber !==
+      phoneNumber
     ) {
 
-      /*
-      |--------------------------------------------------------------------------
-      | SAME CITIZEN
-      |--------------------------------------------------------------------------
-      */
-      if (
-        existingRFID.phoneNumber ===
-        phoneNumber
-      ) {
-
-        throw new Error(
-          `${wasteType} RFID already assigned to this citizen`
-        );
-
-      }
-
-
-
-
-      /*
-      |--------------------------------------------------------------------------
-      | DIFFERENT CITIZEN
-      |--------------------------------------------------------------------------
-      */
       throw new Error(
 
         `RFID already assigned to ${existingRFID.phoneNumber}`
@@ -385,8 +366,13 @@ const mapRFIDService =
 
     /*
     |--------------------------------------------------------------------------
-    | CHECK WASTE TYPE
+    | CHECK IF SAME WASTE TYPE EXISTS
     |--------------------------------------------------------------------------
+    |
+    | EXAMPLE:
+    | Citizen already has DRY
+    | Cannot assign another DRY
+    |
     */
     const existingWasteType =
       await prisma.rFIDMapping.findFirst({
@@ -396,6 +382,10 @@ const mapRFIDService =
           phoneNumber,
 
           wasteType,
+
+          NOT: {
+            slno,
+          },
 
         },
 
@@ -442,8 +432,11 @@ const mapRFIDService =
 
     /*
     |--------------------------------------------------------------------------
-    | AUTO SYNC MASTER DB
+    | AUTO MASTER DB SYNC
     |--------------------------------------------------------------------------
+    |
+    | EVEN IF ONLY ONE RFID EXISTS
+    |
     */
     await syncMasterCitizenData(
       phoneNumber
@@ -452,7 +445,62 @@ const mapRFIDService =
 
 
 
-    return updatedRFID;
+    /*
+    |--------------------------------------------------------------------------
+    | GET CURRENT CITIZEN RFIDS
+    |--------------------------------------------------------------------------
+    */
+    const citizenRFIDs =
+      await prisma.rFIDMapping.findMany({
+
+        where: {
+          phoneNumber,
+        },
+
+      });
+
+
+
+
+    const dryRFID =
+      citizenRFIDs.find(
+        (item) =>
+          item.wasteType === "DRY"
+      );
+
+
+
+
+    const wetRFID =
+      citizenRFIDs.find(
+        (item) =>
+          item.wasteType === "WET"
+      );
+
+
+
+
+    return {
+
+      success: true,
+
+      message:
+        "RFID mapped successfully",
+
+      data: {
+
+        citizenPhone:
+          phoneNumber,
+
+        dryRFID:
+          dryRFID || null,
+
+        wetRFID:
+          wetRFID || null,
+
+      },
+
+    };
 
   };
 
@@ -462,7 +510,7 @@ const mapRFIDService =
 
 /*
 |--------------------------------------------------------------------------
-| Get RFID By SLNO
+| GET RFID BY SLNO
 |--------------------------------------------------------------------------
 */
 const getRFIDByValueService =
@@ -501,7 +549,7 @@ const getRFIDByValueService =
 
 /*
 |--------------------------------------------------------------------------
-| Get Citizen RFIDs
+| GET CITIZEN RFIDS
 |--------------------------------------------------------------------------
 */
 const getCitizenRFIDsService =
@@ -543,11 +591,6 @@ const getCitizenRFIDsService =
 
     rfids.forEach((item) => {
 
-      /*
-      |--------------------------------------------------------------------------
-      | DRY RFID
-      |--------------------------------------------------------------------------
-      */
       if (
         item.wasteType === "DRY"
       ) {
@@ -567,11 +610,6 @@ const getCitizenRFIDsService =
 
 
 
-      /*
-      |--------------------------------------------------------------------------
-      | WET RFID
-      |--------------------------------------------------------------------------
-      */
       if (
         item.wasteType === "WET"
       ) {
@@ -600,6 +638,9 @@ const getCitizenRFIDsService =
       dry,
 
       wet,
+
+      isFullyMapped:
+        !!dry && !!wet,
 
     };
 

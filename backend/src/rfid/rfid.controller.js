@@ -1,10 +1,17 @@
 const {
+
   createRFIDService,
+
   getAllRFIDMappingsService,
+
   getUnmappedRFIDsService,
+
   mapRFIDService,
+
   getRFIDByValueService,
+
   getCitizenRFIDsService,
+
 } = require("./rfid.service");
 
 
@@ -13,7 +20,7 @@ const {
 
 /*
 |--------------------------------------------------------------------------
-| Create RFID
+| CREATE RFID
 |--------------------------------------------------------------------------
 | POST /api/v1/rfid/create/:rfid
 |--------------------------------------------------------------------------
@@ -57,6 +64,29 @@ const createRFID = async (
 
     /*
     |--------------------------------------------------------------------------
+    | RFID LENGTH VALIDATION
+    |--------------------------------------------------------------------------
+    */
+    if (
+      rfid.trim().length !== 24
+    ) {
+
+      return res.status(400).json({
+
+        success: false,
+
+        message:
+          "RFID must be exactly 24 characters",
+
+      });
+
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
     | CREATE RFID
     |--------------------------------------------------------------------------
     */
@@ -68,6 +98,27 @@ const createRFID = async (
 
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | FAILED
+    |--------------------------------------------------------------------------
+    */
+    if (!newRFID.success) {
+
+      return res.status(400).json(
+        newRFID
+      );
+
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SUCCESS
+    |--------------------------------------------------------------------------
+    */
     return res.status(201).json({
 
       success: true,
@@ -75,7 +126,8 @@ const createRFID = async (
       message:
         "RFID created successfully",
 
-      data: newRFID,
+      data:
+        newRFID.data,
 
     });
 
@@ -109,9 +161,25 @@ const createRFID = async (
 
 /*
 |--------------------------------------------------------------------------
-| Map RFID To Citizen
+| MAP RFID TO CITIZEN
 |--------------------------------------------------------------------------
 | PATCH /api/v1/rfid/map
+|--------------------------------------------------------------------------
+|
+| SUPPORTS:
+|
+| CASE 1:
+| DRY ONLY
+|
+| CASE 2:
+| WET ONLY
+|
+| CASE 3:
+| BOTH
+|
+| CASE 4:
+| LATER SECOND RFID UPDATE
+|
 |--------------------------------------------------------------------------
 */
 const mapRFID = async (
@@ -154,7 +222,7 @@ const mapRFID = async (
         success: false,
 
         message:
-          "SLNO, phone number, and wasteType are required",
+          "SLNO, phoneNumber and wasteType are required",
 
       });
 
@@ -177,9 +245,11 @@ const mapRFID = async (
 
 
     if (
+
       !allowedWasteTypes.includes(
         wasteType
       )
+
     ) {
 
       return res.status(400).json({
@@ -187,7 +257,7 @@ const mapRFID = async (
         success: false,
 
         message:
-          "Invalid waste type. Use DRY or WET",
+          "Waste type must be DRY or WET",
 
       });
 
@@ -215,6 +285,11 @@ const mapRFID = async (
 
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | SUCCESS
+    |--------------------------------------------------------------------------
+    */
     return res.status(200).json({
 
       success: true,
@@ -222,7 +297,8 @@ const mapRFID = async (
       message:
         "RFID mapped successfully",
 
-      data: mappedRFID,
+      data:
+        mappedRFID,
 
     });
 
@@ -236,12 +312,47 @@ const mapRFID = async (
 
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | BUSINESS ERRORS
+    |--------------------------------------------------------------------------
+    */
+    if (
+
+      error.message.includes(
+        "already"
+      ) ||
+
+      error.message.includes(
+        "not found"
+      )
+
+    ) {
+
+      return res.status(400).json({
+
+        success: false,
+
+        message:
+          error.message,
+
+      });
+
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SERVER ERROR
+    |--------------------------------------------------------------------------
+    */
     return res.status(500).json({
 
       success: false,
 
       message:
-        error.message ||
         "Internal Server Error",
 
     });
@@ -256,7 +367,7 @@ const mapRFID = async (
 
 /*
 |--------------------------------------------------------------------------
-| Get All RFID Mappings
+| GET ALL RFID MAPPINGS
 |--------------------------------------------------------------------------
 | GET /api/v1/rfid/all
 |--------------------------------------------------------------------------
@@ -301,7 +412,6 @@ const getAllRFIDMappings = async (
       success: false,
 
       message:
-        error.message ||
         "Internal Server Error",
 
     });
@@ -316,7 +426,7 @@ const getAllRFIDMappings = async (
 
 /*
 |--------------------------------------------------------------------------
-| Get Unmapped RFIDs
+| GET UNMAPPED RFIDS
 |--------------------------------------------------------------------------
 | GET /api/v1/rfid/unmapped
 |--------------------------------------------------------------------------
@@ -361,7 +471,6 @@ const getUnmappedRFIDs = async (
       success: false,
 
       message:
-        error.message ||
         "Internal Server Error",
 
     });
@@ -376,7 +485,7 @@ const getUnmappedRFIDs = async (
 
 /*
 |--------------------------------------------------------------------------
-| Get RFID By SLNO
+| GET RFID BY SLNO
 |--------------------------------------------------------------------------
 | GET /api/v1/rfid/rfid/:slno
 |--------------------------------------------------------------------------
@@ -447,12 +556,33 @@ const getRFIDByValue = async (
 
 
 
+    if (
+
+      error.message.includes(
+        "not found"
+      )
+
+    ) {
+
+      return res.status(404).json({
+
+        success: false,
+
+        message:
+          error.message,
+
+      });
+
+    }
+
+
+
+
     return res.status(500).json({
 
       success: false,
 
       message:
-        error.message ||
         "Internal Server Error",
 
     });
@@ -467,7 +597,7 @@ const getRFIDByValue = async (
 
 /*
 |--------------------------------------------------------------------------
-| Get Citizen RFIDs
+| GET CITIZEN RFIDS
 |--------------------------------------------------------------------------
 | GET /api/v1/rfid/citizen/:phoneNumber
 |--------------------------------------------------------------------------
@@ -538,12 +668,33 @@ const getCitizenRFIDs = async (
 
 
 
+    if (
+
+      error.message.includes(
+        "No RFIDs found"
+      )
+
+    ) {
+
+      return res.status(404).json({
+
+        success: false,
+
+        message:
+          error.message,
+
+      });
+
+    }
+
+
+
+
     return res.status(500).json({
 
       success: false,
 
       message:
-        error.message ||
         "Internal Server Error",
 
     });
