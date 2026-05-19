@@ -138,9 +138,16 @@ class _LogsScreenState extends State<LogsScreen>
 
   @override
   Widget build(BuildContext context) {
-    final myTotalLogs = _logs.where((log) {
+    // Computed variables inside build() for metrics counting status == "FOUND"
+    final myFoundLogs = _logs.where((log) {
       if (_adminName.isEmpty) return false;
-      return log.workerId.trim().toUpperCase() == _adminName.toUpperCase();
+      final isCurrentUser = log.workerId.trim().toUpperCase() == _adminName.toUpperCase();
+      final isFoundStatus = log.status.trim().toUpperCase() == "FOUND";
+      return isCurrentUser && isFoundStatus;
+    }).length;
+
+    final allFoundLogs = _logs.where((log) {
+      return log.status.trim().toUpperCase() == "FOUND";
     }).length;
 
     final filteredLogs = _logs.where((log) {
@@ -186,43 +193,92 @@ class _LogsScreenState extends State<LogsScreen>
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
+                padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
                       "Logs Overview",
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF2C3E50),
                       ),
                     ),
                     Row(
                       children: [
+                        // Box 1: Logged-in worker's FOUND logs
                         Container(
-                          margin: const EdgeInsets.only(right: 8),
+                          margin: const EdgeInsets.only(right: 6),
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 18,
-                            vertical: 14,
+                            horizontal: 10,
+                            vertical: 6,
                           ),
                           decoration: BoxDecoration(
                             color: const Color(0xFFF1F8F2),
-                            borderRadius: BorderRadius.circular(14),
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Text(
-                            "$myTotalLogs",
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xFF2E7D32),
-                            ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text(
+                                "My Found",
+                                style: TextStyle(
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF2E7D32),
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                "$myFoundLogs",
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF2E7D32),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // Box 2: Total Found counts across all workers
+                        Container(
+                          margin: const EdgeInsets.only(right: 6),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF1F8F2),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text(
+                                "Total Found",
+                                style: TextStyle(
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF2E7D32),
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                "$allFoundLogs",
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF2E7D32),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(14),
+                            borderRadius: BorderRadius.circular(12),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withOpacity(0.06),
@@ -232,6 +288,11 @@ class _LogsScreenState extends State<LogsScreen>
                             ],
                           ),
                           child: IconButton(
+                            constraints: const BoxConstraints(
+                              minWidth: 38,
+                              minHeight: 38,
+                            ),
+                            padding: EdgeInsets.zero,
                             onPressed: () {
                               setState(() {
                                 _isTableView = !_isTableView;
@@ -248,6 +309,7 @@ class _LogsScreenState extends State<LogsScreen>
                                     : Icons.table_chart_rounded,
                                 key: ValueKey(_isTableView),
                                 color: const Color(0xFF4CAF50),
+                                size: 20,
                               ),
                             ),
                           ),
@@ -409,7 +471,6 @@ class _LogsScreenState extends State<LogsScreen>
         String cardPhotoUrl =
             logMap["photoUrl"]?.toString() ?? log.photoUrl ?? logMap["photo"]?.toString() ?? "";
 
-        // Normalize variations of stringified database "null" entries
         if (cardPhotoUrl.trim() == "null" || cardPhotoUrl.trim().isEmpty) {
           cardPhotoUrl = "";
         }
@@ -490,66 +551,27 @@ class _LogsScreenState extends State<LogsScreen>
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(12),
                             child: cardPhotoUrl.trim().isNotEmpty
-
                                 ? Image.network(
-
                               cardPhotoUrl.trim(),
-
                               fit: BoxFit.cover,
-
-                              loadingBuilder:
-                                  (
-                                  context,
-                                  child,
-                                  loadingProgress,
-                                  ) {
-
-                                if (
-                                loadingProgress == null
-                                ) {
-
-                                  return child;
-
-                                }
-
+                              loadingBuilder: (context, child, loadingProgress) {
+                                if (loadingProgress == null) return child;
                                 return const Center(
-                                  child:
-                                  CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
+                                  child: CircularProgressIndicator(strokeWidth: 2),
                                 );
-
                               },
-
-                              errorBuilder:
-                                  (
-                                  context,
-                                  error,
-                                  stackTrace,
-                                  ) {
-
-                                print(
-                                    "IMAGE LOAD ERROR => $error"
-                                );
-
-                                print(
-                                    "FAILED URL => $cardPhotoUrl"
-                                );
-
+                              errorBuilder: (context, error, stackTrace) {
+                                print("IMAGE LOAD ERROR => $error");
                                 return Container(
-                                  color:
-                                  Colors.grey.shade200,
+                                  color: Colors.grey.shade200,
                                   child: const Icon(
                                     Icons.broken_image_outlined,
                                     color: Colors.redAccent,
                                     size: 26,
                                   ),
                                 );
-
                               },
-
                             )
-
                                 : Container(
                               color: Colors.grey.shade200,
                               child: const Icon(

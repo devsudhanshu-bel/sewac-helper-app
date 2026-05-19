@@ -11,7 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:http_parser/http_parser.dart'; // Added to handle explicit MIME content types
+import 'package:http_parser/http_parser.dart';
 
 import 'dart:async';
 import '../services/auth_service.dart';
@@ -29,7 +29,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String _adminName = "A";
   bool _hasPhoto = false;
 
-  // Track the taken image file
   File? _imageFile;
 
   Future<void> _capturePhoto() async {
@@ -330,8 +329,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     try {
       if (_status == "Found") {
-        if (savedWet.isEmpty || savedWet == "Select" ||
-            savedDry.isEmpty || savedDry == "Select" ||
+        final bool wetEmpty = savedWet.isEmpty || savedWet == "Select";
+        final bool dryEmpty = savedDry.isEmpty || savedDry == "Select";
+
+        if ((wetEmpty && dryEmpty) ||
             savedPhone.isEmpty || savedPhone == "Select" ||
             savedName.isEmpty || savedName == "Select") {
           setState(() {
@@ -359,7 +360,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           return;
         }
 
-        // Show location fetching indicator
         showDialog(
           context: context,
           barrierDismissible: false,
@@ -384,7 +384,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         if (mounted) Navigator.pop(context);
       }
 
-      // Show submitting progress loader indicator window
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -393,23 +392,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       );
 
-      // Get authorization tokens
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString("auth_token") ?? "";
 
       http.Response? response;
 
       if (_status == "Not Found") {
-        // Create Multipart Form Request
         var request = http.MultipartRequest(
           "POST",
           Uri.parse("https://sewac-helper-app.onrender.com/api/v1/tracking/create"),
         );
 
-        // Include Authorization headers
         request.headers["Authorization"] = "Bearer $token";
 
-        // Assign fields
         request.fields["status"] = "NOT_FOUND";
         request.fields["address"] = _addressController.text.trim();
         request.fields["buildingNo"] = _buildingController.text.trim();
@@ -418,13 +413,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         request.fields["latitude"] = latitude != null ? latitude.toString() : "";
         request.fields["longitude"] = longitude != null ? longitude.toString() : "";
 
-        // Attach image with explicit contentType validation properties
         if (_imageFile != null) {
           request.files.add(
             await http.MultipartFile.fromPath(
               "photo",
               _imageFile!.path,
-              contentType: MediaType('image', 'jpeg'), // Force content-type header context to avoid server validation blocks
+              contentType: MediaType('image', 'jpeg'),
             ),
           );
         }
@@ -432,47 +426,90 @@ class _DashboardScreenState extends State<DashboardScreen> {
         final streamedResponse = await request.send();
         response = await http.Response.fromStream(streamedResponse);
       } else {
-        // Process Found workflows using regular JSON map configurations
         final headers = {
           "Authorization": "Bearer $token",
           "Content-Type": "application/json",
         };
 
-        await http.patch(
-          Uri.parse("https://sewac-helper-app.onrender.com/api/v1/rfid/map"),
-          headers: headers,
-          body: jsonEncode({
-            "slno": savedWet,
-            "phoneNumber": savedPhone,
-            "wasteType": "WET",
-          }),
-        );
+        final bool absoluteWetEmpty = savedWet.isEmpty || savedWet == "Select";
+        final bool absoluteDryEmpty = savedDry.isEmpty || savedDry == "Select";
 
-        await http.patch(
-          Uri.parse("https://sewac-helper-app.onrender.com/api/v1/rfid/map"),
-          headers: headers,
-          body: jsonEncode({
-            "slno": savedDry,
-            "phoneNumber": savedPhone,
-            "wasteType": "DRY",
-          }),
-        );
+        // Step 1: Attempt to map WET RFID if provided
+        if (!absoluteWetEmpty) {
+          final wetMapResponse = await http.patch(
+            Uri.parse("https://sewac-helper-app.onrender.com/api/v1/rfid/map"),
+            headers: headers,
+            body: jsonEncode({
+              "slno": savedWet,
+              "phoneNumber": savedPhone,
+              "wasteType": "WET",
+            }),
+          );
 
+          // If mapping failed, decode backend message and intercept early
+          if (wetMapResponse.statusCode < 200 || wetMapResponse.statusCode >= 300) {
+            if (mounted) Navigator.pop(context); // Dismiss loading spinner
+            try {
+              final errorJson = jsonDecode(wetMapResponse.body);
+              final serverMsg = errorJson["message"] ?? "Failed to map Wet RFID";
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(serverMsg), backgroundColor: Colors.red),
+              );
+            } catch (_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Failed to map Wet RFID"), backgroundColor: Colors.red),
+              );
+            }
+            return; // STOP execution completely so it doesn't get tracked or saved!
+          }
+        }
+
+        // Step 2: Attempt to map DRY RFID if provided
+        if (!absoluteDryEmpty) {
+          final dryMapResponse = await http.patch(
+            Uri.parse("https://sewac-helper-app.onrender.com/api/v1/rfid/map"),
+            headers: headers,
+            body: jsonEncode({
+              "slno": savedDry,
+              "phoneNumber": savedPhone,
+              "wasteType": "DRY",
+            }),
+          );
+
+          // Intercept Dry mapping failures early
+          if (dryMapResponse.statusCode < 200 || dryMapResponse.statusCode >= 300) {
+            if (mounted) Navigator.pop(context);
+            try {
+              final errorJson = jsonDecode(dryMapResponse.body);
+              final serverMsg = errorJson["message"] ?? "Failed to map Dry RFID";
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(serverMsg), backgroundColor: Colors.red),
+              );
+            } catch (_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Failed to map Dry RFID"), backgroundColor: Colors.red),
+              );
+            }
+            return;
+          }
+        }
+
+        // Step 3: Finalize Tracking records only if mappings succeed
         response = await http.post(
           Uri.parse("https://sewac-helper-app.onrender.com/api/v1/tracking/create"),
           headers: headers,
           body: jsonEncode({
-            "slno": savedWet,
+            "slno": absoluteWetEmpty ? "N/A" : savedWet,
             "phoneNumber": savedPhone,
             "citizenName": savedName,
-            "drySlno": savedDry,
-            "wetSlno": savedWet,
+            "drySlno": absoluteDryEmpty ? "N/A" : savedDry,
+            "wetSlno": absoluteWetEmpty ? "N/A" : savedWet,
             "status": "FOUND",
           }),
         );
       }
 
-      if (mounted) Navigator.pop(context); // Dismiss submission loader dialog window
+      if (mounted) Navigator.pop(context); // Dismiss spinner
 
       if (response != null && response.statusCode >= 200 && response.statusCode < 300) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -493,13 +530,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
         _clearForm();
         await _loadAllDropdownData();
       } else {
-        print("Save response details error code body: ${response?.body}");
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Save failed (${response?.statusCode})"),
-            backgroundColor: Colors.red,
-          ),
-        );
+        try {
+          final errorJson = jsonDecode(response?.body ?? "{}");
+          final serverMsg = errorJson["message"] ?? "Save failed (${response?.statusCode})";
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(serverMsg), backgroundColor: Colors.red),
+          );
+        } catch (_) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Save failed (${response?.statusCode})"),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
     } catch (e) {
       if (mounted) Navigator.pop(context);
@@ -517,20 +561,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString("auth_token") ?? "";
 
-      // 1. Notify the backend to release the active user session lock
-      final response = await http.post(
+      await http.post(
         Uri.parse("https://sewac-helper-app.onrender.com/api/v1/auth/logout"),
         headers: {
           "Authorization": "Bearer $token",
           "Content-Type": "application/json",
         },
       );
-      print("DASHBOARD LOGOUT STATUS => ${response.statusCode}");
     } catch (e) {
       print("DASHBOARD LOGOUT API ERROR => $e");
     }
 
-    // 2. Clear all local session storage flags
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove("auth_token");
     await prefs.remove("isLoggedIn");
@@ -540,12 +581,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     await prefs.remove("user");
     await prefs.remove("admin_name");
 
-    // 3. Fallback to your internal auth helper if it handles other streams
     await AuthService.logout();
 
     if (!mounted) return;
 
-    // 4. Safely redirect back to Login and clear route stack
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -565,126 +604,220 @@ class _DashboardScreenState extends State<DashboardScreen> {
         onLogout: _handleLogout,
       ),
       body: SewacBackground(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(24, 4, 24, 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "RFID Mapping",
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF2C3E50),
+        child: RefreshIndicator(
+          color: Colors.green,
+          onRefresh: _loadAllDropdownData,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(24, 4, 24, 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "RFID Mapping",
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF2C3E50),
+                  ),
                 ),
-              ),
-              const Text(
-                "Sync resident details from the secure database",
-                style: TextStyle(color: Colors.black54),
-              ),
-              const SizedBox(height: 16),
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 250),
-                transitionBuilder: (child, animation) {
-                  return FadeTransition(opacity: animation, child: child);
-                },
-                child: _status == "Found"
-                    ? Container(
-                  key: const ValueKey("found"),
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(28),
-                  ),
-                  child: Column(
-                    children: [
-                      _buildSearchDropdown(
-                        label: "Wet Waste RFID *",
-                        hint: "Search Wet RFID",
-                        controller: _wetRfidSearchController,
-                        items: _wetAvailableRfids,
-                        icon: Icons.qr_code,
-                        onSelected: (val) {
-                          setState(() {
-                            if (val == "Select") {
-                              _selectedWetRFID = null;
-                              _wetRfidSearchController.clear();
-                              FocusScope.of(context).unfocus();
-                            } else {
-                              _selectedWetRFID = val;
-                              _wetRfidSearchController.text = val ?? "";
-                            }
-                          });
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      _buildSearchDropdown(
-                        label: "Dry Waste RFID *",
-                        hint: "Search Dry RFID",
-                        controller: _dryRfidSearchController,
-                        items: _dryAvailableRfids,
-                        icon: Icons.qr_code,
-                        onSelected: (val) {
-                          setState(() {
-                            if (val == "Select") {
-                              _selectedDryRFID = null;
-                              _dryRfidSearchController.clear();
-                              FocusScope.of(context).unfocus();
-                            } else {
-                              _selectedDryRFID = val;
-                              _dryRfidSearchController.text = val ?? "";
-                            }
-                          });
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      _buildSearchDropdown(
-                        label: "Phone Number *",
-                        hint: "Search Phone Number",
-                        controller: _phoneSearchController,
-                        items: _phoneDropdownItems,
-                        icon: Icons.phone,
-                        onSelected: (val) {
-                          if (val == "Select") {
+                const Text(
+                  "Sync resident details from the secure database",
+                  style: TextStyle(color: Colors.black54),
+                ),
+                const SizedBox(height: 16),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 250),
+                  transitionBuilder: (child, animation) {
+                    return FadeTransition(opacity: animation, child: child);
+                  },
+                  child: _status == "Found"
+                      ? Container(
+                    key: const ValueKey("found"),
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(28),
+                    ),
+                    child: Column(
+                      children: [
+                        _buildSearchDropdown(
+                          label: "Wet Waste RFID *",
+                          hint: "Search Wet RFID",
+                          controller: _wetRfidSearchController,
+                          items: _wetAvailableRfids,
+                          icon: Icons.qr_code,
+                          onSelected: (val) {
                             setState(() {
-                              _selectedPhone = null;
-                              _selectedName = null;
-                              _phoneSearchController.clear();
-                              _nameSearchController.clear();
-                              FocusScope.of(context).unfocus();
+                              if (val == "Select") {
+                                _selectedWetRFID = null;
+                                _wetRfidSearchController.clear();
+                                FocusScope.of(context).unfocus();
+                              } else {
+                                _selectedWetRFID = val;
+                                _wetRfidSearchController.text = val ?? "";
+                              }
                             });
-                          } else if (val != null) {
-                            _fetchCitizenByPhone(val);
-                          }
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      _buildSearchDropdown(
-                        label: "Name *",
-                        hint: "Search Name",
-                        controller: _nameSearchController,
-                        items: _nameDropdownItems,
-                        icon: Icons.person,
-                        onSelected: (val) {
-                          if (val == "Select") {
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        _buildSearchDropdown(
+                          label: "Dry Waste RFID *",
+                          hint: "Search Dry RFID",
+                          controller: _dryRfidSearchController,
+                          items: _dryAvailableRfids,
+                          icon: Icons.qr_code,
+                          onSelected: (val) {
                             setState(() {
-                              _selectedName = null;
-                              _selectedPhone = null;
-                              _nameSearchController.clear();
-                              _phoneSearchController.clear();
-                              FocusScope.of(context).unfocus();
+                              if (val == "Select") {
+                                _selectedDryRFID = null;
+                                _dryRfidSearchController.clear();
+                                FocusScope.of(context).unfocus();
+                              } else {
+                                _selectedDryRFID = val;
+                                _dryRfidSearchController.text = val ?? "";
+                              }
                             });
-                          } else if (val != null) {
-                            _fetchCitizenByName(val);
-                          }
-                        },
-                      ),
-                    ],
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        _buildSearchDropdown(
+                          label: "Phone Number *",
+                          hint: "Search Phone Number",
+                          controller: _phoneSearchController,
+                          items: _phoneDropdownItems,
+                          icon: Icons.phone,
+                          onSelected: (val) {
+                            if (val == "Select") {
+                              setState(() {
+                                _selectedPhone = null;
+                                _selectedName = null;
+                                _phoneSearchController.clear();
+                                _nameSearchController.clear();
+                                FocusScope.of(context).unfocus();
+                              });
+                            } else if (val != null) {
+                              _fetchCitizenByPhone(val);
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        _buildSearchDropdown(
+                          label: "Name *",
+                          hint: "Search Name",
+                          controller: _nameSearchController,
+                          items: _nameDropdownItems,
+                          icon: Icons.person,
+                          onSelected: (val) {
+                            if (val == "Select") {
+                              setState(() {
+                                _selectedName = null;
+                                _selectedPhone = null;
+                                _nameSearchController.clear();
+                                _phoneSearchController.clear();
+                                FocusScope.of(context).unfocus();
+                              });
+                            } else if (val != null) {
+                              _fetchCitizenByName(val);
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  )
+                      : Container(
+                    key: const ValueKey("not_found"),
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(28),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildInputField(
+                          label: "Address *",
+                          hint: "Enter Address",
+                          controller: _addressController,
+                          icon: Icons.location_on_outlined,
+                          showError: _showValidation && _addressController.text.trim().isEmpty,
+                        ),
+                        const SizedBox(height: 16),
+                        _buildInputField(
+                          label: "Building No *",
+                          hint: "Enter Building Number",
+                          controller: _buildingController,
+                          icon: Icons.apartment_outlined,
+                          showError: _showValidation && _buildingController.text.trim().isEmpty,
+                        ),
+                        const SizedBox(height: 16),
+                        _buildInputField(
+                          label: "Floor No *",
+                          hint: "Enter Floor Number",
+                          controller: _floorController,
+                          icon: Icons.unfold_more_outlined,
+                          showError: _showValidation && _floorController.text.trim().isEmpty,
+                        ),
+                        const SizedBox(height: 16),
+                        _buildInputField(
+                          label: "Remarks *",
+                          hint: "Enter Remarks",
+                          controller: _remarksController,
+                          icon: Icons.notes_outlined,
+                          showError: _showRemarksError,
+                          maxLines: null,
+                          minLines: 2,
+                        ),
+                        const SizedBox(height: 16),
+                        const Padding(
+                          padding: EdgeInsets.only(left: 4, bottom: 8),
+                          child: Text(
+                            "Photo *",
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF7F8C8D)),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: _capturePhoto,
+                          child: Container(
+                            width: 90,
+                            height: 90,
+                            decoration: BoxDecoration(
+                              color: showPhotoError ? const Color(0xFFFFF5F5) : const Color(0xFFF8F9FA),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: showPhotoError ? Colors.red.shade400 : Colors.black12,
+                                width: 1.5,
+                              ),
+                            ),
+                            child: _hasPhoto && _imageFile != null
+                                ? ClipRRect(
+                              borderRadius: BorderRadius.circular(14),
+                              child: Image.file(
+                                _imageFile!,
+                                width: 90,
+                                height: 90,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                                : Icon(
+                              Icons.add_a_photo_outlined,
+                              color: showPhotoError ? Colors.red.shade400 : Colors.black54,
+                              size: 28,
+                            ),
+                          ),
+                        ),
+                        if (showPhotoError)
+                          const Padding(
+                            padding: EdgeInsets.only(left: 4, top: 6),
+                            child: Text("Required", style: TextStyle(color: Colors.red, fontSize: 12)),
+                          ),
+                      ],
+                    ),
                   ),
-                )
-                    : Container(
-                  key: const ValueKey("not_found"),
-                  padding: const EdgeInsets.all(24),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(28),
@@ -692,142 +825,53 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildInputField(
-                        label: "Address *",
-                        hint: "Enter Address",
-                        controller: _addressController,
-                        icon: Icons.location_on_outlined,
-                        showError: _showValidation && _addressController.text.trim().isEmpty,
+                      const Text(
+                        "Status Selection",
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF7F8C8D)),
                       ),
-                      const SizedBox(height: 16),
-                      _buildInputField(
-                        label: "Building No *",
-                        hint: "Enter Building Number",
-                        controller: _buildingController,
-                        icon: Icons.apartment_outlined,
-                        showError: _showValidation && _buildingController.text.trim().isEmpty,
-                      ),
-                      const SizedBox(height: 16),
-                      _buildInputField(
-                        label: "Floor No *",
-                        hint: "Enter Floor Number",
-                        controller: _floorController,
-                        icon: Icons.unfold_more_outlined,
-                        showError: _showValidation && _floorController.text.trim().isEmpty,
-                      ),
-                      const SizedBox(height: 16),
-                      _buildInputField(
-                        label: "Remarks *",
-                        hint: "Enter Remarks",
-                        controller: _remarksController,
-                        icon: Icons.notes_outlined,
-                        showError: _showRemarksError,
-                        maxLines: null,
-                        minLines: 2,
-                      ),
-                      const SizedBox(height: 16),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 4, bottom: 8),
-                        child: Text(
-                          "Photo *",
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF7F8C8D)),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: _capturePhoto,
-                        child: Container(
-                          width: 90,
-                          height: 90,
-                          decoration: BoxDecoration(
-                            color: showPhotoError ? const Color(0xFFFFF5F5) : const Color(0xFFF8F9FA),
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: showPhotoError ? Colors.red.shade400 : Colors.black12,
-                              width: 1.5,
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: RadioListTile<String>(
+                              title: const Text("Found"),
+                              value: 'Found',
+                              groupValue: _status,
+                              activeColor: Colors.green,
+                              contentPadding: EdgeInsets.zero,
+                              onChanged: (value) {
+                                setState(() {
+                                  _status = value!;
+                                });
+                              },
                             ),
                           ),
-                          child: _hasPhoto && _imageFile != null
-                              ? ClipRRect(
-                            borderRadius: BorderRadius.circular(14),
-                            child: Image.file(
-                              _imageFile!,
-                              width: 90,
-                              height: 90,
-                              fit: BoxFit.cover,
+                          Expanded(
+                            child: RadioListTile<String>(
+                              title: const Text("Not Found"),
+                              value: 'Not Found',
+                              groupValue: _status,
+                              activeColor: Colors.green,
+                              contentPadding: EdgeInsets.zero,
+                              onChanged: (value) {
+                                setState(() {
+                                  _status = value!;
+                                });
+                              },
                             ),
-                          )
-                              : Icon(
-                            Icons.add_a_photo_outlined,
-                            color: showPhotoError ? Colors.red.shade400 : Colors.black54,
-                            size: 28,
                           ),
-                        ),
+                        ],
                       ),
-                      if (showPhotoError)
-                        const Padding(
-                          padding: EdgeInsets.only(left: 4, top: 6),
-                          child: Text("Required", style: TextStyle(color: Colors.red, fontSize: 12)),
-                        ),
                     ],
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(28),
+                const SizedBox(height: 24),
+                SewacButton(
+                  text: "SAVE",
+                  onPressed: _handleSave,
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Status Selection",
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF7F8C8D)),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: RadioListTile<String>(
-                            title: const Text("Found"),
-                            value: 'Found',
-                            groupValue: _status,
-                            activeColor: Colors.green,
-                            contentPadding: EdgeInsets.zero,
-                            onChanged: (value) {
-                              setState(() {
-                                _status = value!;
-                              });
-                            },
-                          ),
-                        ),
-                        Expanded(
-                          child: RadioListTile<String>(
-                            title: const Text("Not Found"),
-                            value: 'Not Found',
-                            groupValue: _status,
-                            activeColor: Colors.green,
-                            contentPadding: EdgeInsets.zero,
-                            onChanged: (value) {
-                              setState(() {
-                                _status = value!;
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-              SewacButton(
-                text: "SAVE",
-                onPressed: _handleSave,
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
