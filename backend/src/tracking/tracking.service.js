@@ -83,8 +83,6 @@ const createTrackingLogService =
 
         !workerId ||
 
-        !phoneNumber ||
-
         !status
 
       ) {
@@ -95,6 +93,33 @@ const createTrackingLogService =
 
           message:
             "Required tracking fields missing",
+
+        };
+
+      }
+
+
+
+
+      /*
+      |--------------------------------------------------------------------------
+      | PHONE NUMBER REQUIRED ONLY FOR FOUND
+      |--------------------------------------------------------------------------
+      */
+      if (
+
+        status === "FOUND" &&
+
+        !phoneNumber
+
+      ) {
+
+        return {
+
+          success: false,
+
+          message:
+            "Phone number is required for FOUND status",
 
         };
 
@@ -143,12 +168,16 @@ const createTrackingLogService =
               photoUrl || null,
 
             latitude:
-              latitude !== undefined
+              latitude !== undefined &&
+              latitude !== null &&
+              latitude !== ""
                 ? parseFloat(latitude)
                 : null,
 
             longitude:
-              longitude !== undefined
+              longitude !== undefined &&
+              longitude !== null &&
+              longitude !== ""
                 ? parseFloat(longitude)
                 : null,
 
@@ -185,6 +214,7 @@ const createTrackingLogService =
     }
 
   };
+
 
 
 

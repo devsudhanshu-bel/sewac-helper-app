@@ -21,7 +21,7 @@ const seedModerators = async () => {
 
 
 
-    for (let i = 1; i <= 15; i++) {
+    for (let i = 1; i <= 20; i++) {
 
       const username = `sewac${String(i).padStart(2, "0")}`;
 

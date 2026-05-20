@@ -317,7 +317,11 @@ const createTrackingLog = async (
 
         latitude === undefined ||
 
-        longitude === undefined
+        longitude === undefined ||
+
+        isNaN(parseFloat(latitude)) ||
+
+        isNaN(parseFloat(longitude))
 
       ) {
 
@@ -326,7 +330,7 @@ const createTrackingLog = async (
           success: false,
 
           message:
-            "address, buildingNo, floorNo, remarks, latitude and longitude are required for NOT_FOUND status",
+            "address, buildingNo, floorNo, remarks, valid latitude and valid longitude are required for NOT_FOUND status",
 
         });
 
@@ -477,6 +481,28 @@ const createTrackingLog = async (
 
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | HANDLE SERVICE FAILURE
+    |--------------------------------------------------------------------------
+    */
+    if (!trackingLog.success) {
+
+      return res.status(400).json({
+
+        success: false,
+
+        message:
+          trackingLog.message,
+
+      });
+
+    }
+
+
+
+
+
     return res.status(201).json({
 
       success: true,
@@ -484,7 +510,8 @@ const createTrackingLog = async (
       message:
         "Tracking log created successfully",
 
-      data: trackingLog,
+      data:
+        trackingLog.data,
 
     });
 
