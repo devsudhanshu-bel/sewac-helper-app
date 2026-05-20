@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -882,8 +883,8 @@ class _SurveyScreenState
                                 20),
 
                             child:
-                            Image.network(
-                              _capturedImage!.path,
+                            Image.file(
+                              File(_capturedImage!.path),
                               fit:
                               BoxFit.cover,
                             ),
