@@ -7,7 +7,7 @@ import '../models/tracking_model.dart';
 class TrackingService {
 
   static const String baseUrl =
-      "https://sewac-helper-app.onrender.com/api/v1/tracking/all";
+      "https://pretty-learning-production-c9f0.up.railway.app/api/v1/tracking/all";
 
   static Future<List<TrackingModel>> fetchLogs() async {
 

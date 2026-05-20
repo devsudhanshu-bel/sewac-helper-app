@@ -29,6 +29,10 @@ class _LogsScreenState extends State<LogsScreen>
   List<TrackingModel> _logs = [];
   bool _isLoading = true;
 
+  // Pagination State
+  int _currentPage = 1;
+  static const int _itemsPerPage = 10;
+
   String _selectedWorker = "All Workers";
   String _selectedStatus = "All Status";
 
@@ -99,7 +103,7 @@ class _LogsScreenState extends State<LogsScreen>
       final response =
       await http.post(
         Uri.parse(
-          "https://sewac-helper-app.onrender.com/api/v1/auth/logout",
+          "https://pretty-learning-production-c9f0.up.railway.app/api/v1/auth/logout",
         ),
         headers: {
           "Authorization":
@@ -150,6 +154,7 @@ class _LogsScreenState extends State<LogsScreen>
       return log.status.trim().toUpperCase() == "FOUND";
     }).length;
 
+    // 1. Gather all filtered logs first
     final filteredLogs = _logs.where((log) {
       final searchMatch =
           _searchQuery.isEmpty ||
@@ -179,6 +184,20 @@ class _LogsScreenState extends State<LogsScreen>
           statusMatch &&
           searchMatch;
     }).toList();
+
+    // 2. Calculate Total Pages based on current search/filter criteria
+    final int totalPages = (filteredLogs.length / _itemsPerPage).ceil();
+
+    // Safety check to avoid index breaking when filters shift results down
+    if (_currentPage > totalPages && totalPages > 0) {
+      _currentPage = totalPages;
+    }
+
+    // 3. Extract the exact 10 items for the current active page
+    final paginatedLogs = filteredLogs
+        .skip((_currentPage - 1) * _itemsPerPage)
+        .take(_itemsPerPage)
+        .toList();
 
     return Scaffold(
       extendBodyBehindAppBar: false,
@@ -299,6 +318,7 @@ class _LogsScreenState extends State<LogsScreen>
                                 if (_isTableView && _selectedStatus == "All Status") {
                                   _selectedStatus = "Found";
                                 }
+                                _currentPage = 1; // Reset to page 1 on view switch
                               });
                             },
                             icon: AnimatedSwitcher(
@@ -326,6 +346,7 @@ class _LogsScreenState extends State<LogsScreen>
                   onChanged: (value) {
                     setState(() {
                       _searchQuery = value.trim();
+                      _currentPage = 1; // Reset to page 1 when searching
                     });
                   },
                   decoration: InputDecoration(
@@ -338,6 +359,7 @@ class _LogsScreenState extends State<LogsScreen>
                         _searchController.clear();
                         setState(() {
                           _searchQuery = "";
+                          _currentPage = 1;
                         });
                       },
                     )
@@ -371,6 +393,7 @@ class _LogsScreenState extends State<LogsScreen>
                           onChanged: (val) {
                             setState(() {
                               _selectedWorker = val!;
+                              _currentPage = 1; // Reset to page 1 when filtering
                             });
                           },
                         ),
@@ -387,6 +410,7 @@ class _LogsScreenState extends State<LogsScreen>
                           onChanged: (val) {
                             setState(() {
                               _selectedStatus = val!;
+                              _currentPage = 1; // Reset to page 1 when filtering
                             });
                           },
                         ),
@@ -402,13 +426,53 @@ class _LogsScreenState extends State<LogsScreen>
                     : AnimatedSwitcher(
                   duration: const Duration(milliseconds: 600),
                   child: _isTableView
-                      ? _buildTableView(filteredLogs)
-                      : _buildCardView(filteredLogs),
+                      ? _buildTableView(paginatedLogs) // Uses the sliced 10-item list
+                      : _buildCardView(paginatedLogs),  // Uses the sliced 10-item list
                 ),
               ),
+              // Pagination Controls UI added at the bottom
+              if (!_isLoading && totalPages > 1)
+                _buildPaginationControls(totalPages),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  // A sleek control bar matching your clean theme styling
+  Widget _buildPaginationControls(int totalPages) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+      color: Colors.transparent,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            onPressed: _currentPage > 1
+                ? () => setState(() => _currentPage--)
+                : null,
+            icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 18),
+            color: const Color(0xFF4CAF50),
+            disabledColor: Colors.grey.shade400,
+          ),
+          Text(
+            "Page $_currentPage of $totalPages",
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF2C3E50),
+            ),
+          ),
+          IconButton(
+            onPressed: _currentPage < totalPages
+                ? () => setState(() => _currentPage++)
+                : null,
+            icon: const Icon(Icons.arrow_forward_ios_rounded, size: 18),
+            color: const Color(0xFF4CAF50),
+            disabledColor: Colors.grey.shade400,
+          ),
+        ],
       ),
     );
   }

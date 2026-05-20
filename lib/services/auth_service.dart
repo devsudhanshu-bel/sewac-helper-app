@@ -4,10 +4,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   static const String loginUrl =
-      "https://sewac-helper-app.onrender.com/api/v1/auth/login";
+      "https://pretty-learning-production-c9f0.up.railway.app/api/v1/auth/login";
 
   static const String baseUrl =
-      "https://sewac-helper-app.onrender.com/api/v1/auth";
+      "https://pretty-learning-production-c9f0.up.railway.app/api/v1/auth";
 
   static bool _isRequesting = false;
 

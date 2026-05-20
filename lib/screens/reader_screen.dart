@@ -52,7 +52,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
       final response = await http.post(
         Uri.parse(
-          "https://sewac-helper-app.onrender.com/api/v1/rfid/create/$encodedCode",
+          "https://pretty-learning-production-c9f0.up.railway.app/api/v1/rfid/create/$encodedCode",
         ),
         headers: {
           "Authorization": "Bearer $token",
@@ -148,7 +148,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
       final response = await http.post(
         Uri.parse(
-          "https://sewac-helper-app.onrender.com/api/v1/auth/logout",
+          "https://pretty-learning-production-c9f0.up.railway.app/api/v1/auth/logout",
         ),
         headers: {
           "Authorization": "Bearer $token",

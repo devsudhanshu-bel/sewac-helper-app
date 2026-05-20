@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
-import 'dart:io';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -47,7 +46,7 @@ class _SurveyScreenState
   String? _selectedCity;
   String? _selectedWard;
 
-  File? _capturedImage;
+  XFile? _capturedImage; // Swapped from File to XFile for web platform compilation
   bool _isSubmitting = false;
 
   final ImagePicker _picker =
@@ -110,10 +109,7 @@ class _SurveyScreenState
     if (image != null) {
 
       setState(() {
-
-        _capturedImage =
-            File(
-                image.path);
+        _capturedImage = image;
       });
     }
   }
@@ -427,7 +423,7 @@ class _SurveyScreenState
         "POST",
 
         Uri.parse(
-          "https://sewac-helper-app.onrender.com/api/v1/survey/create",
+          "https://pretty-learning-production-c9f0.up.railway.app/api/v1/survey/create",
         ),
       );
 
@@ -474,12 +470,14 @@ class _SurveyScreenState
           _peopleController.text
               .trim();
 
-      // If a photo was selected, append it. If not, request naturally bypasses it without breaking
+      // Web hosted safe data stream multi-part file handler
       if (_capturedImage != null) {
+        final bytes = await _capturedImage!.readAsBytes();
         request.files.add(
-          await http.MultipartFile.fromPath(
+          http.MultipartFile.fromBytes(
             "buildingPhoto",
-            _capturedImage!.path,
+            bytes,
+            filename: _capturedImage!.name,
             contentType: MediaType('image', 'jpeg'),
           ),
         );
@@ -591,7 +589,7 @@ class _SurveyScreenState
       await http.post(
 
         Uri.parse(
-          "https://sewac-helper-app.onrender.com/api/v1/auth/logout",
+          "https://pretty-learning-production-c9f0.up.railway.app/api/v1/auth/logout",
         ),
 
         headers: {
@@ -836,7 +834,7 @@ class _SurveyScreenState
                         alignment:
                         Alignment.centerLeft,
                         child: Text(
-                          "Photo of Building", // Removed asterisk '*' from label text to show it is unmandatory
+                          "Photo of Building",
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight:
@@ -884,8 +882,8 @@ class _SurveyScreenState
                                 20),
 
                             child:
-                            Image.file(
-                              _capturedImage!,
+                            Image.network(
+                              _capturedImage!.path,
                               fit:
                               BoxFit.cover,
                             ),

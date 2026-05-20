@@ -3,7 +3,6 @@ import '../widgets/sewac_button.dart';
 import 'login_screen.dart';
 import '../widgets/sewac_background.dart';
 import '../widgets/sewac_header.dart';
-import 'dart:io';
 
 // API imports
 import 'dart:convert';
@@ -29,7 +28,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String _adminName = "A";
   bool _hasPhoto = false;
 
-  File? _imageFile;
+  XFile? _imageFile;
 
   Future<void> _capturePhoto() async {
     try {
@@ -43,7 +42,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
       if (pickedFile != null) {
         setState(() {
-          _imageFile = File(pickedFile.path);
+          _imageFile = pickedFile;
           _hasPhoto = true;
         });
         print("Camera photo captured: ${pickedFile.path}");
@@ -395,6 +394,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString("auth_token") ?? "";
 
+      final activeWorkerId = prefs.getString("workerId") ??
+          prefs.getString("worker_id") ??
+          prefs.getString("username") ?? "";
+
       http.Response? response;
 
       if (_status == "Not Found") {
@@ -406,6 +409,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         request.headers["Authorization"] = "Bearer $token";
 
         request.fields["status"] = "NOT_FOUND";
+        request.fields["workerId"] = activeWorkerId.trim();
         request.fields["address"] = _addressController.text.trim();
         request.fields["buildingNo"] = _buildingController.text.trim();
         request.fields["floorNo"] = _floorController.text.trim();
@@ -414,10 +418,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         request.fields["longitude"] = longitude != null ? longitude.toString() : "";
 
         if (_imageFile != null) {
+          final bytes = await _imageFile!.readAsBytes();
           request.files.add(
-            await http.MultipartFile.fromPath(
+            http.MultipartFile.fromBytes(
               "photo",
-              _imageFile!.path,
+              bytes,
+              filename: _imageFile!.name,
               contentType: MediaType('image', 'jpeg'),
             ),
           );
@@ -434,7 +440,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         final bool absoluteWetEmpty = savedWet.isEmpty || savedWet == "Select";
         final bool absoluteDryEmpty = savedDry.isEmpty || savedDry == "Select";
 
-        // Step 1: Attempt to map WET RFID if provided
         if (!absoluteWetEmpty) {
           final wetMapResponse = await http.patch(
             Uri.parse("https://sewac-helper-app.onrender.com/api/v1/rfid/map"),
@@ -446,9 +451,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             }),
           );
 
-          // If mapping failed, decode backend message and intercept early
           if (wetMapResponse.statusCode < 200 || wetMapResponse.statusCode >= 300) {
-            if (mounted) Navigator.pop(context); // Dismiss loading spinner
+            if (mounted) Navigator.pop(context);
             try {
               final errorJson = jsonDecode(wetMapResponse.body);
               final serverMsg = errorJson["message"] ?? "Failed to map Wet RFID";
@@ -460,11 +464,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 const SnackBar(content: Text("Failed to map Wet RFID"), backgroundColor: Colors.red),
               );
             }
-            return; // STOP execution completely so it doesn't get tracked or saved!
+            return;
           }
         }
 
-        // Step 2: Attempt to map DRY RFID if provided
         if (!absoluteDryEmpty) {
           final dryMapResponse = await http.patch(
             Uri.parse("https://sewac-helper-app.onrender.com/api/v1/rfid/map"),
@@ -476,7 +479,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
             }),
           );
 
-          // Intercept Dry mapping failures early
           if (dryMapResponse.statusCode < 200 || dryMapResponse.statusCode >= 300) {
             if (mounted) Navigator.pop(context);
             try {
@@ -494,7 +496,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           }
         }
 
-        // Step 3: Finalize Tracking records only if mappings succeed
         response = await http.post(
           Uri.parse("https://sewac-helper-app.onrender.com/api/v1/tracking/create"),
           headers: headers,
@@ -502,6 +503,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             "slno": absoluteWetEmpty ? "N/A" : savedWet,
             "phoneNumber": savedPhone,
             "citizenName": savedName,
+            "workerId": activeWorkerId.trim(),
             "drySlno": absoluteDryEmpty ? "N/A" : savedDry,
             "wetSlno": absoluteWetEmpty ? "N/A" : savedWet,
             "status": "FOUND",
@@ -509,7 +511,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         );
       }
 
-      if (mounted) Navigator.pop(context); // Dismiss spinner
+      if (mounted) Navigator.pop(context);
 
       if (response != null && response.statusCode >= 200 && response.statusCode < 300) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -792,8 +794,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             child: _hasPhoto && _imageFile != null
                                 ? ClipRRect(
                               borderRadius: BorderRadius.circular(14),
-                              child: Image.file(
-                                _imageFile!,
+                              child: Image.network(
+                                _imageFile!.path,
                                 width: 90,
                                 height: 90,
                                 fit: BoxFit.cover,
