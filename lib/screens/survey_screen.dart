@@ -424,7 +424,7 @@ class _SurveyScreenState
         "POST",
 
         Uri.parse(
-          "https://pretty-learning-production-c9f0.up.railway.app/api/v1/survey/create",
+          "https://sewac-helper-backend.up.railway.app/api/v1/survey/create",
         ),
       );
 
@@ -590,7 +590,7 @@ class _SurveyScreenState
       await http.post(
 
         Uri.parse(
-          "https://pretty-learning-production-c9f0.up.railway.app/api/v1/auth/logout",
+          "https://sewac-helper-backend.up.railway.app/api/v1/auth/logout",
         ),
 
         headers: {

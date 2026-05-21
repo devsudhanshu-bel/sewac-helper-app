@@ -103,7 +103,7 @@ class _LogsScreenState extends State<LogsScreen>
       final response =
       await http.post(
         Uri.parse(
-          "https://pretty-learning-production-c9f0.up.railway.app/api/v1/auth/logout",
+          "https://sewac-helper-backend.up.railway.app/api/v1/auth/logout",
         ),
         headers: {
           "Authorization":
