@@ -1,7 +1,6 @@
 require("dotenv").config();
 
 const http = require("http");
-
 const { Server } = require("socket.io");
 
 const app = require("./app");
@@ -242,6 +241,7 @@ const startServer =
 
       server.listen(
         PORT,
+        "0.0.0.0",
         () => {
 
           console.log(
