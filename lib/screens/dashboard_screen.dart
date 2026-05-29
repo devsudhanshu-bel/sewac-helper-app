@@ -321,6 +321,168 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
+  Widget _buildVerificationRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: Color(0xFF7F8C8D),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF2C3E50),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showVerificationDialog() {
+    final String savedWet = _selectedWetRFID ?? _wetRfidSearchController.text.trim();
+    final String savedDry = _selectedDryRFID ?? _dryRfidSearchController.text.trim();
+    final String savedPhone = _selectedPhone ?? _phoneSearchController.text.trim();
+    final String savedName = _selectedName ?? _nameSearchController.text.trim();
+
+    final String formattedWet = (savedWet.isEmpty || savedWet == "Select") ? "Not Selected" : savedWet;
+    final String formattedDry = (savedDry.isEmpty || savedDry == "Select") ? "Not Selected" : savedDry;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(28.0),
+          ),
+          backgroundColor: Colors.white,
+          contentPadding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF00A236).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(
+                        Icons.assignment_turned_in_outlined,
+                        color: Color(0xFF00A236),
+                        size: 26,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    const Text(
+                      "Verify Details",
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF2C3E50),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                const Divider(height: 1, color: Colors.black12),
+                const SizedBox(height: 8),
+                _buildVerificationRow("Citizen Name", savedName),
+                _buildVerificationRow("Phone Number", savedPhone),
+                _buildVerificationRow("Wet RFID", formattedWet),
+                _buildVerificationRow("Dry RFID", formattedDry),
+              ],
+            ),
+          ),
+          actionsPadding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          actions: [
+            Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: 48,
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Colors.black12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text(
+                        "CANCEL",
+                        style: TextStyle(
+                          color: Colors.black54,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: SizedBox(
+                    height: 48,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFFFFA000),
+                            Color(0xFF4CAF50),
+                          ],
+                        ),
+                      ),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          _handleSave();
+                        },
+                        child: const Center(
+                          child: Text(
+                            "CONFIRM",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<void> _handleSave() async {
     final String savedWet = _selectedWetRFID ?? _wetRfidSearchController.text.trim();
     final String savedDry = _selectedDryRFID ?? _dryRfidSearchController.text.trim();
@@ -871,7 +1033,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 const SizedBox(height: 24),
                 SewacButton(
                   text: "SAVE",
-                  onPressed: _handleSave,
+                  onPressed: () {
+                    if (_status == "Found") {
+                      final String savedWet = _selectedWetRFID ?? _wetRfidSearchController.text.trim();
+                      final String savedDry = _selectedDryRFID ?? _dryRfidSearchController.text.trim();
+                      final String savedPhone = _selectedPhone ?? _phoneSearchController.text.trim();
+                      final String savedName = _selectedName ?? _nameSearchController.text.trim();
+
+                      final bool wetEmpty = savedWet.isEmpty || savedWet == "Select";
+                      final bool dryEmpty = savedDry.isEmpty || savedDry == "Select";
+
+                      if ((wetEmpty && dryEmpty) ||
+                          savedPhone.isEmpty || savedPhone == "Select" ||
+                          savedName.isEmpty || savedName == "Select") {
+                        setState(() {
+                          _showValidation = true;
+                        });
+                        return;
+                      }
+
+                      _showVerificationDialog();
+                    } else {
+                      _handleSave();
+                    }
+                  },
                 ),
               ],
             ),

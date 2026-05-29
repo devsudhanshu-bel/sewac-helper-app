@@ -15,33 +15,18 @@ class SurveyScreen extends StatefulWidget {
   const SurveyScreen({super.key});
 
   @override
-  State<SurveyScreen> createState() =>
-      _SurveyScreenState();
+  State<SurveyScreen> createState() => _SurveyScreenState();
 }
 
-class _SurveyScreenState
-    extends State<SurveyScreen> {
+class _SurveyScreenState extends State<SurveyScreen> {
+  final _formKey = GlobalKey<FormState>();
 
-  final _formKey =
-  GlobalKey<FormState>();
-
-  final _areaController =
-  TextEditingController();
-
-  final _buildingController =
-  TextEditingController();
-
-  final _floorController =
-  TextEditingController();
-
-  final _nameController =
-  TextEditingController();
-
-  final _phoneController =
-  TextEditingController();
-
-  final _peopleController =
-  TextEditingController();
+  final _areaController = TextEditingController();
+  final _buildingController = TextEditingController();
+  final _floorController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _peopleController = TextEditingController();
 
   String? _selectedHH;
   String? _selectedCity;
@@ -50,17 +35,14 @@ class _SurveyScreenState
   XFile? _capturedImage;
   bool _isSubmitting = false;
 
-  final ImagePicker _picker =
-  ImagePicker();
+  final ImagePicker _picker = ImagePicker();
 
-  final List<String>
-  hhTypes = [
+  final List<String> hhTypes = [
     "Owner",
     "Tenant",
   ];
 
-  final Map<String, bool>
-  wasteOptions = {
+  final Map<String, bool> wasteOptions = {
     "Individual HHs": false,
     "MDUs": false,
     "PG": false,
@@ -74,7 +56,7 @@ class _SurveyScreenState
     "Others": false,
   };
 
-  // Autocomplete search controllers for RFID fields (Reused from Dashboard)
+  // Autocomplete search controllers for RFID fields
   final TextEditingController _wetRfidSearchController = TextEditingController();
   final TextEditingController _dryRfidSearchController = TextEditingController();
 
@@ -83,20 +65,24 @@ class _SurveyScreenState
   String? _selectedDryRFID;
   bool _showRfidValidationError = false;
 
-  // Wet available filtering exclusions logic matching DashboardScreen
+  // Wet available filtering exclusions logic
   List<String> get _wetAvailableRfids {
     return _rfidDropdownItems.where((item) {
       if (item == "Select") return true;
-      final currentDry = _selectedDryRFID ?? _dryRfidSearchController.text.trim();
+      final currentDry = (_selectedDryRFID != null && _selectedDryRFID != "Select")
+          ? _selectedDryRFID!
+          : _dryRfidSearchController.text.trim();
       return item != currentDry;
     }).toList();
   }
 
-  // Dry available filtering exclusions logic matching DashboardScreen
+  // Dry available filtering exclusions logic
   List<String> get _dryAvailableRfids {
     return _rfidDropdownItems.where((item) {
       if (item == "Select") return true;
-      final currentWet = _selectedWetRFID ?? _wetRfidSearchController.text.trim();
+      final currentWet = (_selectedWetRFID != null && _selectedWetRFID != "Select")
+          ? _selectedWetRFID!
+          : _wetRfidSearchController.text.trim();
       return item != currentWet;
     }).toList();
   }
@@ -181,233 +167,175 @@ class _SurveyScreenState
     setState(() {});
   }
 
-  Widget _buildInput({
-    required String label,
-    required TextEditingController controller,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w700,
-            color: Color(0xFF2C3E50),
-          ),
-        ),
-        const SizedBox(height: 8),
-        TextFormField(
-          controller: controller,
-          validator: (value) {
-            if (value == null || value.trim().isEmpty) {
-              return "Required";
-            }
-            return null;
-          },
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Colors.white,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
+  Widget _buildVerificationRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: Color(0xFF7F8C8D),
             ),
           ),
-        ),
-        const SizedBox(height: 20),
-      ],
-    );
-  }
-
-  Widget _buildDropdown({
-    required String label,
-    required String? value,
-    required List<String> items,
-    required Function(String?) onChanged,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w700,
-            color: Color(0xFF2C3E50),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Material(
-          color: Colors.transparent,
-          child: DropdownButtonFormField<String>(
-            value: value,
-            isExpanded: true,
-            menuMaxHeight: 220,
-            borderRadius: BorderRadius.circular(14),
-            validator: (val) {
-              if (val == null) {
-                return "Required";
-              }
-              return null;
-            },
-            icon: const Icon(Icons.keyboard_arrow_down),
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              filled: true,
-              fillColor: Colors.white,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-              ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF2C3E50),
             ),
-            items: items.map((item) {
-              return DropdownMenuItem(
-                value: item,
-                child: Text(item),
-              );
-            }).toList(),
-            onChanged: onChanged,
           ),
-        ),
-        const SizedBox(height: 20),
-      ],
+        ],
+      ),
     );
   }
 
-  // Exact UI build searchable dropdown implementation matching Dashboard style rules
-  Widget _buildSearchDropdown({
-    required String label,
-    required String hint,
-    required TextEditingController controller,
-    required List<String> items,
-    required IconData icon,
-    required Function(String?, TextEditingController) onSelected,
-  }) {
-    final bool hasCustomError = _showRfidValidationError &&
-        (controller.text.trim().isEmpty || controller.text.trim() == "Select");
+  void _showVerificationDialog() {
+    final String savedWet = _selectedWetRFID ?? _wetRfidSearchController.text.trim();
+    final String savedDry = _selectedDryRFID ?? _dryRfidSearchController.text.trim();
+    final String savedPhone = _phoneController.text.trim();
+    final String savedName = _nameController.text.trim();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w700,
-            color: Color(0xFF2C3E50),
+    final String formattedWet = (savedWet.isEmpty || savedWet == "Select") ? "Not Selected" : savedWet;
+    final String formattedDry = (savedDry.isEmpty || savedDry == "Select") ? "Not Selected" : savedDry;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(28.0),
           ),
-        ),
-        const SizedBox(height: 8),
-        Autocomplete<String>(
-          optionsBuilder: (TextEditingValue value) {
-            List<String> filtered;
-            if (value.text.isEmpty) {
-              filtered = List.from(items);
-            } else {
-              filtered = items
-                  .where((item) => item.toLowerCase().contains(value.text.toLowerCase()))
-                  .toList();
-            }
-
-            final hasSelect = filtered.contains("Select");
-            filtered.remove("Select");
-            filtered.sort((a, b) {
-              final aNum = int.tryParse(a);
-              final bNum = int.tryParse(b);
-              if (aNum != null && bNum != null) return aNum.compareTo(bNum);
-              return a.compareTo(b);
-            });
-
-            if (hasSelect) filtered.insert(0, "Select");
-            return filtered;
-          },
-          optionsViewBuilder: (context, onAutoCompleteSelect, options) {
-            return Align(
-              alignment: Alignment.topLeft,
-              child: Material(
-                elevation: 4.0,
-                borderRadius: BorderRadius.circular(20),
-                color: Colors.white,
-                child: Container(
-                  constraints: const BoxConstraints(maxHeight: 200),
-                  width: MediaQuery.of(context).size.width - 80,
-                  child: ListView.builder(
-                    padding: EdgeInsets.zero,
-                    shrinkWrap: true,
-                    itemCount: options.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      final String option = options.elementAt(index);
-                      return ListTile(
-                        title: Text(option, style: const TextStyle(color: Colors.black87)),
-                        onTap: () => onAutoCompleteSelect(option),
-                      );
-                    },
-                  ),
+          backgroundColor: Colors.white,
+          contentPadding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.green.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(
+                        Icons.assignment_turned_in_outlined,
+                        color: Colors.green,
+                        size: 26,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    const Text(
+                      "Verify Details",
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF2C3E50),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            );
-          },
-          fieldViewBuilder: (context, textController, focusNode, onEditingComplete) {
-            if (textController.text != controller.text) {
-              textController.value = TextEditingValue(
-                text: controller.text,
-                selection: TextSelection.collapsed(offset: controller.text.length),
-              );
-            }
-
-            return TextField(
-              controller: textController,
-              focusNode: focusNode,
-              onChanged: (val) {
-                controller.text = val;
-                setState(() {});
-              },
-              onEditingComplete: onEditingComplete,
-              decoration: InputDecoration(
-                hintText: hint,
-                hintStyle: const TextStyle(color: Colors.black38),
-                prefixIcon: Icon(icon, color: Colors.black54),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                filled: true,
-                fillColor: Colors.white,
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(
-                    color: hasCustomError ? Colors.red.shade400 : Colors.grey.shade400,
-                    width: hasCustomError ? 1.5 : 1.0,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(
-                    color: hasCustomError ? Colors.red.shade400 : Colors.green,
-                    width: 1.5,
-                  ),
-                ),
-              ),
-            );
-          },
-          onSelected: (val) {
-            onSelected(val, controller);
-          },
-        ),
-        if (hasCustomError)
-          const Padding(
-            padding: EdgeInsets.only(left: 12, top: 4),
-            child: Text("Required", style: TextStyle(color: Colors.red, fontSize: 12)),
+                const SizedBox(height: 16),
+                const Divider(height: 1, color: Colors.black12),
+                const SizedBox(height: 8),
+                _buildVerificationRow("Citizen Name", savedName),
+                _buildVerificationRow("Phone Number", savedPhone),
+                _buildVerificationRow("Wet RFID", formattedWet),
+                _buildVerificationRow("Dry RFID", formattedDry),
+              ],
+            ),
           ),
-        const SizedBox(height: 20),
-      ],
+          actionsPadding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          actions: [
+            Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: 56,
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Colors.black12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text(
+                        "CANCEL",
+                        style: TextStyle(
+                          color: Colors.black54,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: SizedBox(
+                    height: 56,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFFFFA000),
+                            Color(0xFF4CAF50),
+                          ],
+                        ),
+                      ),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          _handleSurveySubmissionExecution();
+                        },
+                        child: const Center(
+                          child: Text(
+                            "CONFIRM",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ],
+        );
+      },
     );
   }
 
-  Future<void> _submitSurvey() async {
+  void _handleSubmitClick() {
     if (_isSubmitting) {
       return;
     }
 
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
+    final bool isFormValid = _formKey.currentState!.validate();
 
     final String savedWet = _selectedWetRFID ?? _wetRfidSearchController.text.trim();
     final String savedDry = _selectedDryRFID ?? _dryRfidSearchController.text.trim();
@@ -419,16 +347,19 @@ class _SurveyScreenState
       setState(() {
         _showRfidValidationError = true;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please map at least one Wet or Dry RFID tag"),
-        ),
-      );
-      return;
     } else {
       setState(() {
         _showRfidValidationError = false;
       });
+    }
+
+    if (!isFormValid || (wetEmpty && dryEmpty)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please fill all required parameters accurately"),
+        ),
+      );
+      return;
     }
 
     final hasWasteSelected = wasteOptions.values.any((value) => value);
@@ -439,9 +370,18 @@ class _SurveyScreenState
       return;
     }
 
+    _showVerificationDialog();
+  }
+
+  Future<void> _handleSurveySubmissionExecution() async {
     setState(() {
       _isSubmitting = true;
     });
+
+    final String savedWet = _selectedWetRFID ?? _wetRfidSearchController.text.trim();
+    final String savedDry = _selectedDryRFID ?? _dryRfidSearchController.text.trim();
+    final bool wetEmpty = savedWet.isEmpty || savedWet == "Select";
+    final bool dryEmpty = savedDry.isEmpty || savedDry == "Select";
 
     final selectedWasteTypes = wasteOptions.entries
         .where((entry) => entry.value)
@@ -607,6 +547,240 @@ class _SurveyScreenState
     );
   }
 
+  Widget _buildInput({
+    required String label,
+    required TextEditingController controller,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF2C3E50),
+          ),
+        ),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: controller,
+          validator: (value) {
+            if (value == null || value.trim().isEmpty) {
+              return "Required";
+            }
+            return null;
+          },
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
+  Widget _buildDropdown({
+    required String label,
+    required String? value,
+    required List<String> items,
+    required Function(String?) onChanged,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF2C3E50),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Material(
+          color: Colors.transparent,
+          child: DropdownButtonFormField<String>(
+            value: value,
+            isExpanded: true,
+            menuMaxHeight: 220,
+            borderRadius: BorderRadius.circular(14),
+            validator: (val) {
+              if (val == null) {
+                return "Required";
+              }
+              return null;
+            },
+            icon: const Icon(Icons.keyboard_arrow_down),
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              filled: true,
+              fillColor: Colors.white,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+            ),
+            items: items.map((item) {
+              return DropdownMenuItem(
+                value: item,
+                child: Text(item),
+              );
+            }).toList(),
+            onChanged: onChanged,
+          ),
+        ),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
+  Widget _buildSearchDropdown({
+    required String label,
+    required String hint,
+    required TextEditingController controller,
+    required List<String> items,
+    required IconData icon,
+    required Function(String?, TextEditingController) onSelected,
+  }) {
+    final bool hasCustomError = _showRfidValidationError &&
+        (controller.text.trim().isEmpty || controller.text.trim() == "Select");
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF2C3E50),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Autocomplete<String>(
+          optionsBuilder: (TextEditingValue value) {
+            List<String> filtered;
+            if (value.text.isEmpty) {
+              filtered = List.from(items);
+            } else {
+              filtered = items
+                  .where((item) => item.toLowerCase().contains(value.text.toLowerCase()))
+                  .toList();
+            }
+
+            final hasSelect = filtered.contains("Select");
+            filtered.remove("Select");
+            filtered.sort((a, b) {
+              final aNum = int.tryParse(a);
+              final bNum = int.tryParse(b);
+              if (aNum != null && bNum != null) return aNum.compareTo(bNum);
+              return a.compareTo(b);
+            });
+
+            if (hasSelect) filtered.insert(0, "Select");
+            return filtered;
+          },
+          optionsViewBuilder: (context, onAutoCompleteSelect, options) {
+            return Align(
+              alignment: Alignment.topLeft,
+              child: Material(
+                elevation: 4.0,
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.white,
+                child: Container(
+                  constraints: const BoxConstraints(maxHeight: 200),
+                  width: MediaQuery.of(context).size.width - 80,
+                  child: ListView.builder(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    itemCount: options.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final String option = options.elementAt(index);
+                      return ListTile(
+                        title: Text(option, style: const TextStyle(color: Colors.black87)),
+                        onTap: () => onAutoCompleteSelect(option),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            );
+          },
+          fieldViewBuilder: (context, textController, focusNode, onEditingComplete) {
+            if (textController.text != controller.text) {
+              textController.value = TextEditingValue(
+                text: controller.text,
+                selection: TextSelection.collapsed(offset: controller.text.length),
+              );
+            }
+
+            return TextField(
+              controller: textController,
+              focusNode: focusNode,
+              onChanged: (val) {
+                controller.text = val;
+
+                // Keep selected model data updated inline with input changes
+                if (controller == _wetRfidSearchController) {
+                  _selectedWetRFID = (val.trim().isEmpty || val.trim() == "Select") ? null : val.trim();
+                } else if (controller == _dryRfidSearchController) {
+                  _selectedDryRFID = (val.trim().isEmpty || val.trim() == "Select") ? null : val.trim();
+                }
+
+                if (val.trim().isNotEmpty && val.trim() != "Select") {
+                  if (_showRfidValidationError) {
+                    setState(() {
+                      _showRfidValidationError = false;
+                    });
+                  }
+                } else {
+                  setState(() {});
+                }
+              },
+              onEditingComplete: onEditingComplete,
+              decoration: InputDecoration(
+                hintText: hint,
+                hintStyle: const TextStyle(color: Colors.black38),
+                prefixIcon: Icon(icon, color: Colors.black54),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                filled: true,
+                fillColor: Colors.white,
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide(
+                    color: hasCustomError ? Colors.red.shade400 : Colors.black12,
+                    width: hasCustomError ? 1.5 : 1.0,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide(
+                    color: hasCustomError ? Colors.red.shade400 : Colors.green,
+                    width: 1.5,
+                  ),
+                ),
+              ),
+            );
+          },
+          onSelected: (val) {
+            onSelected(val, controller);
+          },
+        ),
+        if (hasCustomError)
+          const Padding(
+            padding: EdgeInsets.only(left: 12, top: 4),
+            child: Text("Required", style: TextStyle(color: Colors.red, fontSize: 12)),
+          ),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -723,7 +897,6 @@ class _SurveyScreenState
                         controller: _phoneController,
                       ),
 
-                      // Search drop-down text controller inputs with clean Select reset mappings
                       _buildSearchDropdown(
                         label: "Wet Waste RFID *",
                         hint: "Search Wet RFID",
@@ -742,6 +915,7 @@ class _SurveyScreenState
                               currentController.text = val ?? "";
                               _wetRfidSearchController.text = val ?? "";
                             }
+                            _showRfidValidationError = false;
                           });
                         },
                       ),
@@ -763,6 +937,7 @@ class _SurveyScreenState
                               currentController.text = val ?? "";
                               _dryRfidSearchController.text = val ?? "";
                             }
+                            _showRfidValidationError = false;
                           });
                         },
                       ),
@@ -822,7 +997,7 @@ class _SurveyScreenState
                             ),
                           ),
                           child: ElevatedButton(
-                            onPressed: _isSubmitting ? null : _submitSurvey,
+                            onPressed: _handleSubmitClick,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.transparent,
                               shadowColor: Colors.transparent,
