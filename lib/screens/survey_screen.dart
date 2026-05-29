@@ -3,6 +3,7 @@ import 'login_screen.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
+import 'package:flutter/services.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -389,6 +390,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
         .join(", ");
 
     final phoneNumberEnteredInSurvey = _phoneController.text.trim();
+    final citizenNameEnteredInSurvey = _nameController.text.trim();
 
     try {
       var request = http.MultipartRequest(
@@ -403,7 +405,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
       request.fields["houseNumber"] = _buildingController.text.trim();
       request.fields["floorNumber"] = _floorController.text.trim();
       request.fields["householdType"] = _selectedHH ?? "";
-      request.fields["personName"] = _nameController.text.trim();
+      request.fields["personName"] = citizenNameEnteredInSurvey;
       request.fields["contactNumber"] = phoneNumberEnteredInSurvey;
       request.fields["numberOfPeople"] = _peopleController.text.trim();
 
@@ -488,6 +490,60 @@ class _SurveyScreenState extends State<SurveyScreen> {
             });
             return;
           }
+        }
+
+        String workerId = "";
+        try {
+          final parts = token.split('.');
+          if (parts.length == 3) {
+            final payloadJson = utf8.decode(base64Url.decode(base64Url.normalize(parts[1])));
+            final payloadMap = jsonDecode(payloadJson);
+            workerId = payloadMap["id"]?.toString() ?? "";
+          }
+        } catch (e) {
+          debugPrint("Error parsing token: $e");
+        }
+
+        final trackingPayload = {
+          "slno": wetEmpty ? "N/A" : savedWet,
+          "phoneNumber": phoneNumberEnteredInSurvey,
+          "citizenName": citizenNameEnteredInSurvey,
+          "workerId": workerId.trim(),
+          "drySlno": dryEmpty ? "N/A" : savedDry,
+          "wetSlno": wetEmpty ? "N/A" : savedWet,
+          "status": "FOUND",
+        };
+
+        print("TRACKING PAYLOAD =>");
+        print(trackingPayload);
+
+        final trackingResponse = await http.post(
+          Uri.parse("https://sewac-helper-backend.up.railway.app/api/v1/tracking/create"),
+          headers: headers,
+          body: jsonEncode(trackingPayload),
+        );
+
+        print("TRACKING STATUS => ${trackingResponse.statusCode}");
+        print("TRACKING BODY => ${trackingResponse.body}");
+
+        if (trackingResponse.statusCode < 200 || trackingResponse.statusCode >= 300) {
+          try {
+            final errorJson = jsonDecode(trackingResponse.body);
+            final serverMsg = errorJson["message"] ??
+                errorJson["error"] ??
+                "Tracking log creation failed";
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(serverMsg), backgroundColor: Colors.red),
+            );
+          } catch (_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Tracking log creation failed"), backgroundColor: Colors.red),
+            );
+          }
+          setState(() {
+            _isSubmitting = false;
+          });
+          return;
         }
 
         _clearForm();
@@ -888,13 +944,97 @@ class _SurveyScreenState extends State<SurveyScreen> {
                           });
                         },
                       ),
-                      _buildInput(
-                        label: "Name of Person *",
-                        controller: _nameController,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Name of Person *",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF2C3E50),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          TextFormField(
+                            controller: _nameController,
+                            keyboardType: TextInputType.name,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                RegExp(r'[a-zA-Z ]'),
+                              ),
+                            ],
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return "Required";
+                              }
+
+                              if (!RegExp(r'^[A-Za-z ]+$').hasMatch(value.trim())) {
+                                return "Only alphabets allowed";
+                              }
+
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 16,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                        ],
                       ),
-                      _buildInput(
-                        label: "Contact Number *",
-                        controller: _phoneController,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Contact Number *",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF2C3E50),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          TextFormField(
+                            controller: _phoneController,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(10),
+                            ],
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return "Required";
+                              }
+
+                              if (!RegExp(r'^[0-9]{10}$').hasMatch(value.trim())) {
+                                return "Enter exactly 10 digits";
+                              }
+
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              prefixText: "+91 ",
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 16,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                        ],
                       ),
 
                       _buildSearchDropdown(
