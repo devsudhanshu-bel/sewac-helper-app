@@ -27,6 +27,17 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   String _adminName = "A";
+  int? _assignedStartRFID;
+  int? _assignedEndRFID;
+  List<String> _assignedMappedTagsList = [];
+  bool _isRangeExhausted = false;
+
+  int get _availableTags {
+    if (_assignedStartRFID == null || _assignedEndRFID == null) return 0;
+
+    return ((_assignedEndRFID! - _assignedStartRFID!) + 1) -
+        _assignedMappedTagsList.length;
+  }
   bool _hasPhoto = false;
 
   XFile? _imageFile;
@@ -64,6 +75,194 @@ class _DashboardScreenState extends State<DashboardScreen> {
     setState(() {
       _adminName = prefs.getString("admin_name") ?? "A";
     });
+  }
+
+  Future<void> _loadRFIDRange() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final workerId =
+        prefs.getString("workerId") ??
+            prefs.getString("worker_id") ??
+            prefs.getString("username") ??
+            "";
+
+    final start =
+    prefs.getInt("assignedStartRFID_$workerId");
+
+    final end =
+    prefs.getInt("assignedEndRFID_$workerId");
+
+    final mapped =
+        prefs.getStringList(
+          "assignedMappedTagsList_$workerId",
+        ) ?? [];
+
+    setState(() {
+      _assignedStartRFID = start;
+      _assignedEndRFID = end;
+      _assignedMappedTagsList = mapped;
+    });
+
+    if (start == null || end == null) {
+      _showRFIDRangeDialog();
+      return;
+    }
+
+    if (_availableTags <= 0) {
+      _showRFIDExhaustedDialog();
+    }
+  }
+
+  void _showRFIDRangeDialog() {
+    final startController = TextEditingController();
+    final endController = TextEditingController();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) {
+        bool startError = false;
+        bool endError = false;
+        String? errorMessage;
+
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(28),
+              ),
+              title: const Text(
+                "Assign RFID Range",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: startController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: "Start RFID",
+                      errorText: startError ? "Required" : null,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: endController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: "End RFID",
+                      errorText: endError ? "Required" : null,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                  ),
+                  if (errorMessage != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Text(
+                        errorMessage!,
+                        style: const TextStyle(
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              actions: [
+                ElevatedButton(
+                  onPressed: () async {
+                    setDialogState(() {
+                      startError = startController.text.trim().isEmpty;
+                      endError = endController.text.trim().isEmpty;
+                      errorMessage = null;
+                    });
+
+                    if (startError || endError) return;
+
+                    final start =
+                    int.tryParse(startController.text.trim());
+
+                    final end =
+                    int.tryParse(endController.text.trim());
+
+                    if (start == null || end == null) {
+                      setDialogState(() {
+                        errorMessage =
+                        "Please enter valid RFID numbers";
+                      });
+                      return;
+                    }
+
+                    if (start >= end) {
+                      setDialogState(() {
+                        errorMessage =
+                        "End RFID must be greater than Start RFID";
+                      });
+                      return;
+                    }
+
+                    final prefs =
+                    await SharedPreferences.getInstance();
+
+                    final workerId =
+                        prefs.getString("workerId") ??
+                            prefs.getString("worker_id") ??
+                            prefs.getString("username") ??
+                            "";
+
+                    await prefs.setInt(
+                      "assignedStartRFID_$workerId",
+                      start,
+                    );
+
+                    await prefs.setInt(
+                      "assignedEndRFID_$workerId",
+                      end,
+                    );
+
+                    if (_isRangeExhausted) {
+                      await prefs.setStringList(
+                        "assignedMappedTagsList_$workerId",
+                        [],
+                      );
+
+                      setState(() {
+                        _assignedMappedTagsList = [];
+                      });
+
+                      _isRangeExhausted = false;
+                    }
+
+                    setState(() {
+                      _assignedStartRFID = start;
+                      _assignedEndRFID = end;
+                    });
+
+                    Navigator.pop(context);
+
+                    await _loadAllDropdownData();
+                  },
+                  child: const Text("SAVE"),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showRFIDExhaustedDialog() {
+    _isRangeExhausted = true;
+    _showRFIDRangeDialog();
   }
 
   Future<Map<String, String>> _getHeaders() async {
@@ -139,8 +338,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    _loadAdminName();
-    _loadAllDropdownData();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _loadAdminName();
+      await _loadRFIDRange();
+      await _loadAllDropdownData();
+    });
   }
 
   @override
@@ -174,9 +377,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
         final result = jsonDecode(response.body);
         if (result["success"] == true) {
           final List<dynamic> rfids = result["data"];
+          final filteredRFIDs = rfids.where((item) {
+            final value = int.tryParse(item["slno"].toString());
+
+            if (value == null) return false;
+            if (_assignedStartRFID == null) return false;
+            if (_assignedEndRFID == null) return false;
+
+            return value >= _assignedStartRFID! &&
+                value <= _assignedEndRFID!;
+          }).toList();
+
           final List<String> newList = [
             "Select",
-            ...rfids.map((item) => item["slno"].toString()),
+            ...filteredRFIDs.map(
+                  (item) => item["slno"].toString(),
+            ),
           ];
 
           setState(() {
@@ -692,6 +908,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
           });
         }
 
+        final prefs = await SharedPreferences.getInstance();
+
+        if (savedWet.isNotEmpty &&
+            savedWet != "Select" &&
+            !_assignedMappedTagsList.contains(savedWet)) {
+          _assignedMappedTagsList.add(savedWet);
+        }
+
+        if (savedDry.isNotEmpty &&
+            savedDry != "Select" &&
+            !_assignedMappedTagsList.contains(savedDry)) {
+          _assignedMappedTagsList.add(savedDry);
+        }
+
+        await prefs.setStringList(
+          "assignedMappedTagsList_$activeWorkerId",
+          _assignedMappedTagsList,
+        );
+
+        if (_availableTags <= 0) {
+          _showRFIDExhaustedDialog();
+        }
+
         _clearForm();
         await _loadAllDropdownData();
       } else {
@@ -741,8 +980,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     await prefs.remove("auth_token");
     await prefs.remove("isLoggedIn");
     await prefs.remove("username");
-    await prefs.remove("workerId");
-    await prefs.remove("worker_id");
     await prefs.remove("user");
     await prefs.remove("admin_name");
 
@@ -1052,6 +1289,33 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         return;
                       }
 
+                      final wetValue = int.tryParse(savedWet);
+                      final dryValue = int.tryParse(savedDry);
+
+                      if (_assignedStartRFID != null && _assignedEndRFID != null) {
+                        if (wetValue != null &&
+                            (wetValue < _assignedStartRFID! || wetValue > _assignedEndRFID!)) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Wet RFID is outside assigned range"),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                          return;
+                        }
+
+                        if (dryValue != null &&
+                            (dryValue < _assignedStartRFID! || dryValue > _assignedEndRFID!)) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Dry RFID is outside assigned range"),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                          return;
+                        }
+                      }
+
                       _showVerificationDialog();
                     } else {
                       _handleSave();
@@ -1190,21 +1454,74 @@ class _DashboardScreenState extends State<DashboardScreen> {
             return TextField(
               controller: textController,
               focusNode: focusNode,
+              onChanged: (value) {
+                if (label.contains("RFID")) {
+                  final entered = int.tryParse(value);
+
+                  if (entered != null &&
+                      _assignedStartRFID != null &&
+                      _assignedEndRFID != null) {
+
+                    if (entered < _assignedStartRFID! ||
+                        entered > _assignedEndRFID!) {
+
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            "RFID $entered is outside your assigned range "
+                                "(${_assignedStartRFID!}-${_assignedEndRFID!})",
+                          ),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+
+                      textController.clear();
+
+                      setState(() {
+                        if (label.contains("Wet")) {
+                          _selectedWetRFID = null;
+                          _wetRfidSearchController.clear();
+                        }
+
+                        if (label.contains("Dry")) {
+                          _selectedDryRFID = null;
+                          _dryRfidSearchController.clear();
+                        }
+                      });
+                    }
+                  }
+                }
+              },
               onEditingComplete: onEditingComplete,
               decoration: InputDecoration(
                 hintText: hint,
                 hintStyle: const TextStyle(color: Colors.black38),
                 prefixIcon: Icon(icon, color: Colors.black54),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 16,
+                ),
                 filled: true,
                 fillColor: Colors.white,
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(color: hasError ? Colors.red.shade400 : Colors.black12, width: hasError ? 1.5 : 1.0),
+                  borderSide: BorderSide(
+                    color: hasError
+                        ? Colors.red.shade400
+                        : Colors.black12,
+                    width: hasError ? 1.5 : 1.0,
+                  ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(color: hasError ? Colors.red.shade400 : Colors.green, width: 1.5),
+                  borderSide: BorderSide(
+                    color: hasError
+                        ? Colors.red.shade400
+                        : Colors.green,
+                    width: 1.5,
+                  ),
                 ),
               ),
             );

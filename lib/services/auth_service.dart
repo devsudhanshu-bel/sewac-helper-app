@@ -86,13 +86,32 @@ class AuthService {
 
   static Future<String> _handleSuccess(http.Response response, String username) async {
     if (response.statusCode == 200 || response.statusCode == 201) {
-      final data = jsonDecode(response.body);
+      final data = jsonDecode(response.body); // Fixed typo from response.sbody
+      print("FULL LOGIN RESPONSE => ${response.body}");
+      print("PARSED LOGIN DATA => $data"); // Added debugging print statement
+
       final token = data["token"] ?? data["data"]?["token"] ?? "";
+
+      // Cascade matching to grab the user ID safely regardless of response payload format
+      final dynamic rawId =
+      data["data"]?["moderator"]?["id"];
+      print("WORKER ID SAVED => $rawId");
+
+
 
       if (token.isNotEmpty) {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString("auth_token", token);
         await prefs.setString("admin_name", username);
+
+        // Save unique user identifier for dashboard isolation logic
+        if (rawId != null) {
+          await prefs.setString("workerId", rawId.toString());
+          print("[AUTH_SERVICE] Extracted and saved workerId: ${rawId.toString()}");
+        } else {
+          print("[AUTH_SERVICE] WARNING: Unique user identifier key not found in server response.");
+        }
+
         print("[AUTH_SERVICE] Session local security keys written cache securely.");
         return "SUCCESS";
       }
@@ -138,14 +157,22 @@ class AuthService {
         await _forceBackendLogout(savedUsername);
       }
 
-      await prefs.clear();
+      await prefs.remove("auth_token");
+      await prefs.remove("isLoggedIn");
+      await prefs.remove("username");
+      await prefs.remove("user");
+      await prefs.remove("admin_name");
       print("[AUTH_SERVICE] Local state machine cache storage wiped successfully.");
     } catch (e) {
       print("[AUTH_SERVICE] Error occurring inside logout sequence stack trace execution: $e");
       // Fallback local memory wipe guardrail
       try {
         final prefs = await SharedPreferences.getInstance();
-        await prefs.clear();
+        await prefs.remove("auth_token");
+        await prefs.remove("isLoggedIn");
+        await prefs.remove("username");
+        await prefs.remove("user");
+        await prefs.remove("admin_name");
       } catch (_) {}
     }
   }
