@@ -42,6 +42,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   XFile? _imageFile;
 
+  // Focus nodes to detect focus loss for resetting fields
+  final FocusNode _wetFocusNode = FocusNode();
+  final FocusNode _dryFocusNode = FocusNode();
+  final FocusNode _phoneFocusNode = FocusNode();
+  final FocusNode _nameFocusNode = FocusNode();
+
   Future<void> _capturePhoto() async {
     try {
       final ImagePicker picker = ImagePicker();
@@ -129,128 +135,258 @@ class _DashboardScreenState extends State<DashboardScreen> {
           builder: (context, setDialogState) {
             return AlertDialog(
               backgroundColor: Colors.white,
+              elevation: 8,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(28),
               ),
-              title: const Text(
-                "Assign RFID Range",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: startController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: "Start RFID",
-                      errorText: startError ? "Required" : null,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
+              contentPadding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF00A236).withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: const Icon(
+                            Icons.qr_code_scanner_rounded,
+                            color: Color(0xFF00A236),
+                            size: 28,
+                          ),
+                        ),
+                        const SizedBox(width: 14),
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Assign RFID Range",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF2C3E50),
+                                ),
+                              ),
+                              SizedBox(height: 2),
+                              Text(
+                                "Enter the RFID range assigned to you",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: endController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: "End RFID",
-                      errorText: endError ? "Required" : null,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                  ),
-                  if (errorMessage != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
+                    const SizedBox(height: 20),
+                    const Divider(height: 1, color: Colors.black12),
+                    const SizedBox(height: 20),
+
+                    // Start RFID Textfield
+                    const Padding(
+                      padding: EdgeInsets.only(left: 4, bottom: 6),
                       child: Text(
-                        errorMessage!,
-                        style: const TextStyle(
-                          color: Colors.red,
+                        "Start RFID *",
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF7F8C8D),
                         ),
                       ),
                     ),
-                ],
+                    TextField(
+                      controller: startController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        hintText: "Enter Start Number",
+                        hintStyle: const TextStyle(color: Colors.black38, fontSize: 14),
+                        prefixIcon: const Icon(Icons.tag, color: Colors.black54, size: 20),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        filled: true,
+                        fillColor: const Color(0xFFF8F9FA),
+                        errorText: startError ? "Required" : null,
+                        errorStyle: const TextStyle(color: Colors.red),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                            color: startError ? Colors.red.shade400 : Colors.black12,
+                            width: startError ? 1.5 : 1.0,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                            color: startError ? Colors.red.shade400 : const Color(0xFF00A236),
+                            width: 1.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // End RFID Textfield
+                    const Padding(
+                      padding: EdgeInsets.only(left: 4, bottom: 6),
+                      child: Text(
+                        "End RFID *",
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF7F8C8D),
+                        ),
+                      ),
+                    ),
+                    TextField(
+                      controller: endController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        hintText: "Enter End Number",
+                        hintStyle: const TextStyle(color: Colors.black38, fontSize: 14),
+                        prefixIcon: const Icon(Icons.tag, color: Colors.black54, size: 20),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        filled: true,
+                        fillColor: const Color(0xFFF8F9FA),
+                        errorText: endError ? "Required" : null,
+                        errorStyle: const TextStyle(color: Colors.red),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                            color: endError ? Colors.red.shade400 : Colors.black12,
+                            width: endError ? 1.5 : 1.0,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                            color: endError ? Colors.red.shade400 : const Color(0xFF00A236),
+                            width: 1.5,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    if (errorMessage != null)
+                      Container(
+                        margin: const EdgeInsets.only(top: 14),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.red.shade50,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.red.shade200),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.error_outline_rounded, color: Colors.red.shade700, size: 18),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                errorMessage!,
+                                style: TextStyle(
+                                  color: Colors.red.shade800,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
               ),
+              actionsPadding: const EdgeInsets.fromLTRB(24, 8, 24, 20),
               actions: [
-                ElevatedButton(
-                  onPressed: () async {
-                    setDialogState(() {
-                      startError = startController.text.trim().isEmpty;
-                      endError = endController.text.trim().isEmpty;
-                      errorMessage = null;
-                    });
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xFFFFA000),
+                          Color(0xFF4CAF50),
+                        ],
+                      ),
+                    ),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      onPressed: () async {
+                        setDialogState(() {
+                          startError = startController.text.trim().isEmpty;
+                          endError = endController.text.trim().isEmpty;
+                          errorMessage = null;
+                        });
 
-                    if (startError || endError) return;
+                        if (startError || endError) return;
 
-                    final start =
-                    int.tryParse(startController.text.trim());
+                        final start = int.tryParse(startController.text.trim());
+                        final end = int.tryParse(endController.text.trim());
 
-                    final end =
-                    int.tryParse(endController.text.trim());
+                        if (start == null || end == null) {
+                          setDialogState(() {
+                            errorMessage = "Please enter valid RFID numbers";
+                          });
+                          return;
+                        }
 
-                    if (start == null || end == null) {
-                      setDialogState(() {
-                        errorMessage =
-                        "Please enter valid RFID numbers";
-                      });
-                      return;
-                    }
+                        if (start >= end) {
+                          setDialogState(() {
+                            errorMessage = "End RFID must be greater than Start RFID";
+                          });
+                          return;
+                        }
 
-                    if (start >= end) {
-                      setDialogState(() {
-                        errorMessage =
-                        "End RFID must be greater than Start RFID";
-                      });
-                      return;
-                    }
-
-                    final prefs =
-                    await SharedPreferences.getInstance();
-
-                    final workerId =
-                        prefs.getString("workerId") ??
+                        final prefs = await SharedPreferences.getInstance();
+                        final workerId = prefs.getString("workerId") ??
                             prefs.getString("worker_id") ??
-                            prefs.getString("username") ??
-                            "";
+                            prefs.getString("username") ?? "";
 
-                    await prefs.setInt(
-                      "assignedStartRFID_$workerId",
-                      start,
-                    );
+                        await prefs.setInt("assignedStartRFID_$workerId", start);
+                        await prefs.setInt("assignedEndRFID_$workerId", end);
 
-                    await prefs.setInt(
-                      "assignedEndRFID_$workerId",
-                      end,
-                    );
+                        if (_isRangeExhausted) {
+                          await prefs.setStringList("assignedMappedTagsList_$workerId", []);
+                          setState(() {
+                            _assignedMappedTagsList = [];
+                          });
+                          _isRangeExhausted = false;
+                        }
 
-                    if (_isRangeExhausted) {
-                      await prefs.setStringList(
-                        "assignedMappedTagsList_$workerId",
-                        [],
-                      );
+                        setState(() {
+                          _assignedStartRFID = start;
+                          _assignedEndRFID = end;
+                        });
 
-                      setState(() {
-                        _assignedMappedTagsList = [];
-                      });
-
-                      _isRangeExhausted = false;
-                    }
-
-                    setState(() {
-                      _assignedStartRFID = start;
-                      _assignedEndRFID = end;
-                    });
-
-                    Navigator.pop(context);
-
-                    await _loadAllDropdownData();
-                  },
-                  child: const Text("SAVE"),
+                        Navigator.pop(context);
+                        await _loadAllDropdownData();
+                      },
+                      child: const Center(
+                        child: Text(
+                          "SAVE RANGE",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ],
             );
@@ -335,9 +471,95 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final TextEditingController _phoneSearchController = TextEditingController();
   final TextEditingController _nameSearchController = TextEditingController();
 
+  void _handleOutsideTapReset() {
+    if (_wetFocusNode.hasFocus) {
+      setState(() {
+        _selectedWetRFID = null;
+        _wetRfidSearchController.clear();
+      });
+    } else if (_dryFocusNode.hasFocus) {
+      setState(() {
+        _selectedDryRFID = null;
+        _dryRfidSearchController.clear();
+      });
+    } else if (_phoneFocusNode.hasFocus) {
+      setState(() {
+        _selectedPhone = null;
+        _selectedName = null;
+        _phoneSearchController.clear();
+        _nameSearchController.clear();
+      });
+    } else if (_nameFocusNode.hasFocus) {
+      setState(() {
+        _selectedName = null;
+        _selectedPhone = null;
+        _nameSearchController.clear();
+        _phoneSearchController.clear();
+      });
+    }
+    FocusScope.of(context).unfocus();
+  }
+
   @override
   void initState() {
     super.initState();
+
+    // Add focus listeners to handle automatic reset on focus loss
+    _wetFocusNode.addListener(() {
+      if (!_wetFocusNode.hasFocus) {
+        if (_wetRfidSearchController.text.trim().isEmpty ||
+            _wetRfidSearchController.text.trim() == "Select" ||
+            _selectedWetRFID == null) {
+          setState(() {
+            _selectedWetRFID = null;
+            _wetRfidSearchController.clear();
+          });
+        }
+      }
+    });
+
+    _dryFocusNode.addListener(() {
+      if (!_dryFocusNode.hasFocus) {
+        if (_dryRfidSearchController.text.trim().isEmpty ||
+            _dryRfidSearchController.text.trim() == "Select" ||
+            _selectedDryRFID == null) {
+          setState(() {
+            _selectedDryRFID = null;
+            _dryRfidSearchController.clear();
+          });
+        }
+      }
+    });
+
+    _phoneFocusNode.addListener(() {
+      if (!_phoneFocusNode.hasFocus) {
+        if (_phoneSearchController.text.trim().isEmpty ||
+            _phoneSearchController.text.trim() == "Select" ||
+            _selectedPhone == null) {
+          setState(() {
+            _selectedPhone = null;
+            _selectedName = null;
+            _phoneSearchController.clear();
+            _nameSearchController.clear();
+          });
+        }
+      }
+    });
+
+    _nameFocusNode.addListener(() {
+      if (!_nameFocusNode.hasFocus) {
+        if (_nameSearchController.text.trim().isEmpty ||
+            _nameSearchController.text.trim() == "Select" ||
+            _selectedName == null) {
+          setState(() {
+            _selectedName = null;
+            _selectedPhone = null;
+            _nameSearchController.clear();
+            _phoneSearchController.clear();
+          });
+        }
+      }
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _loadAdminName();
@@ -356,6 +578,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _dryRfidSearchController.dispose();
     _phoneSearchController.dispose();
     _nameSearchController.dispose();
+    _wetFocusNode.dispose();
+    _dryFocusNode.dispose();
+    _phoneFocusNode.dispose();
+    _nameFocusNode.dispose();
     super.dispose();
   }
 
@@ -384,15 +610,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
             if (_assignedStartRFID == null) return false;
             if (_assignedEndRFID == null) return false;
 
-            return value >= _assignedStartRFID! &&
-                value <= _assignedEndRFID!;
+            return value >= _assignedStartRFID! && value <= _assignedEndRFID!;
           }).toList();
 
           final List<String> newList = [
             "Select",
-            ...filteredRFIDs.map(
-                  (item) => item["slno"].toString(),
-            ),
+            ...filteredRFIDs.map((item) => item["slno"].toString()),
           ];
 
           setState(() {
@@ -539,24 +762,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildVerificationRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
             style: const TextStyle(
-              fontSize: 13,
+              fontSize: 12,
               fontWeight: FontWeight.w500,
               color: Color(0xFF7F8C8D),
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
           Text(
             value,
             style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
               color: Color(0xFF2C3E50),
             ),
           ),
@@ -571,129 +794,323 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final String savedPhone = _selectedPhone ?? _phoneSearchController.text.trim();
     final String savedName = _selectedName ?? _nameSearchController.text.trim();
 
-    final String formattedWet = (savedWet.isEmpty || savedWet == "Select") ? "Not Selected" : savedWet;
-    final String formattedDry = (savedDry.isEmpty || savedDry == "Select") ? "Not Selected" : savedDry;
+    final bool hasWet = savedWet.isNotEmpty && savedWet != "Select";
+    final bool hasDry = savedDry.isNotEmpty && savedDry != "Select";
+
+    final String formattedWet = hasWet ? savedWet : "Not Selected";
+    final String formattedDry = hasDry ? savedDry : "Not Selected";
+
+    final confirmWetController = TextEditingController();
+    final confirmDryController = TextEditingController();
 
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(28.0),
-          ),
-          backgroundColor: Colors.white,
-          contentPadding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF00A236).withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
+        bool wetConfirmError = false;
+        bool dryConfirmError = false;
+        String? modalErrorMessage;
+
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(28.0),
+              ),
+              backgroundColor: Colors.white,
+              elevation: 10,
+              contentPadding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
+              content: SizedBox(
+                width: MediaQuery.of(context).size.width - 48,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Header Section
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF00A236).withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: const Icon(
+                              Icons.verified_user_rounded,
+                              color: Color(0xFF00A236),
+                              size: 28,
+                            ),
+                          ),
+                          const SizedBox(width: 14),
+                          const Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Verify Details",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF2C3E50),
+                                  ),
+                                ),
+                                SizedBox(height: 2),
+                                Text(
+                                  "Please verify all information before saving.",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                      child: const Icon(
-                        Icons.assignment_turned_in_outlined,
-                        color: Color(0xFF00A236),
-                        size: 26,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    const Text(
-                      "Verify Details",
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF2C3E50),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                const Divider(height: 1, color: Colors.black12),
-                const SizedBox(height: 8),
-                _buildVerificationRow("Citizen Name", savedName),
-                _buildVerificationRow("Phone Number", savedPhone),
-                _buildVerificationRow("Wet RFID", formattedWet),
-                _buildVerificationRow("Dry RFID", formattedDry),
-              ],
-            ),
-          ),
-          actionsPadding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-          actions: [
-            Row(
-              children: [
-                Expanded(
-                  child: SizedBox(
-                    height: 48,
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Colors.black12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                      const SizedBox(height: 16),
+                      const Divider(height: 1, color: Colors.black12),
+                      const SizedBox(height: 16),
+
+                      // Information Card
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF8F9FA),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.black12.withOpacity(0.05)),
                         ),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text(
-                        "CANCEL",
-                        style: TextStyle(
-                          color: Colors.black54,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: SizedBox(
-                    height: 48,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color(0xFFFFA000),
-                            Color(0xFF4CAF50),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildVerificationRow("Citizen Name", savedName),
+                            const Divider(height: 20, color: Colors.black12),
+                            _buildVerificationRow("Phone Number", savedPhone),
+                            const Divider(height: 20, color: Colors.black12),
+                            _buildVerificationRow("Wet Waste RFID", formattedWet),
+                            const Divider(height: 20, color: Colors.black12),
+                            _buildVerificationRow("Dry Waste RFID", formattedDry),
                           ],
                         ),
                       ),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.transparent,
-                          shadowColor: Colors.transparent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
+                      const SizedBox(height: 20),
+
+                      // Wet RFID Confirmation Field
+                      if (hasWet) ...[
+                        const Padding(
+                          padding: EdgeInsets.only(left: 4, bottom: 6),
+                          child: Text(
+                            "Confirm Wet RFID *",
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF7F8C8D),
+                            ),
                           ),
                         ),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          _handleSave();
-                        },
-                        child: const Center(
+                        TextField(
+                          controller: confirmWetController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            hintText: "Re-enter Wet RFID number",
+                            hintStyle: const TextStyle(color: Colors.black38, fontSize: 14),
+                            prefixIcon: const Icon(Icons.qr_code, color: Colors.black54, size: 20),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                            filled: true,
+                            fillColor: const Color(0xFFF8F9FA),
+                            errorText: wetConfirmError ? "Required" : null,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(
+                                color: wetConfirmError ? Colors.red.shade400 : Colors.black12,
+                                width: wetConfirmError ? 1.5 : 1.0,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(
+                                color: wetConfirmError ? Colors.red.shade400 : const Color(0xFF00A236),
+                                width: 1.5,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+
+                      // Dry RFID Confirmation Field
+                      if (hasDry) ...[
+                        const Padding(
+                          padding: EdgeInsets.only(left: 4, bottom: 6),
                           child: Text(
-                            "CONFIRM",
-                            textAlign: TextAlign.center,
+                            "Confirm Dry RFID *",
                             style: TextStyle(
-                              color: Colors.white,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF7F8C8D),
+                            ),
+                          ),
+                        ),
+                        TextField(
+                          controller: confirmDryController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            hintText: "Re-enter Dry RFID number",
+                            hintStyle: const TextStyle(color: Colors.black38, fontSize: 14),
+                            prefixIcon: const Icon(Icons.qr_code, color: Colors.black54, size: 20),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                            filled: true,
+                            fillColor: const Color(0xFFF8F9FA),
+                            errorText: dryConfirmError ? "Required" : null,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(
+                                color: dryConfirmError ? Colors.red.shade400 : Colors.black12,
+                                width: dryConfirmError ? 1.5 : 1.0,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(
+                                color: dryConfirmError ? Colors.red.shade400 : const Color(0xFF00A236),
+                                width: 1.5,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+
+                      // Validation Error Message Area
+                      if (modalErrorMessage != null)
+                        Container(
+                          margin: const EdgeInsets.only(top: 16),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.red.shade50,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.red.shade200),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.error_outline_rounded, color: Colors.red.shade700, size: 18),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  modalErrorMessage!,
+                                  style: TextStyle(
+                                    color: Colors.red.shade800,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+              actionsPadding: const EdgeInsets.fromLTRB(24, 8, 24, 20),
+              actions: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        height: 48,
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: Colors.black12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text(
+                            "CANCEL",
+                            style: TextStyle(
+                              color: Colors.black54,
                               fontWeight: FontWeight.bold,
+                              letterSpacing: 0.5,
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: SizedBox(
+                        height: 48,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            gradient: const LinearGradient(
+                              colors: [
+                                Color(0xFFFFA000),
+                                Color(0xFF4CAF50),
+                              ],
+                            ),
+                          ),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              shadowColor: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                            onPressed: () {
+                              final String wetInput = confirmWetController.text.trim();
+                              final String dryInput = confirmDryController.text.trim();
+
+                              setModalState(() {
+                                wetConfirmError = hasWet && wetInput.isEmpty;
+                                dryConfirmError = hasDry && dryInput.isEmpty;
+                                modalErrorMessage = null;
+                              });
+
+                              if (wetConfirmError || dryConfirmError) return;
+
+                              if (hasWet && wetInput != savedWet) {
+                                setModalState(() {
+                                  modalErrorMessage = "Wet RFID confirmation does not match";
+                                });
+                                return;
+                              }
+
+                              if (hasDry && dryInput != savedDry) {
+                                setModalState(() {
+                                  modalErrorMessage = "Dry RFID confirmation does not match";
+                                });
+                                return;
+                              }
+
+                              Navigator.of(context).pop();
+                              _handleSave();
+                            },
+                            child: const Center(
+                              child: Text(
+                                "CONFIRM",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
-            ),
-          ],
+            );
+          },
         );
       },
     );
@@ -786,7 +1203,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         );
 
         request.headers["Authorization"] = "Bearer $token";
-
         request.fields["status"] = "NOT_FOUND";
         request.fields["workerId"] = activeWorkerId.trim();
         request.fields["address"] = _addressController.text.trim();
@@ -910,15 +1326,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
         final prefs = await SharedPreferences.getInstance();
 
-        if (savedWet.isNotEmpty &&
-            savedWet != "Select" &&
-            !_assignedMappedTagsList.contains(savedWet)) {
+        if (savedWet.isNotEmpty && savedWet != "Select" && !_assignedMappedTagsList.contains(savedWet)) {
           _assignedMappedTagsList.add(savedWet);
         }
 
-        if (savedDry.isNotEmpty &&
-            savedDry != "Select" &&
-            !_assignedMappedTagsList.contains(savedDry)) {
+        if (savedDry.isNotEmpty && savedDry != "Select" && !_assignedMappedTagsList.contains(savedDry)) {
           _assignedMappedTagsList.add(savedDry);
         }
 
@@ -999,330 +1411,401 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final bool showPhotoError = _showValidation && !_hasPhoto;
 
-    return Scaffold(
-      extendBodyBehindAppBar: false,
-      backgroundColor: const Color(0xFFF8F9FA),
-      appBar: SewacHeader(
-        onLogout: _handleLogout,
-      ),
-      body: SewacBackground(
-        child: RefreshIndicator(
-          color: Colors.green,
-          onRefresh: _loadAllDropdownData,
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.fromLTRB(24, 4, 24, 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "RFID Mapping",
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF2C3E50),
-                  ),
-                ),
-                const Text(
-                  "Sync resident details from the secure database",
-                  style: TextStyle(color: Colors.black54),
-                ),
-                const SizedBox(height: 16),
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 250),
-                  transitionBuilder: (child, animation) {
-                    return FadeTransition(opacity: animation, child: child);
-                  },
-                  child: _status == "Found"
-                      ? Container(
-                    key: const ValueKey("found"),
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(28),
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: _handleOutsideTapReset,
+      child: Scaffold(
+        extendBodyBehindAppBar: false,
+        backgroundColor: const Color(0xFFF8F9FA),
+        appBar: SewacHeader(
+          onLogout: _handleLogout,
+        ),
+        body: SewacBackground(
+          child: RefreshIndicator(
+            color: const Color(0xFF00A236),
+            onRefresh: _loadAllDropdownData,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(24, 4, 24, 24),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight - 28,
                     ),
                     child: Column(
-                      children: [
-                        _buildSearchDropdown(
-                          label: "Wet Waste RFID *",
-                          hint: "Search Wet RFID",
-                          controller: _wetRfidSearchController,
-                          items: _wetAvailableRfids,
-                          icon: Icons.qr_code,
-                          onSelected: (val) {
-                            setState(() {
-                              if (val == "Select") {
-                                _selectedWetRFID = null;
-                                _wetRfidSearchController.clear();
-                                FocusScope.of(context).unfocus();
-                              } else {
-                                _selectedWetRFID = val;
-                                _wetRfidSearchController.text = val ?? "";
-                              }
-                            });
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        _buildSearchDropdown(
-                          label: "Dry Waste RFID *",
-                          hint: "Search Dry RFID",
-                          controller: _dryRfidSearchController,
-                          items: _dryAvailableRfids,
-                          icon: Icons.qr_code,
-                          onSelected: (val) {
-                            setState(() {
-                              if (val == "Select") {
-                                _selectedDryRFID = null;
-                                _dryRfidSearchController.clear();
-                                FocusScope.of(context).unfocus();
-                              } else {
-                                _selectedDryRFID = val;
-                                _dryRfidSearchController.text = val ?? "";
-                              }
-                            });
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        _buildSearchDropdown(
-                          label: "Phone Number *",
-                          hint: "Search Phone Number",
-                          controller: _phoneSearchController,
-                          items: _phoneDropdownItems,
-                          icon: Icons.phone,
-                          onSelected: (val) {
-                            if (val == "Select") {
-                              setState(() {
-                                _selectedPhone = null;
-                                _selectedName = null;
-                                _phoneSearchController.clear();
-                                _nameSearchController.clear();
-                                FocusScope.of(context).unfocus();
-                              });
-                            } else if (val != null) {
-                              _fetchCitizenByPhone(val);
-                            }
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        _buildSearchDropdown(
-                          label: "Name *",
-                          hint: "Search Name",
-                          controller: _nameSearchController,
-                          items: _nameDropdownItems,
-                          icon: Icons.person,
-                          onSelected: (val) {
-                            if (val == "Select") {
-                              setState(() {
-                                _selectedName = null;
-                                _selectedPhone = null;
-                                _nameSearchController.clear();
-                                _phoneSearchController.clear();
-                                FocusScope.of(context).unfocus();
-                              });
-                            } else if (val != null) {
-                              _fetchCitizenByName(val);
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                  )
-                      : Container(
-                    key: const ValueKey("not_found"),
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(28),
-                    ),
-                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        _buildInputField(
-                          label: "Address *",
-                          hint: "Enter Address",
-                          controller: _addressController,
-                          icon: Icons.location_on_outlined,
-                          showError: _showValidation && _addressController.text.trim().isEmpty,
-                        ),
-                        const SizedBox(height: 16),
-                        _buildInputField(
-                          label: "Building No *",
-                          hint: "Enter Building Number",
-                          controller: _buildingController,
-                          icon: Icons.apartment_outlined,
-                          showError: _showValidation && _buildingController.text.trim().isEmpty,
-                        ),
-                        const SizedBox(height: 16),
-                        _buildInputField(
-                          label: "Floor No *",
-                          hint: "Enter Floor Number",
-                          controller: _floorController,
-                          icon: Icons.unfold_more_outlined,
-                          showError: _showValidation && _floorController.text.trim().isEmpty,
-                        ),
-                        const SizedBox(height: 16),
-                        _buildInputField(
-                          label: "Remarks *",
-                          hint: "Enter Remarks",
-                          controller: _remarksController,
-                          icon: Icons.notes_outlined,
-                          showError: _showRemarksError,
-                          maxLines: null,
-                          minLines: 2,
-                        ),
-                        const SizedBox(height: 16),
-                        const Padding(
-                          padding: EdgeInsets.only(left: 4, bottom: 8),
-                          child: Text(
-                            "Photo *",
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF7F8C8D)),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: _capturePhoto,
-                          child: Container(
-                            width: 90,
-                            height: 90,
-                            decoration: BoxDecoration(
-                              color: showPhotoError ? const Color(0xFFFFF5F5) : const Color(0xFFF8F9FA),
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: showPhotoError ? Colors.red.shade400 : Colors.black12,
-                                width: 1.5,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "RFID Mapping",
+                              style: TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF2C3E50),
                               ),
                             ),
-                            child: _hasPhoto && _imageFile != null
-                                ? ClipRRect(
-                              borderRadius: BorderRadius.circular(14),
-                              child: Image.file(
-                                File(_imageFile!.path),
-                                width: 90,
-                                height: 90,
-                                fit: BoxFit.cover,
-                              ),
-                            )
-                                : Icon(
-                              Icons.add_a_photo_outlined,
-                              color: showPhotoError ? Colors.red.shade400 : Colors.black54,
-                              size: 28,
+                            const Text(
+                              "Sync resident details from the secure database",
+                              style: TextStyle(color: Colors.black54, fontSize: 13),
                             ),
+                            const SizedBox(height: 20),
+
+                            Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFEFEFEF),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: Colors.black12, width: 0.5),
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () => setState(() => _status = 'Found'),
+                                      child: AnimatedContainer(
+                                        duration: const Duration(milliseconds: 200),
+                                        padding: const EdgeInsets.symmetric(vertical: 12),
+                                        decoration: BoxDecoration(
+                                          color: _status == 'Found' ? Colors.white : Colors.transparent,
+                                          borderRadius: BorderRadius.circular(16),
+                                          boxShadow: _status == 'Found'
+                                              ? [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))]
+                                              : [],
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            "Found",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14,
+                                              color: _status == 'Found' ? const Color(0xFF00A236) : Colors.black54,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () => setState(() => _status = 'Not Found'),
+                                      child: AnimatedContainer(
+                                        duration: const Duration(milliseconds: 200),
+                                        padding: const EdgeInsets.symmetric(vertical: 12),
+                                        decoration: BoxDecoration(
+                                          color: _status == 'Not Found' ? Colors.white : Colors.transparent,
+                                          borderRadius: BorderRadius.circular(16),
+                                          boxShadow: _status == 'Not Found'
+                                              ? [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))]
+                                              : [],
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            "Not Found",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14,
+                                              color: _status == 'Not Found' ? const Color(0xFF00A236) : Colors.black54,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 300),
+                              transitionBuilder: (child, animation) {
+                                final offsetAnimation = Tween<Offset>(
+                                  begin: const Offset(0.08, 0.0),
+                                  end: Offset.zero,
+                                ).animate(CurvedAnimation(
+                                  parent: animation,
+                                  curve: Curves.easeOutCubic,
+                                ));
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: SlideTransition(
+                                    position: offsetAnimation,
+                                    child: child,
+                                  ),
+                                );
+                              },
+                              child: _status == "Found"
+                                  ? Container(
+                                key: const ValueKey("found"),
+                                padding: const EdgeInsets.all(24),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(28),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.04),
+                                      blurRadius: 16,
+                                      offset: const Offset(0, 6),
+                                    )
+                                  ],
+                                  border: Border.all(color: Colors.black.withOpacity(0.03), width: 1),
+                                ),
+                                child: Column(
+                                  children: [
+                                    _buildSearchDropdown(
+                                      label: "Wet Waste RFID *",
+                                      hint: "Search Wet RFID",
+                                      controller: _wetRfidSearchController,
+                                      focusNode: _wetFocusNode,
+                                      items: _wetAvailableRfids,
+                                      icon: Icons.qr_code_scanner_rounded,
+                                      onSelected: (val) {
+                                        setState(() {
+                                          if (val == "Select") {
+                                            _selectedWetRFID = null;
+                                            _wetRfidSearchController.clear();
+                                            FocusScope.of(context).unfocus();
+                                          } else {
+                                            _selectedWetRFID = val;
+                                            _wetRfidSearchController.text = val ?? "";
+                                          }
+                                        });
+                                      },
+                                    ),
+                                    const SizedBox(height: 18),
+                                    _buildSearchDropdown(
+                                      label: "Dry Waste RFID *",
+                                      hint: "Search Dry RFID",
+                                      controller: _dryRfidSearchController,
+                                      focusNode: _dryFocusNode,
+                                      items: _dryAvailableRfids,
+                                      icon: Icons.qr_code_scanner_rounded,
+                                      onSelected: (val) {
+                                        setState(() {
+                                          if (val == "Select") {
+                                            _selectedDryRFID = null;
+                                            _dryRfidSearchController.clear();
+                                            FocusScope.of(context).unfocus();
+                                          } else {
+                                            _selectedDryRFID = val;
+                                            _dryRfidSearchController.text = val ?? "";
+                                          }
+                                        });
+                                      },
+                                    ),
+                                    const SizedBox(height: 18),
+                                    _buildSearchDropdown(
+                                      label: "Phone Number *",
+                                      hint: "Search Phone Number",
+                                      controller: _phoneSearchController,
+                                      focusNode: _phoneFocusNode,
+                                      items: _phoneDropdownItems,
+                                      icon: Icons.phone_android_rounded,
+                                      onSelected: (val) {
+                                        if (val == "Select") {
+                                          setState(() {
+                                            _selectedPhone = null;
+                                            _selectedName = null;
+                                            _phoneSearchController.clear();
+                                            _nameSearchController.clear();
+                                            FocusScope.of(context).unfocus();
+                                          });
+                                        } else if (val != null) {
+                                          _fetchCitizenByPhone(val);
+                                        }
+                                      },
+                                    ),
+                                    const SizedBox(height: 18),
+                                    _buildSearchDropdown(
+                                      label: "Name *",
+                                      hint: "Search Name",
+                                      controller: _nameSearchController,
+                                      focusNode: _nameFocusNode,
+                                      items: _nameDropdownItems,
+                                      icon: Icons.person_outline_rounded,
+                                      onSelected: (val) {
+                                        if (val == "Select") {
+                                          setState(() {
+                                            _selectedName = null;
+                                            _selectedPhone = null;
+                                            _nameSearchController.clear();
+                                            _phoneSearchController.clear();
+                                            FocusScope.of(context).unfocus();
+                                          });
+                                        } else if (val != null) {
+                                          _fetchCitizenByName(val);
+                                        }
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              )
+                                  : Container(
+                                key: const ValueKey("not_found"),
+                                padding: const EdgeInsets.all(24),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(28),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.04),
+                                      blurRadius: 16,
+                                      offset: const Offset(0, 6),
+                                    )
+                                  ],
+                                  border: Border.all(color: Colors.black.withOpacity(0.03), width: 1),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _buildInputField(
+                                      label: "Address *",
+                                      hint: "Enter Address",
+                                      controller: _addressController,
+                                      icon: Icons.location_on_outlined,
+                                      showError: _showValidation && _addressController.text.trim().isEmpty,
+                                    ),
+                                    const SizedBox(height: 18),
+                                    _buildInputField(
+                                      label: "Building No *",
+                                      hint: "Enter Building Number",
+                                      controller: _buildingController,
+                                      icon: Icons.apartment_outlined,
+                                      showError: _showValidation && _buildingController.text.trim().isEmpty,
+                                    ),
+                                    const SizedBox(height: 18),
+                                    _buildInputField(
+                                      label: "Floor No *",
+                                      hint: "Enter Floor Number",
+                                      controller: _floorController,
+                                      icon: Icons.unfold_more_outlined,
+                                      showError: _showValidation && _floorController.text.trim().isEmpty,
+                                    ),
+                                    const SizedBox(height: 18),
+                                    _buildInputField(
+                                      label: "Remarks *",
+                                      hint: "Enter Remarks",
+                                      controller: _remarksController,
+                                      icon: Icons.notes_outlined,
+                                      showError: _showRemarksError,
+                                      maxLines: null,
+                                      minLines: 2,
+                                    ),
+                                    const SizedBox(height: 18),
+                                    const Padding(
+                                      padding: EdgeInsets.only(left: 4, bottom: 8),
+                                      child: Text(
+                                        "Photo *",
+                                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Color(0xFF7F8C8D)),
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: _capturePhoto,
+                                      child: Container(
+                                        width: 90,
+                                        height: 90,
+                                        decoration: BoxDecoration(
+                                          color: showPhotoError ? const Color(0xFFFFF5F5) : const Color(0xFFF8F9FA),
+                                          borderRadius: BorderRadius.circular(16),
+                                          border: Border.all(
+                                            color: showPhotoError ? Colors.red.shade400 : Colors.black12,
+                                            width: 1.5,
+                                          ),
+                                        ),
+                                        child: _hasPhoto && _imageFile != null
+                                            ? ClipRRect(
+                                          borderRadius: BorderRadius.circular(14),
+                                          child: Image.file(
+                                            File(_imageFile!.path),
+                                            width: 90,
+                                            height: 90,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        )
+                                            : Icon(
+                                          Icons.add_a_photo_outlined,
+                                          color: showPhotoError ? Colors.red.shade400 : Colors.black54,
+                                          size: 28,
+                                        ),
+                                      ),
+                                    ),
+                                    if (showPhotoError)
+                                      const Padding(
+                                        padding: EdgeInsets.only(left: 4, top: 6),
+                                        child: Text("Required", style: TextStyle(color: Colors.red, fontSize: 12)),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16.0),
+                          child: SewacButton(
+                            text: "SAVE",
+                            onPressed: () {
+                              if (_status == "Found") {
+                                final String savedWet = _selectedWetRFID ?? _wetRfidSearchController.text.trim();
+                                final String savedDry = _selectedDryRFID ?? _dryRfidSearchController.text.trim();
+                                final String savedPhone = _selectedPhone ?? _phoneSearchController.text.trim();
+                                final String savedName = _selectedName ?? _nameSearchController.text.trim();
+
+                                final bool wetEmpty = savedWet.isEmpty || savedWet == "Select";
+                                final bool dryEmpty = savedDry.isEmpty || savedDry == "Select";
+
+                                if ((wetEmpty && dryEmpty) ||
+                                    savedPhone.isEmpty || savedPhone == "Select" ||
+                                    savedName.isEmpty || savedName == "Select") {
+                                  setState(() {
+                                    _showValidation = true;
+                                  });
+                                  return;
+                                }
+
+                                final wetValue = int.tryParse(savedWet);
+                                final dryValue = int.tryParse(savedDry);
+
+                                if (_assignedStartRFID != null && _assignedEndRFID != null) {
+                                  if (wetValue != null && (wetValue < _assignedStartRFID! || wetValue > _assignedEndRFID!)) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text("Wet RFID is outside assigned range"),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                    return;
+                                  }
+
+                                  if (dryValue != null && (dryValue < _assignedStartRFID! || dryValue > _assignedEndRFID!)) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text("Dry RFID is outside assigned range"),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                    return;
+                                  }
+                                }
+
+                                _showVerificationDialog();
+                              } else {
+                                _handleSave();
+                              }
+                            },
                           ),
                         ),
-                        if (showPhotoError)
-                          const Padding(
-                            padding: EdgeInsets.only(left: 4, top: 6),
-                            child: Text("Required", style: TextStyle(color: Colors.red, fontSize: 12)),
-                          ),
                       ],
                     ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(28),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Status Selection",
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF7F8C8D)),
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: RadioListTile<String>(
-                              title: const Text("Found"),
-                              value: 'Found',
-                              groupValue: _status,
-                              activeColor: Colors.green,
-                              contentPadding: EdgeInsets.zero,
-                              onChanged: (value) {
-                                setState(() {
-                                  _status = value!;
-                                });
-                              },
-                            ),
-                          ),
-                          Expanded(
-                            child: RadioListTile<String>(
-                              title: const Text("Not Found"),
-                              value: 'Not Found',
-                              groupValue: _status,
-                              activeColor: Colors.green,
-                              contentPadding: EdgeInsets.zero,
-                              onChanged: (value) {
-                                setState(() {
-                                  _status = value!;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-                SewacButton(
-                  text: "SAVE",
-                  onPressed: () {
-                    if (_status == "Found") {
-                      final String savedWet = _selectedWetRFID ?? _wetRfidSearchController.text.trim();
-                      final String savedDry = _selectedDryRFID ?? _dryRfidSearchController.text.trim();
-                      final String savedPhone = _selectedPhone ?? _phoneSearchController.text.trim();
-                      final String savedName = _selectedName ?? _nameSearchController.text.trim();
-
-                      final bool wetEmpty = savedWet.isEmpty || savedWet == "Select";
-                      final bool dryEmpty = savedDry.isEmpty || savedDry == "Select";
-
-                      if ((wetEmpty && dryEmpty) ||
-                          savedPhone.isEmpty || savedPhone == "Select" ||
-                          savedName.isEmpty || savedName == "Select") {
-                        setState(() {
-                          _showValidation = true;
-                        });
-                        return;
-                      }
-
-                      final wetValue = int.tryParse(savedWet);
-                      final dryValue = int.tryParse(savedDry);
-
-                      if (_assignedStartRFID != null && _assignedEndRFID != null) {
-                        if (wetValue != null &&
-                            (wetValue < _assignedStartRFID! || wetValue > _assignedEndRFID!)) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Wet RFID is outside assigned range"),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                          return;
-                        }
-
-                        if (dryValue != null &&
-                            (dryValue < _assignedStartRFID! || dryValue > _assignedEndRFID!)) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Dry RFID is outside assigned range"),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                          return;
-                        }
-                      }
-
-                      _showVerificationDialog();
-                    } else {
-                      _handleSave();
-                    }
-                  },
-                ),
-              ],
+                );
+              },
             ),
           ),
         ),
@@ -1343,8 +1826,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: 8),
-          child: Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF7F8C8D))),
+          padding: const EdgeInsets.only(left: 4, bottom: 6),
+          child: Text(label, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Color(0xFF7F8C8D))),
         ),
         TextField(
           controller: controller,
@@ -1352,24 +1835,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
           minLines: minLines,
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: const TextStyle(color: Colors.black38),
-            prefixIcon: Icon(icon, color: Colors.black54),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            hintStyle: const TextStyle(color: Colors.black38, fontSize: 14),
+            prefixIcon: Icon(icon, color: Colors.black54, size: 20),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: const Color(0xFFF8F9FA),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(16),
               borderSide: BorderSide(color: showError ? Colors.red.shade400 : Colors.black12, width: showError ? 1.5 : 1.0),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: BorderSide(color: showError ? Colors.red.shade400 : Colors.green, width: 1.5),
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(color: showError ? Colors.red.shade400 : const Color(0xFF00A236), width: 1.5),
             ),
           ),
         ),
         if (showError)
           const Padding(
-            padding: EdgeInsets.only(left: 12, top: 4),
+            padding: EdgeInsets.only(left: 4, top: 4),
             child: Text("Required", style: TextStyle(color: Colors.red, fontSize: 12)),
           ),
       ],
@@ -1381,6 +1864,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required String label,
     required String hint,
     required TextEditingController controller,
+    required FocusNode focusNode,
     required List<String> items,
     required IconData icon,
     required Function(String?) onSelected,
@@ -1391,8 +1875,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: 8),
-          child: Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF7F8C8D))),
+          padding: const EdgeInsets.only(left: 4, bottom: 6),
+          child: Text(label, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Color(0xFF7F8C8D))),
         ),
         Autocomplete<String>(
           key: dropdownKey,
@@ -1443,7 +1927,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             );
           },
-          fieldViewBuilder: (context, textController, focusNode, onEditingComplete) {
+          fieldViewBuilder: (context, textController, autocompleteFocusNode, onEditingComplete) {
             if (textController.text != controller.text) {
               textController.value = TextEditingValue(
                 text: controller.text,
@@ -1451,27 +1935,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
               );
             }
 
+            // Link Autocomplete's focus chain to our internal FocusNode tracker
+            if (focusNode.parent == null) {
+              autocompleteFocusNode.addListener(() {
+                if (autocompleteFocusNode.hasFocus) {
+                  focusNode.requestFocus();
+                } else {
+                  focusNode.unfocus();
+                }
+              });
+            }
+
             return TextField(
               controller: textController,
-              focusNode: focusNode,
+              focusNode: autocompleteFocusNode,
               onChanged: (value) {
                 if (label.contains("RFID")) {
                   final entered = int.tryParse(value);
 
-                  if (entered != null &&
-                      _assignedStartRFID != null &&
-                      _assignedEndRFID != null) {
-
-                    if (entered < _assignedStartRFID! ||
-                        entered > _assignedEndRFID!) {
-
+                  if (entered != null && _assignedStartRFID != null && _assignedEndRFID != null) {
+                    if (entered < _assignedStartRFID! || entered > _assignedEndRFID!) {
                       ScaffoldMessenger.of(context).hideCurrentSnackBar();
-
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
-                            "RFID $entered is outside your assigned range "
-                                "(${_assignedStartRFID!}-${_assignedEndRFID!})",
+                            "RFID $entered is outside your assigned range (${_assignedStartRFID!}-${_assignedEndRFID!})",
                           ),
                           backgroundColor: Colors.red,
                         ),
@@ -1484,7 +1972,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           _selectedWetRFID = null;
                           _wetRfidSearchController.clear();
                         }
-
                         if (label.contains("Dry")) {
                           _selectedDryRFID = null;
                           _dryRfidSearchController.clear();
@@ -1497,29 +1984,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
               onEditingComplete: onEditingComplete,
               decoration: InputDecoration(
                 hintText: hint,
-                hintStyle: const TextStyle(color: Colors.black38),
-                prefixIcon: Icon(icon, color: Colors.black54),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 16,
-                ),
+                hintStyle: const TextStyle(color: Colors.black38, fontSize: 14),
+                prefixIcon: Icon(icon, color: Colors.black54, size: 20),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: const Color(0xFFF8F9FA),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(16),
                   borderSide: BorderSide(
-                    color: hasError
-                        ? Colors.red.shade400
-                        : Colors.black12,
+                    color: hasError ? Colors.red.shade400 : Colors.black12,
                     width: hasError ? 1.5 : 1.0,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(16),
                   borderSide: BorderSide(
-                    color: hasError
-                        ? Colors.red.shade400
-                        : Colors.green,
+                    color: hasError ? Colors.red.shade400 : const Color(0xFF00A236),
                     width: 1.5,
                   ),
                 ),
@@ -1529,7 +2009,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         if (hasError)
           const Padding(
-            padding: EdgeInsets.only(left: 12, top: 4),
+            padding: EdgeInsets.only(left: 4, top: 4),
             child: Text("Required", style: TextStyle(color: Colors.red, fontSize: 12)),
           ),
       ],

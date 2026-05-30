@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 import 'login_screen.dart';
@@ -193,130 +194,222 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final String currentInput = _rfidController.text.trim();
+    final bool isInputLengthValid = currentInput.length == requiredRfidLength;
+    final bool showCustomLengthWarning = currentInput.isNotEmpty && !isInputLengthValid;
+
     return Scaffold(
       extendBodyBehindAppBar: false,
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: SewacHeader(
         onLogout: _handleLogout,
       ),
-      body: SewacBackground(
-        child: SingleChildScrollView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                24,
-                110,
-                24,
-                24,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: constraints.maxHeight,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Reader",
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF2C3E50),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 18,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(28),
-                    ),
+              child: IntrinsicHeight(
+                child: SewacBackground(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(
-                          Icons.nfc_rounded,
-                          size: 64,
-                          color: Color(0xFF4CAF50),
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        const Text(
-                          "Tap RFID Card",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 24,
-                        ),
-                        TextFormField(
-                          controller: _rfidController,
-                          autofocus: true,
-                          showCursor: true,
-                          onChanged: (_) {
-                            setState(() {});
-                          },
-                          maxLength: requiredRfidLength,
-                          decoration: InputDecoration(
-                            hintText: "Tap RFID card to scan...",
-                            counterText: "",
-                            filled: true,
-                            fillColor: Colors.white,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 16,
+                        const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "RFID Hardware Registry",
+                              style: TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF2C3E50),
+                              ),
                             ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
+                            Text(
+                              "Scan and provision new active tag identifiers",
+                              style: TextStyle(color: Colors.black54, fontSize: 13),
                             ),
-                          ),
+                          ],
                         ),
-                        const SizedBox(
-                          height: 24,
-                        ),
-                        SizedBox(
+                        const SizedBox(height: 24),
+                        Container(
                           width: double.infinity,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16),
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Color(0xFFFFA000),
-                                  Color(0xFF4CAF50),
-                                ],
+                          padding: const EdgeInsets.all(24),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(28),
+                            border: Border.all(color: Colors.black.withOpacity(0.03)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.04),
+                                blurRadius: 16,
+                                offset: const Offset(0, 6),
                               ),
-                            ),
-                            child: ElevatedButton(
-                              onPressed: _isSaving ||
-                                  _rfidController.text.trim().length !=
-                                      requiredRfidLength
-                                  ? null
-                                  : _saveRFID,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent,
-                                disabledBackgroundColor: Colors.grey,
-                                shadowColor: Colors.transparent,
-                              ),
-                              child: const Text(
-                                "SAVE",
-                                style: TextStyle(
-                                  color: Colors.white,
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Center(
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      Icons.nfc_rounded,
+                                      size: 64,
+                                      color: Color(0xFF4CAF50),
+                                    ),
+                                    SizedBox(height: 12),
+                                    Text(
+                                      "Tap RFID Card",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700,
+                                        color: Color(0xFF2C3E50),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ),
+                              const SizedBox(height: 28),
+                              const Text(
+                                "Scan RFID Tag Code *",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF2C3E50),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              TextFormField(
+                                controller: _rfidController,
+                                autofocus: true,
+                                showCursor: true,
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(requiredRfidLength),
+                                ],
+                                onChanged: (_) {
+                                  setState(() {});
+                                },
+                                style: const TextStyle(
+                                  color: Color(0xFF2C3E50),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: "Tap RFID card to scan...",
+                                  counterText: "",
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  prefixIcon: const Icon(Icons.qr_code_scanner_rounded, color: Colors.black54, size: 20),
+                                  suffixIcon: _rfidController.text.isNotEmpty
+                                      ? IconButton(
+                                    icon: const Icon(Icons.clear_rounded, color: Colors.black38, size: 20),
+                                    onPressed: () {
+                                      _rfidController.clear();
+                                      setState(() {});
+                                    },
+                                  )
+                                      : null,
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(18),
+                                    borderSide: BorderSide(
+                                      color: showCustomLengthWarning ? Colors.amber.shade600 : Colors.black.withOpacity(0.04),
+                                      width: showCustomLengthWarning ? 1.5 : 1.0,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(18),
+                                    borderSide: BorderSide(
+                                      color: showCustomLengthWarning ? Colors.amber.shade600 : const Color(0xFF00A236),
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              if (showCustomLengthWarning)
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 4, top: 6),
+                                  child: Text(
+                                    "Expected code configuration requires exactly $requiredRfidLength characters (Current: ${currentInput.length})",
+                                    style: TextStyle(color: Colors.amber.shade800, fontSize: 12, fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                              const SizedBox(height: 32),
+                              SizedBox(
+                                width: double.infinity,
+                                height: 56,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    gradient: isInputLengthValid && !_isSaving
+                                        ? const LinearGradient(
+                                      colors: [
+                                        Color(0xFFFFA000),
+                                        Color(0xFF4CAF50),
+                                      ],
+                                    )
+                                        : null,
+                                    color: (!isInputLengthValid || _isSaving) ? Colors.grey.shade300 : null,
+                                    boxShadow: isInputLengthValid && !_isSaving
+                                        ? [
+                                      BoxShadow(
+                                        color: const Color(0xFF4CAF50).withOpacity(0.2),
+                                        blurRadius: 12,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ]
+                                        : null,
+                                  ),
+                                  child: ElevatedButton(
+                                    onPressed: _isSaving || !isInputLengthValid ? null : _saveRFID,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      shadowColor: Colors.transparent,
+                                      disabledBackgroundColor: Colors.transparent,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                    ),
+                                    child: _isSaving
+                                        ? const SizedBox(
+                                      height: 22,
+                                      width: 22,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                        : const Text(
+                                      "SAVE RFID REGISTER",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

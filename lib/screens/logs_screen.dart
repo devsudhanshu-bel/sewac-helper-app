@@ -156,17 +156,25 @@ class _LogsScreenState extends State<LogsScreen>
 
     // 1. Gather all filtered logs first
     final filteredLogs = _logs.where((log) {
+      final query = _searchQuery.toLowerCase();
+
       final searchMatch =
           _searchQuery.isEmpty ||
               (log.phoneNumber ?? "")
                   .toLowerCase()
-                  .contains(_searchQuery.toLowerCase()) ||
+                  .contains(query) ||
               (log.citizenName ?? "")
                   .toLowerCase()
-                  .contains(_searchQuery.toLowerCase()) ||
+                  .contains(query) ||
               log.workerId
                   .toLowerCase()
-                  .contains(_searchQuery.toLowerCase());
+                  .contains(query) ||
+              (log.wetWasteRfid ?? "")
+                  .toLowerCase()
+                  .contains(query) ||
+              (log.dryWasteRfid ?? "")
+                  .toLowerCase()
+                  .contains(query);
 
       final workerMatch =
           _selectedWorker == "All Workers" ||
@@ -208,108 +216,52 @@ class _LogsScreenState extends State<LogsScreen>
       body: SewacBackground(
         child: RefreshIndicator(
           onRefresh: _refreshLogs,
-          color: const Color(0xFF4CAF50),
+          color: const Color(0xFF00A236),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                padding: const EdgeInsets.fromLTRB(24, 4, 24, 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "Logs Overview",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF2C3E50),
-                      ),
-                    ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Box 1: Logged-in worker's FOUND logs
-                        Container(
-                          margin: const EdgeInsets.only(right: 6),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF1F8F2),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text(
-                                "My Found",
-                                style: TextStyle(
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0xFF2E7D32),
-                                ),
+                        const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Logs Overview",
+                              style: TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF2C3E50),
                               ),
-                              const SizedBox(height: 2),
-                              Text(
-                                "$myFoundLogs",
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,
-                                  color: Color(0xFF2E7D32),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // Box 2: Total Found counts across all workers
-                        Container(
-                          margin: const EdgeInsets.only(right: 6),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF1F8F2),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text(
-                                "Total Found",
-                                style: TextStyle(
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0xFF2E7D32),
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                "$allFoundLogs",
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,
-                                  color: Color(0xFF2E7D32),
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                            Text(
+                              "Track and monitor synchronization history",
+                              style: TextStyle(color: Colors.black54, fontSize: 13),
+                            ),
+                          ],
                         ),
                         Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: Colors.black.withOpacity(0.04)),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.06),
-                                blurRadius: 12,
+                                color: Colors.black.withOpacity(0.04),
+                                blurRadius: 10,
                                 offset: const Offset(0, 4),
                               ),
                             ],
                           ),
                           child: IconButton(
                             constraints: const BoxConstraints(
-                              minWidth: 38,
-                              minHeight: 38,
+                              minWidth: 44,
+                              minHeight: 44,
                             ),
                             padding: EdgeInsets.zero,
                             onPressed: () {
@@ -328,9 +280,129 @@ class _LogsScreenState extends State<LogsScreen>
                                     ? Icons.view_agenda_rounded
                                     : Icons.table_chart_rounded,
                                 key: ValueKey(_isTableView),
-                                color: const Color(0xFF4CAF50),
-                                size: 20,
+                                color: const Color(0xFF00A236),
+                                size: 22,
                               ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 18),
+                    Row(
+                      children: [
+                        // Box 1: Logged-in worker's FOUND logs
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 12,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: Colors.black.withOpacity(0.03)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.02),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
+                                )
+                              ],
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF00A236).withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: const Icon(Icons.person_pin_rounded, color: Color(0xFF00A236), size: 20),
+                                ),
+                                const SizedBox(width: 10),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Text(
+                                      "My Found",
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w500,
+                                        color: Color(0xFF7F8C8D),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 1),
+                                    Text(
+                                      "$myFoundLogs",
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF2C3E50),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        // Box 2: Total Found counts across all workers
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 12,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: Colors.black.withOpacity(0.03)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.02),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
+                                )
+                              ],
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFFFA000).withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: const Icon(Icons.group_rounded, color: Color(0xFFFFA000), size: 20),
+                                ),
+                                const SizedBox(width: 10),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Text(
+                                      "Total Found",
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w500,
+                                        color: Color(0xFF7F8C8D),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 1),
+                                    Text(
+                                      "$allFoundLogs",
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF2C3E50),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -340,7 +412,7 @@ class _LogsScreenState extends State<LogsScreen>
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: TextField(
                   controller: _searchController,
                   onChanged: (value) {
@@ -350,11 +422,12 @@ class _LogsScreenState extends State<LogsScreen>
                     });
                   },
                   decoration: InputDecoration(
-                    hintText: "Search name, phone, worker...",
-                    prefixIcon: const Icon(Icons.search),
+                    hintText: "Search name, phone, RFID, worker...",
+                    hintStyle: const TextStyle(color: Colors.black38, fontSize: 14),
+                    prefixIcon: const Icon(Icons.search, color: Colors.black54, size: 22),
                     suffixIcon: _searchQuery.isNotEmpty
                         ? IconButton(
-                      icon: const Icon(Icons.close),
+                      icon: const Icon(Icons.close, color: Colors.black54, size: 20),
                       onPressed: () {
                         _searchController.clear();
                         setState(() {
@@ -366,21 +439,34 @@ class _LogsScreenState extends State<LogsScreen>
                         : null,
                     filled: true,
                     fillColor: Colors.white,
-                    border: OutlineInputBorder(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(18),
-                      borderSide: BorderSide.none,
+                      borderSide: BorderSide(color: Colors.black.withOpacity(0.04)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(18),
+                      borderSide: const BorderSide(color: Color(0xFF00A236), width: 1.5),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 14),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Container(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: Colors.black.withOpacity(0.03)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.02),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
                   child: Row(
                     children: [
@@ -398,7 +484,7 @@ class _LogsScreenState extends State<LogsScreen>
                           },
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: 14),
                       Expanded(
                         child: _buildCustomDropdown(
                           label: "Status",
@@ -419,18 +505,18 @@ class _LogsScreenState extends State<LogsScreen>
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
               Expanded(
                 child: _isLoading
-                    ? const Center(child: CircularProgressIndicator())
+                    ? const Center(child: CircularProgressIndicator(color: Color(0xFF00A236)))
                     : AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 600),
+                  duration: const Duration(milliseconds: 400),
                   child: _isTableView
                       ? _buildTableView(paginatedLogs) // Uses the sliced 10-item list
                       : _buildCardView(paginatedLogs),  // Uses the sliced 10-item list
                 ),
               ),
-              // Pagination Controls UI added at the bottom
+              // Pagination Controls UI
               if (!_isLoading && totalPages > 1)
                 _buildPaginationControls(totalPages),
             ],
@@ -440,37 +526,50 @@ class _LogsScreenState extends State<LogsScreen>
     );
   }
 
-  // A sleek control bar matching your clean theme styling
   Widget _buildPaginationControls(int totalPages) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+      padding: const EdgeInsets.fromLTRB(24, 8, 24, 20),
       color: Colors.transparent,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          IconButton(
-            onPressed: _currentPage > 1
-                ? () => setState(() => _currentPage--)
-                : null,
-            icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 18),
-            color: const Color(0xFF4CAF50),
-            disabledColor: Colors.grey.shade400,
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.black.withOpacity(0.03)),
+            ),
+            child: IconButton(
+              onPressed: _currentPage > 1
+                  ? () => setState(() => _currentPage--)
+                  : null,
+              icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 16),
+              color: const Color(0xFF00A236),
+              disabledColor: Colors.grey.shade300,
+            ),
           ),
           Text(
             "Page $_currentPage of $totalPages",
             style: const TextStyle(
               fontSize: 14,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.bold,
               color: Color(0xFF2C3E50),
             ),
           ),
-          IconButton(
-            onPressed: _currentPage < totalPages
-                ? () => setState(() => _currentPage++)
-                : null,
-            icon: const Icon(Icons.arrow_forward_ios_rounded, size: 18),
-            color: const Color(0xFF4CAF50),
-            disabledColor: Colors.grey.shade400,
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.black.withOpacity(0.03)),
+            ),
+            child: IconButton(
+              onPressed: _currentPage < totalPages
+                  ? () => setState(() => _currentPage++)
+                  : null,
+              icon: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
+              color: const Color(0xFF00A236),
+              disabledColor: Colors.grey.shade300,
+            ),
           ),
         ],
       ),
@@ -486,18 +585,27 @@ class _LogsScreenState extends State<LogsScreen>
   }) {
     return DropdownButtonFormField<String>(
       value: value,
+      style: const TextStyle(color: Color(0xFF2C3E50), fontSize: 14, fontWeight: FontWeight.w500),
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon, size: 20),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-        border: OutlineInputBorder(
+        labelStyle: const TextStyle(color: Color(0xFF7F8C8D), fontSize: 13, fontWeight: FontWeight.w500),
+        prefixIcon: Icon(icon, size: 18, color: Colors.black54),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        filled: true,
+        fillColor: const Color(0xFFF8F9FA),
+        enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: Colors.black12),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: Color(0xFF00A236), width: 1.5),
         ),
       ),
       items: items.map((item) {
         return DropdownMenuItem(
           value: item,
-          child: Text(item, style: const TextStyle(fontSize: 13)),
+          child: Text(item, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.normal)),
         );
       }).toList(),
       onChanged: onChanged,
@@ -509,7 +617,7 @@ class _LogsScreenState extends State<LogsScreen>
 
     return ListView.builder(
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       itemCount: logs.length,
       itemBuilder: (context, index) {
         final log = logs[index];
@@ -541,15 +649,16 @@ class _LogsScreenState extends State<LogsScreen>
 
         return Container(
           margin: const EdgeInsets.only(bottom: 16),
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(color: Colors.black.withOpacity(0.03)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.03),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
               )
             ],
           ),
@@ -559,14 +668,16 @@ class _LogsScreenState extends State<LogsScreen>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    isFound
-                        ? (log.citizenName ?? "-")
-                        : "House Locked / Absent",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: isFound ? const Color(0xFF1A237E) : const Color(0xFFC62828),
+                  Expanded(
+                    child: Text(
+                      isFound
+                          ? (log.citizenName ?? "-")
+                          : "House Locked / Absent",
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                        color: isFound ? const Color(0xFF2C3E50) : const Color(0xFFC62828),
+                      ),
                     ),
                   ),
                   _buildStatusBadge(
@@ -575,9 +686,9 @@ class _LogsScreenState extends State<LogsScreen>
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
-              const Divider(height: 8),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
+              const Divider(height: 1, color: Colors.black12),
+              const SizedBox(height: 14),
               if (isFound)
                 _buildInfoGrid(log)
               else
@@ -591,29 +702,30 @@ class _LogsScreenState extends State<LogsScreen>
                           child: Column(
                             children: [
                               _buildStructuredMetaRow(Icons.location_on_outlined, "Address", cardAddress),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 10),
                               Row(
                                 children: [
                                   Expanded(child: _buildStructuredMetaRow(Icons.apartment_outlined, "Building No", cardBuildingNo)),
+                                  const SizedBox(width: 8),
                                   Expanded(child: _buildStructuredMetaRow(Icons.unfold_more_outlined, "Floor No", cardFloorNo)),
                                 ],
                               ),
                             ],
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 14),
                         Container(
-                          width: 75,
-                          height: 75,
+                          width: 80,
+                          height: 80,
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade100,
-                            borderRadius: BorderRadius.circular(12),
+                            color: const Color(0xFFF8F9FA),
+                            borderRadius: BorderRadius.circular(16),
                             border: Border.all(
                               color: Colors.black12,
                             ),
                           ),
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(14),
                             child: cardPhotoUrl.trim().isNotEmpty
                                 ? Image.network(
                               cardPhotoUrl.trim(),
@@ -621,13 +733,13 @@ class _LogsScreenState extends State<LogsScreen>
                               loadingBuilder: (context, child, loadingProgress) {
                                 if (loadingProgress == null) return child;
                                 return const Center(
-                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                  child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF00A236)),
                                 );
                               },
                               errorBuilder: (context, error, stackTrace) {
                                 print("IMAGE LOAD ERROR => $error");
                                 return Container(
-                                  color: Colors.grey.shade200,
+                                  color: const Color(0xFFFFF5F5),
                                   child: const Icon(
                                     Icons.broken_image_outlined,
                                     color: Colors.redAccent,
@@ -637,31 +749,31 @@ class _LogsScreenState extends State<LogsScreen>
                               },
                             )
                                 : Container(
-                              color: Colors.grey.shade200,
+                              color: const Color(0xFFF8F9FA),
                               child: const Icon(
                                 Icons.image_outlined,
                                 color: Colors.black38,
-                                size: 24,
+                                size: 26,
                               ),
                             ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 16),
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
                         color: const Color(0xFFFFF5F5),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(16),
                         border: Border.all(color: const Color(0xFFFFEBEE)),
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Icon(Icons.assignment_late_outlined, size: 16, color: Color(0xFFC62828)),
-                          const SizedBox(width: 8),
+                          const Icon(Icons.assignment_late_outlined, size: 18, color: Color(0xFFC62828)),
+                          const SizedBox(width: 10),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -670,7 +782,7 @@ class _LogsScreenState extends State<LogsScreen>
                                   "REMARKS",
                                   style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFFC62828), letterSpacing: 0.5),
                                 ),
-                                const SizedBox(height: 2),
+                                const SizedBox(height: 3),
                                 Text(
                                   log.remarks ?? "House locked",
                                   style: const TextStyle(fontSize: 13, color: Colors.black87, fontWeight: FontWeight.w500),
@@ -681,12 +793,12 @@ class _LogsScreenState extends State<LogsScreen>
                         ],
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 12),
                     Padding(
                       padding: const EdgeInsets.only(left: 4),
                       child: Text(
                         "Logged By: ${log.workerId.toUpperCase()}",
-                        style: TextStyle(fontSize: 11, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
+                        style: const TextStyle(fontSize: 11, color: Color(0xFF7F8C8D), fontWeight: FontWeight.bold),
                       ),
                     )
                   ],
@@ -702,15 +814,15 @@ class _LogsScreenState extends State<LogsScreen>
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 16, color: Colors.black54),
+        Icon(icon, size: 18, color: Colors.black54),
         const SizedBox(width: 8),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label.toUpperCase(), style: TextStyle(fontSize: 9, color: Colors.grey.shade500, fontWeight: FontWeight.bold, letterSpacing: 0.3)),
+              Text(label.toUpperCase(), style: const TextStyle(fontSize: 10, color: Color(0xFF7F8C8D), fontWeight: FontWeight.bold, letterSpacing: 0.4)),
               const SizedBox(height: 1),
-              Text(value, style: const TextStyle(fontSize: 13, color: Color(0xFF2C3E50), fontWeight: FontWeight.w600), maxLines: 2, overflow: TextOverflow.ellipsis),
+              Text(value, style: const TextStyle(fontSize: 14, color: Color(0xFF2C3E50), fontWeight: FontWeight.bold), maxLines: 2, overflow: TextOverflow.ellipsis),
             ],
           ),
         ),
@@ -720,50 +832,60 @@ class _LogsScreenState extends State<LogsScreen>
 
   Widget _buildStatusBadge(bool isFound, String status) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: isFound ? const Color(0xFFE8F5E9) : const Color(0xFFFFF0F0),
+        color: isFound ? const Color(0xFF00A236).withOpacity(0.1) : const Color(0xFFC62828).withOpacity(0.1),
         borderRadius: BorderRadius.circular(100),
-        border: Border.all(
-          color: isFound ? const Color(0xFFC8E6C9) : const Color(0xFFFFCDD2),
-          width: 1,
-        ),
       ),
       child: Text(
         status.toUpperCase(),
         style: TextStyle(
           fontSize: 10,
           fontWeight: FontWeight.bold,
-          color: isFound ? const Color(0xFF2E7D32) : const Color(0xFFC62828),
+          color: isFound ? const Color(0xFF00A236) : const Color(0xFFC62828),
+          letterSpacing: 0.3,
         ),
       ),
     );
   }
 
   Widget _buildInfoGrid(TrackingModel log) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            _buildInfoItem(Icons.badge_rounded, "Worker ID", log.workerId.toUpperCase()),
-            _buildInfoItem(Icons.person, "Name", log.citizenName ?? "-"),
-          ],
-        ),
-        const SizedBox(height: 6),
-        Row(
-          children: [
-            _buildInfoItem(Icons.phone, "Phone", log.phoneNumber ?? "-"),
-            _buildInfoItem(Icons.verified, "Status", log.status),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            _buildInfoItem(Icons.water_drop_rounded, "Wet RFID", log.wetWasteRfid.isEmpty ? "-" : log.wetWasteRfid),
-            _buildInfoItem(Icons.recycling_rounded, "Dry RFID", log.dryWasteRfid.isEmpty ? "-" : log.dryWasteRfid),
-          ],
-        ),
-      ],
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8F9FA),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              _buildInfoItem(Icons.badge_rounded, "Worker ID", log.workerId.toUpperCase()),
+              _buildInfoItem(Icons.person_outline_rounded, "Name", log.citizenName ?? "-"),
+            ],
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 4),
+            child: Divider(height: 1, color: Colors.black12),
+          ),
+          Row(
+            children: [
+              _buildInfoItem(Icons.phone_android_rounded, "Phone", log.phoneNumber ?? "-"),
+              _buildInfoItem(Icons.verified_outlined, "Status", log.status),
+            ],
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 4),
+            child: Divider(height: 1, color: Colors.black12),
+          ),
+          Row(
+            children: [
+              _buildInfoItem(Icons.water_drop_outlined, "Wet RFID", log.wetWasteRfid.isEmpty ? "-" : log.wetWasteRfid),
+              _buildInfoItem(Icons.recycling_rounded, "Dry RFID", log.dryWasteRfid.isEmpty ? "-" : log.dryWasteRfid),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -772,9 +894,17 @@ class _LogsScreenState extends State<LogsScreen>
       child: ListTile(
         dense: true,
         contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-        leading: Icon(icon, size: 18, color: const Color(0xFF4CAF50)),
-        title: Text(label, style: const TextStyle(fontSize: 11, color: Colors.grey)),
-        subtitle: Text(value, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.black87)),
+        leading: Container(
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.black.withOpacity(0.04)),
+          ),
+          child: Icon(icon, size: 16, color: const Color(0xFF00A236)),
+        ),
+        title: Text(label, style: const TextStyle(fontSize: 11, color: Color(0xFF7F8C8D), fontWeight: FontWeight.w500)),
+        subtitle: Text(value, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF2C3E50))),
       ),
     );
   }
@@ -787,16 +917,17 @@ class _LogsScreenState extends State<LogsScreen>
     final bool rendersFoundTable = _selectedStatus == "Found";
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.92),
-          borderRadius: BorderRadius.circular(20),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: Colors.black.withOpacity(0.03)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 14,
-              offset: const Offset(0, 4),
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 16,
+              offset: const Offset(0, 6),
             ),
           ],
         ),
@@ -807,27 +938,27 @@ class _LogsScreenState extends State<LogsScreen>
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: DataTable(
-                headingRowColor: MaterialStateProperty.all(const Color(0xFFF5F8F7)),
-                dataRowMinHeight: 58,
-                dataRowMaxHeight: 70,
+                headingRowColor: MaterialStateProperty.all(const Color(0xFFF8F9FA)),
+                dataRowMinHeight: 60,
+                dataRowMaxHeight: 72,
                 horizontalMargin: 20,
                 columnSpacing: 28,
                 columns: rendersFoundTable
                     ? const [
-                  DataColumn(label: Text("SL", style: TextStyle(fontWeight: FontWeight.bold))),
-                  DataColumn(label: Text("Worker", style: TextStyle(fontWeight: FontWeight.bold))),
-                  DataColumn(label: Text("Name", style: TextStyle(fontWeight: FontWeight.bold))),
-                  DataColumn(label: Text("Wet RFID", style: TextStyle(fontWeight: FontWeight.bold))),
-                  DataColumn(label: Text("Dry RFID", style: TextStyle(fontWeight: FontWeight.bold))),
-                  DataColumn(label: Text("Phone", style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataColumn(label: Text("SL", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2C3E50)))),
+                  DataColumn(label: Text("Worker", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2C3E50)))),
+                  DataColumn(label: Text("Name", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2C3E50)))),
+                  DataColumn(label: Text("Wet RFID", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2C3E50)))),
+                  DataColumn(label: Text("Dry RFID", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2C3E50)))),
+                  DataColumn(label: Text("Phone", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2C3E50)))),
                 ]
                     : const [
-                  DataColumn(label: Text("SL", style: TextStyle(fontWeight: FontWeight.bold))),
-                  DataColumn(label: Text("Worker", style: TextStyle(fontWeight: FontWeight.bold))),
-                  DataColumn(label: Text("Address Specification", style: TextStyle(fontWeight: FontWeight.bold))),
-                  DataColumn(label: Text("Building No", style: TextStyle(fontWeight: FontWeight.bold))),
-                  DataColumn(label: Text("Floor", style: TextStyle(fontWeight: FontWeight.bold))),
-                  DataColumn(label: Text("Remarks Exception", style: TextStyle(fontWeight: FontWeight.bold))),
+                  DataColumn(label: Text("SL", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2C3E50)))),
+                  DataColumn(label: Text("Worker", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2C3E50)))),
+                  DataColumn(label: Text("Address Specification", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2C3E50)))),
+                  DataColumn(label: Text("Building No", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2C3E50)))),
+                  DataColumn(label: Text("Floor", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2C3E50)))),
+                  DataColumn(label: Text("Remarks Exception", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2C3E50)))),
                 ],
                 rows: logs.map((log) {
                   Map<String, dynamic> logMap = {};
@@ -847,23 +978,23 @@ class _LogsScreenState extends State<LogsScreen>
                   return DataRow(
                     cells: rendersFoundTable
                         ? [
-                      DataCell(Text(log.id.toString())),
-                      DataCell(Text(log.workerId.toUpperCase())),
-                      DataCell(Text(log.citizenName ?? "-")),
+                      DataCell(Text(log.id.toString(), style: const TextStyle(fontWeight: FontWeight.w500))),
+                      DataCell(Text(log.workerId.toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF7F8C8D)))),
+                      DataCell(Text(log.citizenName ?? "-", style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2C3E50)))),
                       DataCell(Text(log.wetWasteRfid ?? "-")),
                       DataCell(Text(log.dryWasteRfid ?? "-")),
                       DataCell(Text(log.phoneNumber ?? "-")),
                     ]
                         : [
-                      DataCell(Text(log.id.toString())),
-                      DataCell(Text(log.workerId.toUpperCase())),
+                      DataCell(Text(log.id.toString(), style: const TextStyle(fontWeight: FontWeight.w500))),
+                      DataCell(Text(log.workerId.toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF7F8C8D)))),
                       DataCell(Text(tableAddress)),
                       DataCell(Text(tableBuildingNo)),
                       DataCell(Text(tableFloorNo)),
                       DataCell(
                         Text(
                           log.remarks ?? "House locked",
-                          style: const TextStyle(color: Color(0xFFC62828), fontWeight: FontWeight.w500),
+                          style: const TextStyle(color: Color(0xFFC62828), fontWeight: FontWeight.bold),
                         ),
                       ),
                     ],
@@ -882,16 +1013,31 @@ class _LogsScreenState extends State<LogsScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.find_in_page_rounded,
-            size: 80,
-            color: Colors.grey.shade300,
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.02),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  )
+                ]
+            ),
+            child: Icon(
+              Icons.find_in_page_rounded,
+              size: 64,
+              color: Colors.grey.shade300,
+            ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           Text(
             "No matching records found",
             style: TextStyle(
-              fontSize: 16,
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
               color: Colors.grey.shade500,
             ),
           ),
