@@ -102,12 +102,23 @@ class _SurveyScreenState extends State<SurveyScreen> {
     super.initState();
 
     _loadRFIDRange().then((_) async {
+      await _loadRFIDRange();
       await _fetchUnmappedRFIDs();
 
       await _loadSurveyDetails();
 
       _loadLocationAndCheckPopups();
     });
+  }
+
+  Future<void> _refreshSurveyScreen() async {
+    await _loadRFIDRange();
+
+    await _fetchUnmappedRFIDs();
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> _loadRFIDRange() async {
@@ -1499,7 +1510,8 @@ class _SurveyScreenState extends State<SurveyScreen> {
         }
 
         _clearForm();
-        await _fetchUnmappedRFIDs();
+
+        await _refreshSurveyScreen();
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -1508,7 +1520,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
           ),
         );
 
-        // Success prompt triggered here cleanly
         _showContinueSurveyPopup();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(

@@ -458,7 +458,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   String _status = 'Found';
-  bool _isMovingToNotFound = true;
   bool _showValidation = false;
   bool _showRemarksError = false;
 
@@ -1345,7 +1344,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
         }
 
         _clearForm();
-        await _loadAllDropdownData();
+
+        await Future.wait([
+          _loadRFIDRange(),
+          _fetchUnmappedRFIDs(),
+          _fetchPhones(),
+          _fetchNames(),
+        ]);
+
+        if (mounted) {
+          setState(() {});
+        }
       } else {
         try {
           final errorJson = jsonDecode(response?.body ?? "{}");
@@ -1429,23 +1438,66 @@ class _DashboardScreenState extends State<DashboardScreen> {
               builder: (context, constraints) {
                 return SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.fromLTRB(24, 4, 24, 24),
+                  padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
                   child: ConstrainedBox(
                     constraints: BoxConstraints(
-                      minHeight: constraints.maxHeight - 28,
+                      minHeight: constraints.maxHeight - 44,
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
+                        // Clean, Minimalist Welcome Block
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              radius: 22,
+                              backgroundColor: const Color(0xFF00A236).withOpacity(0.1),
+                              child: Text(
+                                _adminName.isNotEmpty ? _adminName[0].toUpperCase() : "A",
+                                style: const TextStyle(
+                                  color: Color(0xFF00A236),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Welcome $_adminName",
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF2C3E50),
+                                    ),
+                                  ),
+                                  const Text(
+                                    "Let's map some tags today!",
+                                    style: TextStyle(
+                                      color: Colors.black54,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24), // Increased spacing since the bar is removed
+
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text(
                               "RFID Mapping",
                               style: TextStyle(
-                                fontSize: 28,
+                                fontSize: 24,
                                 fontWeight: FontWeight.bold,
                                 color: Color(0xFF2C3E50),
                               ),
@@ -1454,98 +1506,68 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               "Sync resident details from the secure database",
                               style: TextStyle(color: Colors.black54, fontSize: 13),
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 16),
 
                             Container(
-                              height: 58,
+                              padding: const EdgeInsets.all(6),
                               decoration: BoxDecoration(
                                 color: const Color(0xFFEFEFEF),
                                 borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: Colors.black12,
-                                  width: 0.5,
-                                ),
+                                border: Border.all(color: Colors.black12, width: 0.5),
                               ),
-                              child: Stack(
+                              child: Row(
                                 children: [
-
-                                  AnimatedAlign(
-                                    duration: const Duration(milliseconds: 350),
-                                    curve: Curves.easeInOutCubic,
-                                    alignment: _status == "Found"
-                                        ? Alignment.centerLeft
-                                        : Alignment.centerRight,
-                                    child: Container(
-                                      width: (MediaQuery.of(context).size.width - 60) / 2,
-                                      margin: const EdgeInsets.all(6),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(16),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black.withOpacity(0.05),
-                                            blurRadius: 6,
-                                            offset: const Offset(0, 2),
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () => setState(() => _status = 'Found'),
+                                      child: AnimatedContainer(
+                                        duration: const Duration(milliseconds: 200),
+                                        padding: const EdgeInsets.symmetric(vertical: 12),
+                                        decoration: BoxDecoration(
+                                          color: _status == 'Found' ? Colors.white : Colors.transparent,
+                                          borderRadius: BorderRadius.circular(16),
+                                          boxShadow: _status == 'Found'
+                                              ? [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))]
+                                              : [],
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            "Found",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14,
+                                              color: _status == 'Found' ? const Color(0xFF00A236) : Colors.black54,
+                                            ),
                                           ),
-                                        ],
+                                        ),
                                       ),
                                     ),
                                   ),
-
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: InkWell(
-                                          borderRadius: BorderRadius.circular(20),
-                                          onTap: () {
-                                            if (_status != "Found") {
-                                              setState(() {
-                                                _status = "Found";
-                                              });
-                                            }
-                                          },
-                                          child: Center(
-                                            child: AnimatedDefaultTextStyle(
-                                              duration: const Duration(milliseconds: 250),
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold,
-                                                color: _status == "Found"
-                                                    ? const Color(0xFF00A236)
-                                                    : Colors.black54,
-                                              ),
-                                              child: const Text("Found"),
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () => setState(() => _status = 'Not Found'),
+                                      child: AnimatedContainer(
+                                        duration: const Duration(milliseconds: 200),
+                                        padding: const EdgeInsets.symmetric(vertical: 12),
+                                        decoration: BoxDecoration(
+                                          color: _status == 'Not Found' ? Colors.white : Colors.transparent,
+                                          borderRadius: BorderRadius.circular(16),
+                                          boxShadow: _status == 'Not Found'
+                                              ? [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))]
+                                              : [],
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            "Not Found",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14,
+                                              color: _status == 'Not Found' ? const Color(0xFF00A236) : Colors.black54,
                                             ),
                                           ),
                                         ),
                                       ),
-
-                                      Expanded(
-                                        child: InkWell(
-                                          borderRadius: BorderRadius.circular(20),
-                                          onTap: () {
-                                            if (_status != "Not Found") {
-                                              setState(() {
-                                                _status = "Not Found";
-                                              });
-                                            }
-                                          },
-                                          child: Center(
-                                            child: AnimatedDefaultTextStyle(
-                                              duration: const Duration(milliseconds: 250),
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold,
-                                                color: _status == "Not Found"
-                                                    ? const Color(0xFF00A236)
-                                                    : Colors.black54,
-                                              ),
-                                              child: const Text("Not Found"),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                    ),
                                   ),
                                 ],
                               ),
@@ -1553,39 +1575,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             const SizedBox(height: 20),
 
                             AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 450),
-                              switchInCurve: Curves.easeOutCubic,
-                              switchOutCurve: Curves.easeInCubic,
+                              duration: const Duration(milliseconds: 300),
                               transitionBuilder: (child, animation) {
-
-                                final slideAnimation = Tween<Offset>(
-                                  begin: const Offset(0.15, 0),
+                                final offsetAnimation = Tween<Offset>(
+                                  begin: const Offset(0.08, 0.0),
                                   end: Offset.zero,
-                                ).animate(
-                                  CurvedAnimation(
-                                    parent: animation,
-                                    curve: Curves.easeOutCubic,
-                                  ),
-                                );
-
-                                final scaleAnimation = Tween<double>(
-                                  begin: 0.97,
-                                  end: 1.0,
-                                ).animate(
-                                  CurvedAnimation(
-                                    parent: animation,
-                                    curve: Curves.easeOut,
-                                  ),
-                                );
-
+                                ).animate(CurvedAnimation(
+                                  parent: animation,
+                                  curve: Curves.easeOutCubic,
+                                ));
                                 return FadeTransition(
                                   opacity: animation,
                                   child: SlideTransition(
-                                    position: slideAnimation,
-                                    child: ScaleTransition(
-                                      scale: scaleAnimation,
-                                      child: child,
-                                    ),
+                                    position: offsetAnimation,
+                                    child: child,
                                   ),
                                 );
                               },
@@ -1797,7 +1800,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
 
                         Padding(
-                          padding: const EdgeInsets.only(top: 16.0),
+                          padding: const EdgeInsets.only(top: 24.0),
                           child: SewacButton(
                             text: "SAVE",
                             onPressed: () {

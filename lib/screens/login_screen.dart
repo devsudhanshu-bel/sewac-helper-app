@@ -113,9 +113,15 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       });
 
       if (loginResult == "SUCCESS") {
-        // Automatically save login persistent state so the session is remembered until explicitly logging out
         final prefs = await SharedPreferences.getInstance();
+
         await prefs.setBool('isLoggedIn', true);
+
+        // CLEAR PREVIOUS USER'S SURVEY DATA
+        await prefs.remove("survey_city");
+        await prefs.remove("survey_ward");
+        await prefs.remove("survey_area");
+        await prefs.remove("survey_building_photo_path");
 
         _showPopup(
           message: "Login Successful",

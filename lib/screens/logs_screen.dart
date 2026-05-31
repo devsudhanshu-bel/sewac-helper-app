@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/sewac_header.dart';
 import 'dart:io';
+import 'dart:async';
 
 class LogsScreen extends StatefulWidget {
   const LogsScreen({super.key});
@@ -28,6 +29,7 @@ class _LogsScreenState extends State<LogsScreen>
 
   List<TrackingModel> _logs = [];
   bool _isLoading = true;
+  Timer? _refreshTimer;
 
   // Pagination State
   int _currentPage = 1;
@@ -53,7 +55,19 @@ class _LogsScreenState extends State<LogsScreen>
   @override
   void initState() {
     super.initState();
+
     _fetchLogs();
+
+    // Auto refresh every 10 seconds
+    Future.doWhile(() async {
+      await Future.delayed(const Duration(seconds: 10));
+
+      if (!mounted) return false;
+
+      await _fetchLogs();
+
+      return mounted;
+    });
   }
 
   Future<void> _fetchLogs() async {
@@ -137,6 +151,154 @@ class _LogsScreenState extends State<LogsScreen>
         builder: (_) =>
         const LoginScreen(),
       ),
+    );
+  }
+
+  // Searchable Dialog Picker for Worker List Selection handling high density entries
+  void _showSearchableWorkerPicker() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        String modalSearchQuery = "";
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setModalState) {
+            final filteredWorkers = _workerIds.where((worker) {
+              return worker.toLowerCase().contains(modalSearchQuery.toLowerCase());
+            }).toList();
+
+            return Container(
+              height: MediaQuery.of(context).size.height * 0.75,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(28),
+                  topRight: Radius.circular(28),
+                ),
+              ),
+              child: Column(
+                children: [
+                  const SizedBox(height: 12),
+                  Container(
+                    width: 44,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Select Worker ID",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF2C3E50),
+                          ),
+                        ),
+                        Text(
+                          "${filteredWorkers.length} items",
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF7F8C8D),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: TextField(
+                      autofocus: false,
+                      onChanged: (value) {
+                        setModalState(() {
+                          modalSearchQuery = value.trim();
+                        });
+                      },
+                      decoration: InputDecoration(
+                        hintText: "Type code numbers (e.g. 15, 100)...",
+                        hintStyle: const TextStyle(color: Colors.black38, fontSize: 13),
+                        prefixIcon: const Icon(Icons.search, color: Colors.black54, size: 20),
+                        filled: true,
+                        fillColor: const Color(0xFFF8F9FA),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide: const BorderSide(color: Colors.black12),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide: const BorderSide(color: Color(0xFF00A236), width: 1.5),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Expanded(
+                    child: filteredWorkers.isEmpty
+                        ? Center(
+                      child: Text(
+                        "No matching workers found",
+                        style: TextStyle(color: Colors.grey.shade400, fontSize: 14),
+                      ),
+                    )
+                        : ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      itemCount: filteredWorkers.length,
+                      itemBuilder: (context, index) {
+                        final worker = filteredWorkers[index];
+                        final isSelected = worker == _selectedWorker;
+                        return Container(
+                          margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
+                          decoration: BoxDecoration(
+                            color: isSelected ? const Color(0xFF00A236).withOpacity(0.06) : Colors.transparent,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: ListTile(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            dense: true,
+                            leading: Icon(
+                              worker == "All Workers" ? Icons.group_outlined : Icons.badge_outlined,
+                              color: isSelected ? const Color(0xFF00A236) : Colors.black54,
+                              size: 18,
+                            ),
+                            title: Text(
+                              worker,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                                color: isSelected ? const Color(0xFF00A236) : const Color(0xFF2C3E50),
+                              ),
+                            ),
+                            trailing: isSelected
+                                ? const Icon(Icons.check_circle, color: Color(0xFF00A236), size: 18)
+                                : null,
+                            onTap: () {
+                              setState(() {
+                                _selectedWorker = worker;
+                                _currentPage = 1;
+                              });
+                              Navigator.pop(context);
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -470,18 +632,31 @@ class _LogsScreenState extends State<LogsScreen>
                   ),
                   child: Row(
                     children: [
+                      // Enhanced Searchable Worker Trigger Layout Field Box
                       Expanded(
-                        child: _buildCustomDropdown(
-                          label: "Worker ID",
-                          value: _selectedWorker,
-                          items: _workerIds,
-                          icon: Icons.badge_outlined,
-                          onChanged: (val) {
-                            setState(() {
-                              _selectedWorker = val!;
-                              _currentPage = 1; // Reset to page 1 when filtering
-                            });
-                          },
+                        child: InkWell(
+                          onTap: _showSearchableWorkerPicker,
+                          borderRadius: BorderRadius.circular(14),
+                          child: InputDecorator(
+                            decoration: InputDecoration(
+                              labelText: "Worker ID",
+                              labelStyle: const TextStyle(color: Color(0xFF7F8C8D), fontSize: 13, fontWeight: FontWeight.w500),
+                              prefixIcon: const Icon(Icons.badge_outlined, size: 18, color: Colors.black54),
+                              suffixIcon: const Icon(Icons.arrow_drop_down, color: Color(0xFF2C3E50)),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                              filled: true,
+                              fillColor: const Color(0xFFF8F9FA),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                                borderSide: const BorderSide(color: Colors.black12),
+                              ),
+                            ),
+                            child: Text(
+                              _selectedWorker,
+                              style: const TextStyle(color: Color(0xFF2C3E50), fontSize: 13, fontWeight: FontWeight.w500),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(width: 14),

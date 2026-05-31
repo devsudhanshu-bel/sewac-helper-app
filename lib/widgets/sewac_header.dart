@@ -21,16 +21,47 @@ class SewacHeader extends StatefulWidget implements PreferredSizeWidget {
 
 class _SewacHeaderState extends State<SewacHeader> {
   String _adminName = "A";
+  String _rangeDisplay = "";
   int _availableTagsCount = 0;
-  String _rangeDisplay = "Not Assigned";
   Timer? _refreshTimer;
+
+  Future<void> _loadCachedHeaderData() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final workerId =
+        prefs.getString("workerId") ??
+            prefs.getString("worker_id") ??
+            prefs.getString("username") ??
+            "";
+
+    final start = prefs.getInt("assignedStartRFID_$workerId");
+    final end = prefs.getInt("assignedEndRFID_$workerId");
+
+    final mappedTags =
+        prefs.getStringList("assignedMappedTagsList_$workerId") ?? [];
+
+    if (start != null && end != null) {
+      final totalCapacity = end - start + 1;
+
+      if (mounted) {
+        setState(() {
+          _rangeDisplay = "$start - $end";
+          _availableTagsCount = totalCapacity - mappedTags.length;
+        });
+      }
+    }
+  }
 
   @override
   void initState() {
     super.initState();
 
+    _loadCachedHeaderData(); // instant load
     _loadAdminName();
-    _fetchHeaderTrackingData();
+
+    Future.microtask(() {
+      _fetchHeaderTrackingData();
+    });
 
     _refreshTimer = Timer.periodic(
       const Duration(seconds: 2),
@@ -137,6 +168,7 @@ class _SewacHeaderState extends State<SewacHeader> {
           children: [
             Text(
               "Range: $_rangeDisplay",
+
               style: const TextStyle(
                 color: Color(0xFF1A237E),
                 fontWeight: FontWeight.w700,
@@ -146,6 +178,8 @@ class _SewacHeaderState extends State<SewacHeader> {
             const SizedBox(height: 2),
             Text(
               "Available Tags: $_availableTagsCount",
+
+
               style: const TextStyle(
                 color: Color(0xFF00A236),
                 fontWeight: FontWeight.w700,
