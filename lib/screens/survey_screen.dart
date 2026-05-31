@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:http_parser/http_parser.dart';
+import 'main_navigation_screen.dart';
 
 import '../widgets/sewac_background.dart';
 import '../widgets/sewac_header.dart';
@@ -28,6 +29,10 @@ class _SurveyScreenState extends State<SurveyScreen> {
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _peopleController = TextEditingController();
+
+  // Dialog drop-down text controllers for search
+  final _citySearchController = TextEditingController();
+  final _wardSearchController = TextEditingController();
 
   String? _selectedHH;
   String? _selectedCity;
@@ -57,7 +62,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
     "Others": false,
   };
 
-  // Autocomplete search controllers for RFID fields
   final TextEditingController _wetRfidSearchController = TextEditingController();
   final TextEditingController _dryRfidSearchController = TextEditingController();
 
@@ -66,7 +70,13 @@ class _SurveyScreenState extends State<SurveyScreen> {
   String? _selectedDryRFID;
   bool _showRfidValidationError = false;
 
-  // Wet available filtering exclusions logic
+  int? _assignedStartRFID;
+  int? _assignedEndRFID;
+
+  // Constants mock lists for autocomplete
+  final List<String> _citiesList = ["Bangalore", "Mysore", "Mangalore"];
+  final List<String> _wardsList = ["Ward 174"];
+
   List<String> get _wetAvailableRfids {
     return _rfidDropdownItems.where((item) {
       if (item == "Select") return true;
@@ -77,7 +87,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
     }).toList();
   }
 
-  // Dry available filtering exclusions logic
   List<String> get _dryAvailableRfids {
     return _rfidDropdownItems.where((item) {
       if (item == "Select") return true;
@@ -91,7 +100,85 @@ class _SurveyScreenState extends State<SurveyScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchUnmappedRFIDs();
+
+    _loadRFIDRange().then((_) async {
+      await _fetchUnmappedRFIDs();
+
+      await _loadSurveyDetails();
+
+      _loadLocationAndCheckPopups();
+    });
+  }
+
+  Future<void> _loadRFIDRange() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final workerId =
+        prefs.getString("workerId") ??
+            prefs.getString("worker_id") ??
+            prefs.getString("username") ??
+            "";
+
+    setState(() {
+      _assignedStartRFID =
+          prefs.getInt("assignedStartRFID_$workerId");
+      _assignedEndRFID =
+          prefs.getInt("assignedEndRFID_$workerId");
+    });
+  }
+
+  Future<void> _saveSurveyDetails() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString(
+      "survey_area",
+      _areaController.text.trim(),
+    );
+
+    if (_capturedImage != null) {
+      await prefs.setString(
+        "survey_building_photo_path",
+        _capturedImage!.path,
+      );
+    }
+  }
+
+  Future<void> _loadSurveyDetails() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final area = prefs.getString("survey_area");
+    final photoPath = prefs.getString("survey_building_photo_path");
+
+    if (area != null) {
+      _areaController.text = area;
+    }
+
+    if (photoPath != null && File(photoPath).existsSync()) {
+      _capturedImage = XFile(photoPath);
+    }
+  }
+
+  Future<void> _loadLocationAndCheckPopups() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedCity = prefs.getString("survey_city");
+    final savedWard = prefs.getString("survey_ward");
+
+    if (savedCity != null && savedWard != null) {
+      setState(() {
+        _selectedCity = savedCity;
+        _selectedWard = savedWard;
+      });
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      if (_selectedCity == null || _selectedWard == null) {
+        _showLocationPopup(isMandatory: true);
+      } else if (_areaController.text.trim().isEmpty || _capturedImage == null) {
+        _showSurveyDetailsPopup(isMandatory: true);
+      }
+    });
   }
 
   @override
@@ -104,6 +191,8 @@ class _SurveyScreenState extends State<SurveyScreen> {
     _peopleController.dispose();
     _wetRfidSearchController.dispose();
     _dryRfidSearchController.dispose();
+    _citySearchController.dispose();
+    _wardSearchController.dispose();
     super.dispose();
   }
 
@@ -118,9 +207,20 @@ class _SurveyScreenState extends State<SurveyScreen> {
         if (result["success"] == true) {
           final List<dynamic> rfids = result["data"];
           setState(() {
+            final filteredRFIDs = rfids.where((item) {
+              final value = int.tryParse(item["slno"].toString());
+
+              if (value == null) return false;
+              if (_assignedStartRFID == null) return false;
+              if (_assignedEndRFID == null) return false;
+
+              return value >= _assignedStartRFID! &&
+                  value <= _assignedEndRFID!;
+            }).toList();
+
             _rfidDropdownItems = [
               "Select",
-              ...rfids.map((item) => item["slno"].toString()),
+              ...filteredRFIDs.map((item) => item["slno"].toString()),
             ];
           });
         }
@@ -143,7 +243,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
   }
 
   void _clearForm() {
-    _areaController.clear();
     _buildingController.clear();
     _floorController.clear();
     _nameController.clear();
@@ -152,11 +251,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
     _wetRfidSearchController.clear();
     _dryRfidSearchController.clear();
 
-    _selectedCity = null;
-    _selectedWard = null;
     _selectedHH = null;
-    _capturedImage = null;
-
     _selectedWetRFID = null;
     _selectedDryRFID = null;
     _showRfidValidationError = false;
@@ -170,7 +265,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
 
   Widget _buildVerificationRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -182,17 +277,438 @@ class _SurveyScreenState extends State<SurveyScreen> {
               color: Color(0xFF7F8C8D),
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
           Text(
             value,
             style: const TextStyle(
-              fontSize: 16,
+              fontSize: 15,
               fontWeight: FontWeight.w600,
               color: Color(0xFF2C3E50),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildPopupSearchDropdown({
+    required String label,
+    required String hint,
+    required TextEditingController controller,
+    required List<String> items,
+    required IconData icon,
+    required Function(String) onSelected,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF2C3E50),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Autocomplete<String>(
+          optionsBuilder: (TextEditingValue value) {
+            if (value.text.isEmpty) {
+              return items;
+            }
+            return items.where((item) => item.toLowerCase().contains(value.text.toLowerCase()));
+          },
+          optionsViewBuilder: (context, onAutoCompleteSelect, options) {
+            return Align(
+              alignment: Alignment.topLeft,
+              child: Material(
+                elevation: 4.0,
+                borderRadius: BorderRadius.circular(18),
+                color: Colors.white,
+                child: Container(
+                  constraints: const BoxConstraints(maxHeight: 160),
+                  width: MediaQuery.of(context).size.width * 0.68,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(color: Colors.black.withOpacity(0.06)),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(18),
+                    child: ListView.builder(
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      itemCount: options.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final String option = options.elementAt(index);
+                        return ListTile(
+                          title: Text(option, style: const TextStyle(color: Color(0xFF2C3E50), fontSize: 14)),
+                          onTap: () => onAutoCompleteSelect(option),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+          fieldViewBuilder: (context, textController, focusNode, onEditingComplete) {
+            if (textController.text != controller.text) {
+              textController.text = controller.text;
+            }
+            return TextFormField(
+              controller: textController,
+              focusNode: focusNode,
+              validator: (val) {
+                if (val == null || val.trim().isEmpty) {
+                  return "Required";
+                }
+                return null;
+              },
+              style: const TextStyle(color: Color(0xFF2C3E50), fontSize: 14, fontWeight: FontWeight.w500),
+              onChanged: (val) {
+                controller.text = val;
+              },
+              decoration: InputDecoration(
+                hintText: hint,
+                hintStyle: const TextStyle(color: Colors.black38, fontSize: 14),
+                prefixIcon: Icon(icon, color: Colors.black54, size: 20),
+                suffixIcon: const Icon(Icons.keyboard_arrow_down, color: Colors.black54),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                filled: true,
+                fillColor: Colors.white,
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(18),
+                  borderSide: BorderSide(color: Colors.black.withOpacity(0.06)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(18),
+                  borderSide: const BorderSide(color: Color(0xFF00A236), width: 1.5),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(18),
+                  borderSide: BorderSide(color: Colors.red.shade400, width: 1.0),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(18),
+                  borderSide: BorderSide(color: Colors.red.shade400, width: 1.5),
+                ),
+              ),
+            );
+          },
+          onSelected: (val) {
+            controller.text = val;
+            onSelected(val);
+          },
+        ),
+        const SizedBox(height: 18),
+      ],
+    );
+  }
+
+  void _showLocationPopup({required bool isMandatory}) {
+    final popupFormKey = GlobalKey<FormState>();
+
+    _citySearchController.text = _selectedCity ?? "";
+    _wardSearchController.text = _selectedWard ?? "";
+
+    showDialog(
+      context: context,
+      barrierDismissible: !isMandatory,
+      builder: (BuildContext context) {
+        return PopScope(
+          canPop: !isMandatory,
+          child: AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(28.0),
+            ),
+            backgroundColor: Colors.white,
+            title: const Text(
+              "Survey Location",
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF2C3E50),
+              ),
+            ),
+            content: Form(
+              key: popupFormKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildPopupSearchDropdown(
+                      label: "City *",
+                      hint: "Search or select city",
+                      controller: _citySearchController,
+                      items: _citiesList,
+                      icon: Icons.location_city_outlined,
+                      onSelected: (_) {},
+                    ),
+                    _buildPopupSearchDropdown(
+                      label: "Ward *",
+                      hint: "Search or select ward",
+                      controller: _wardSearchController,
+                      items: _wardsList,
+                      icon: Icons.map_outlined,
+                      onSelected: (_) {},
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            actions: [
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFFFFA000),
+                        Color(0xFF4CAF50),
+                      ],
+                    ),
+                  ),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    onPressed: () async {
+                      if (popupFormKey.currentState!.validate()) {
+                        final cityVal = _citySearchController.text.trim();
+                        final wardVal = _wardSearchController.text.trim();
+
+                        final prefs = await SharedPreferences.getInstance();
+                        await prefs.setString("survey_city", cityVal);
+                        await prefs.setString("survey_ward", wardVal);
+
+                        setState(() {
+                          _selectedCity = cityVal;
+                          _selectedWard = wardVal;
+                        });
+                        Navigator.of(context).pop();
+
+                        // Immediately show the Survey Details popup
+                        _showSurveyDetailsPopup(isMandatory: isMandatory);
+                      }
+                    },
+                    child: const Text(
+                      "OKAY",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showSurveyDetailsPopup({required bool isMandatory}) {
+    final detailsFormKey = GlobalKey<FormState>();
+    bool showPhotoError = false;
+
+    showDialog(
+      context: context,
+      barrierDismissible: !isMandatory,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setPopupState) {
+            return PopScope(
+              canPop: !isMandatory,
+              child: AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(28.0),
+                ),
+                backgroundColor: Colors.white,
+                title: const Text(
+                  "Survey Details",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF2C3E50),
+                  ),
+                ),
+                content: Form(
+                  key: detailsFormKey,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Area / Main / Cross Road *",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF2C3E50),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextFormField(
+                          controller: _areaController,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return "Required";
+                            }
+                            return null;
+                          },
+                          style: const TextStyle(color: Color(0xFF2C3E50), fontSize: 14, fontWeight: FontWeight.w500),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            prefixIcon: const Icon(Icons.add_location_alt_outlined, color: Colors.black54, size: 20),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(18),
+                              borderSide: BorderSide(color: Colors.black.withOpacity(0.04)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(18),
+                              borderSide: const BorderSide(color: Color(0xFF00A236), width: 1.5),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(18),
+                              borderSide: BorderSide(color: Colors.red.shade400, width: 1.0),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(18),
+                              borderSide: BorderSide(color: Colors.red.shade400, width: 1.5),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        const Text(
+                          "Building Photo *",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF2C3E50),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        GestureDetector(
+                          onTap: () async {
+                            final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+                            if (image != null) {
+                              _capturedImage = image;
+                              setPopupState(() {});
+                            }
+                          },
+                          child: Container(
+                            height: 120,
+                            width: 120,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF8F9FA),
+                              borderRadius: BorderRadius.circular(24),
+                              border: Border.all(
+                                color: showPhotoError ? Colors.red.shade400 : Colors.black12,
+                                width: showPhotoError ? 1.5 : 1.0,
+                              ),
+                            ),
+                            child: _capturedImage != null
+                                ? ClipRRect(
+                              borderRadius: BorderRadius.circular(24),
+                              child: Image.file(
+                                File(_capturedImage!.path),
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                                : const Icon(
+                              Icons.add_a_photo_rounded,
+                              size: 36,
+                              color: Color(0xFF00A236),
+                            ),
+                          ),
+                        ),
+                        if (showPhotoError)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12, top: 4),
+                            child: Text(
+                              "Photo is required",
+                              style: TextStyle(color: Colors.red.shade400, fontSize: 12),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+                actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                actions: [
+                  Theme(
+                    data: ThemeData(splashColor: Colors.transparent, highlightColor: Colors.transparent),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color(0xFFFFA000),
+                              Color(0xFF4CAF50),
+                            ],
+                          ),
+                        ),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          onPressed: () async {
+                            final isFormValid = detailsFormKey.currentState!.validate();
+                            final isPhotoValid = _capturedImage != null;
+
+                            if (!isPhotoValid) {
+                              setPopupState(() {
+                                showPhotoError = true;
+                              });
+                            } else {
+                              setPopupState(() {
+                                showPhotoError = false;
+                              });
+                            }
+
+                            if (isFormValid && isPhotoValid) {
+                              await _saveSurveyDetails();
+
+                              setState(() {});
+                              Navigator.of(context).pop();
+                            }
+                          },
+                          child: const Text(
+                            "CONTINUE",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -205,127 +721,569 @@ class _SurveyScreenState extends State<SurveyScreen> {
     final String formattedWet = (savedWet.isEmpty || savedWet == "Select") ? "Not Selected" : savedWet;
     final String formattedDry = (savedDry.isEmpty || savedDry == "Select") ? "Not Selected" : savedDry;
 
+    final bool hasWet = formattedWet != "Not Selected";
+    final bool hasDry = formattedDry != "Not Selected";
+
+    final verifyFormKey = GlobalKey<FormState>();
+    final reenterWetController = TextEditingController();
+    final reenterDryController = TextEditingController();
+
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(28.0),
-          ),
-          backgroundColor: Colors.white,
-          contentPadding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(
-                        Icons.assignment_turned_in_outlined,
-                        color: Colors.green,
-                        size: 26,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    const Text(
-                      "Verify Details",
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF2C3E50),
-                      ),
-                    ),
-                  ],
+        return StatefulBuilder(
+            builder: (context, setDialogState) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(28.0),
                 ),
-                const SizedBox(height: 16),
-                const Divider(height: 1, color: Colors.black12),
-                const SizedBox(height: 8),
-                _buildVerificationRow("Citizen Name", savedName),
-                _buildVerificationRow("Phone Number", savedPhone),
-                _buildVerificationRow("Wet RFID", formattedWet),
-                _buildVerificationRow("Dry RFID", formattedDry),
-              ],
-            ),
-          ),
-          actionsPadding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-          actions: [
-            Row(
-              children: [
-                Expanded(
-                  child: SizedBox(
-                    height: 56,
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Colors.black12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                backgroundColor: Colors.white,
+                contentPadding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+                content: Form(
+                  key: verifyFormKey,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.green.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Icon(
+                                Icons.assignment_turned_in_outlined,
+                                color: Colors.green,
+                                size: 26,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            const Text(
+                              "Verify Details",
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF2C3E50),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text(
-                        "CANCEL",
-                        style: TextStyle(
-                          color: Colors.black54,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 0.5,
+                        const SizedBox(height: 16),
+                        const Divider(height: 1, color: Colors.black12),
+                        const SizedBox(height: 8),
+                        _buildVerificationRow("City", _selectedCity ?? "N/A"),
+                        _buildVerificationRow("Ward", _selectedWard ?? "N/A"),
+                        _buildVerificationRow("Area / Main / Cross Road", _areaController.text.trim()),
+                        _buildVerificationRow("Citizen Name", savedName),
+                        _buildVerificationRow("Phone Number", savedPhone),
+                        const SizedBox(height: 8),
+
+                        const Text(
+                          "Building Photo",
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF7F8C8D),
+                          ),
                         ),
-                      ),
+
+                        const SizedBox(height: 6),
+
+                        if (_capturedImage != null)
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: Image.file(
+                              File(_capturedImage!.path),
+                              height: 120,
+                              width: 120,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+
+                        const SizedBox(height: 8),
+                        _buildVerificationRow("Wet RFID", formattedWet),
+                        _buildVerificationRow("Dry RFID", formattedDry),
+                        const SizedBox(height: 12),
+                        if (hasWet) ...[
+                          const Text(
+                            "Re-enter Wet RFID *",
+                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF2C3E50)),
+                          ),
+                          const SizedBox(height: 6),
+                          TextFormField(
+                            controller: reenterWetController,
+                            style: const TextStyle(color: Color(0xFF2C3E50), fontSize: 14, fontWeight: FontWeight.w500),
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Colors.black12)),
+                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFF00A236), width: 1.5)),
+                              errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.red.shade400)),
+                              focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.red.shade400, width: 1.5)),
+                            ),
+                            validator: (val) {
+                              if (val == null || val.trim().isEmpty) return "Required";
+                              if (val.trim() != savedWet) return "RFID mismatch. Please verify.";
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                        ],
+                        if (hasDry) ...[
+                          const Text(
+                            "Re-enter Dry RFID *",
+                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF2C3E50)),
+                          ),
+                          const SizedBox(height: 6),
+                          TextFormField(
+                            controller: reenterDryController,
+                            style: const TextStyle(color: Color(0xFF2C3E50), fontSize: 14, fontWeight: FontWeight.w500),
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Colors.black12)),
+                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFF00A236), width: 1.5)),
+                              errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.red.shade400)),
+                              focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.red.shade400, width: 1.5)),
+                            ),
+                            validator: (val) {
+                              if (val == null || val.trim().isEmpty) return "Required";
+                              if (val.trim() != savedDry) return "RFID mismatch. Please verify.";
+                              return null;
+                            },
+                          ),
+                        ],
+                      ],
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: SizedBox(
-                    height: 56,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color(0xFFFFA000),
-                            Color(0xFF4CAF50),
-                          ],
-                        ),
-                      ),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.transparent,
-                          shadowColor: Colors.transparent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                actionsPadding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                actions: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          height: 56,
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: Colors.black12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                            onPressed: () async {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text(
+                              "CANCEL",
+                              style: TextStyle(
+                                color: Colors.black54,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
                           ),
                         ),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          _handleSurveySubmissionExecution();
-                        },
-                        child: const Center(
-                          child: Text(
-                            "CONFIRM",
-                            textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: SizedBox(
+                          height: 56,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Color(0xFFFFA000),
+                                  Color(0xFF4CAF50),
+                                ],
+                              ),
+                            ),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.transparent,
+                                shadowColor: Colors.transparent,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              onPressed: () {
+                                if (verifyFormKey.currentState!.validate()) {
+                                  Navigator.of(context).pop();
+                                  _handleSurveySubmissionExecution();
+                                }
+                              },
+                              child: const Center(
+                                child: Text(
+                                  "CONFIRM",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              );
+            }
+        );
+      },
+    );
+  }
+
+  void _showContinueSurveyPopup() {
+    bool keepArea = true;
+    bool keepBuildingPhoto = true;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setPopupState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(28.0),
+              ),
+              backgroundColor: Colors.white,
+              title: const Text(
+                "Continue Survey?",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF2C3E50),
+                ),
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildVerificationRow("City", _selectedCity ?? "N/A"),
+                    _buildVerificationRow("Ward", _selectedWard ?? "N/A"),
+                    _buildVerificationRow("Area / Main / Cross Road", _areaController.text.trim()),
+                    const SizedBox(height: 6),
+                    const Text(
+                      "Building Photo Preview",
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF7F8C8D),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    if (_capturedImage != null)
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Image.file(
+                          File(_capturedImage!.path),
+                          height: 100,
+                          width: 100,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    else
+                      const Text(
+                        "No image selected",
+                        style: TextStyle(fontSize: 14, color: Colors.black45, fontStyle: FontStyle.italic),
+                      ),
+                    const SizedBox(height: 14),
+                    const Divider(height: 1, color: Colors.black12),
+                    const SizedBox(height: 10),
+                    CheckboxListTile(
+                      title: const Text(
+                        "Keep Area",
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF2C3E50)),
+                      ),
+                      value: keepArea,
+                      activeColor: const Color(0xFF4CAF50),
+                      contentPadding: EdgeInsets.zero,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      onChanged: (bool? val) {
+                        setPopupState(() {
+                          keepArea = val ?? false;
+                        });
+                      },
+                    ),
+                    CheckboxListTile(
+                      title: const Text(
+                        "Keep Building Photo",
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF2C3E50)),
+                      ),
+                      value: keepBuildingPhoto,
+                      activeColor: const Color(0xFF4CAF50),
+                      contentPadding: EdgeInsets.zero,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      onChanged: (bool? val) {
+                        setPopupState(() {
+                          keepBuildingPhoto = val ?? false;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              actionsPadding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+              actions: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        height: 52,
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: Colors.black12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          onPressed: () async {
+                            Navigator.of(context).pop();
+
+                            final prefs = await SharedPreferences.getInstance();
+
+                            await prefs.remove("survey_area");
+                            await prefs.remove("survey_building_photo_path");
+
+                            _areaController.clear();
+                            _capturedImage = null;
+
+                            setState(() {});
+
+                            // Go to Dashboard (Home)
+                            Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(
+                                builder: (_) => const MainNavigationScreen(),
+                              ),
+                                  (route) => false,
+                            );
+                          },
+                          child: const Text(
+                            "EXIT",
                             style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
+                              color: Colors.redAccent,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                )
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: SizedBox(
+                        height: 52,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            gradient: const LinearGradient(
+                              colors: [
+                                Color(0xFFFFA000),
+                                Color(0xFF4CAF50),
+                              ],
+                            ),
+                          ),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              shadowColor: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                            onPressed: () async {
+                              // ALWAYS keep: City, Ward
+                              // ALWAYS clear: Name, Phone, HH Type, Waste Generator selection, RFID values, Number of People, Building Number, Floor Number.
+                              // This is already done inside `_clearForm()` or right before this dialog was invoked,
+                              // but to ensure strict adherence, variables are updated precisely as requested:
+
+                              Navigator.of(context).pop();
+
+                              if (keepArea && keepBuildingPhoto) {
+                                // CASE 1: Keep Area and Building Photo. Return to form immediately.
+                                setState(() {});
+                              } else if (keepArea && !keepBuildingPhoto) {
+                                // CASE 2: Keep Area, Clear Building Photo. Request only photo selection via details popup
+                                final prefs = await SharedPreferences.getInstance();
+                                await prefs.remove("survey_building_photo_path");
+                                _capturedImage = null;
+                                setState(() {});
+
+                                // Show Survey Details popup using StatefulBuilder to prompt photo selection
+                                final detailsFormKey = GlobalKey<FormState>();
+                                bool showPhotoError = false;
+
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) {
+                                    return StatefulBuilder(
+                                      builder: (BuildContext context, StateSetter setPhotoPopupState) {
+                                        return PopScope(
+                                          canPop: false,
+                                          child: AlertDialog(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(28.0),
+                                            ),
+                                            backgroundColor: Colors.white,
+                                            title: const Text(
+                                              "Survey Details",
+                                              style: TextStyle(
+                                                fontSize: 22,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xFF2C3E50),
+                                              ),
+                                            ),
+                                            content: Form(
+                                              key: detailsFormKey,
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  const Text(
+                                                    "Building Photo *",
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w700,
+                                                      color: Color(0xFF2C3E50),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 12),
+                                                  GestureDetector(
+                                                    onTap: () async {
+                                                      await _pickImage();
+                                                      setPhotoPopupState(() {});
+                                                    },
+                                                    child: Container(
+                                                      height: 120,
+                                                      width: 120,
+                                                      decoration: BoxDecoration(
+                                                        color: const Color(0xFFF8F9FA),
+                                                        borderRadius: BorderRadius.circular(24),
+                                                        border: Border.all(
+                                                          color: showPhotoError ? Colors.red.shade400 : Colors.black12,
+                                                          width: showPhotoError ? 1.5 : 1.0,
+                                                        ),
+                                                      ),
+                                                      child: _capturedImage != null
+                                                          ? ClipRRect(
+                                                        borderRadius: BorderRadius.circular(24),
+                                                        child: Image.file(
+                                                          File(_capturedImage!.path),
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      )
+                                                          : const Icon(
+                                                        Icons.add_a_photo_rounded,
+                                                        size: 36,
+                                                        color: Color(0xFF00A236),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  if (showPhotoError)
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(left: 12, top: 4),
+                                                      child: Text(
+                                                        "Photo is required",
+                                                        style: TextStyle(color: Colors.red.shade400, fontSize: 12),
+                                                      ),
+                                                    ),
+                                                ],
+                                              ),
+                                            ),
+                                            actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                                            actions: [
+                                              SizedBox(
+                                                width: double.infinity,
+                                                height: 52,
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(20),
+                                                    gradient: const LinearGradient(
+                                                      colors: [
+                                                        Color(0xFFFFA000),
+                                                        Color(0xFF4CAF50),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  child: ElevatedButton(
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor: Colors.transparent,
+                                                      shadowColor: Colors.transparent,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(20),
+                                                      ),
+                                                    ),
+                                                    onPressed: () async {
+                                                      final isPhotoValid = _capturedImage != null;
+
+                                                      if (!isPhotoValid) {
+                                                        setPhotoPopupState(() {
+                                                          showPhotoError = true;
+                                                        });
+                                                      } else {
+                                                        setPhotoPopupState(() {
+                                                          showPhotoError = false;
+                                                        });
+                                                        await _saveSurveyDetails();
+                                                        setState(() {});
+                                                        Navigator.of(context).pop();
+                                                      }
+                                                    },
+                                                    child: const Text(
+                                                      "CONTINUE",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                );
+                              } else {
+                                // CASE 3: Keep Area = FALSE
+                                _areaController.clear();
+                                _capturedImage = null;
+                                setState(() {});
+                                _showSurveyDetailsPopup(isMandatory: true);
+                              }
+                            },
+                            child: const Text(
+                              "CONTINUE",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
-            ),
-          ],
+            );
+          },
         );
       },
     );
@@ -514,17 +1472,11 @@ class _SurveyScreenState extends State<SurveyScreen> {
           "status": "FOUND",
         };
 
-        print("TRACKING PAYLOAD =>");
-        print(trackingPayload);
-
         final trackingResponse = await http.post(
           Uri.parse("https://sewac-helper-backend.up.railway.app/api/v1/tracking/create"),
           headers: headers,
           body: jsonEncode(trackingPayload),
         );
-
-        print("TRACKING STATUS => ${trackingResponse.statusCode}");
-        print("TRACKING BODY => ${trackingResponse.body}");
 
         if (trackingResponse.statusCode < 200 || trackingResponse.statusCode >= 300) {
           try {
@@ -555,6 +1507,9 @@ class _SurveyScreenState extends State<SurveyScreen> {
             content: Text("Survey submitted and RFIDs mapped successfully"),
           ),
         );
+
+        // Success prompt triggered here cleanly
+        _showContinueSurveyPopup();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Failed to submit survey")),
@@ -594,7 +1549,10 @@ class _SurveyScreenState extends State<SurveyScreen> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove("auth_token");
     await prefs.remove("isLoggedIn");
-
+    await prefs.remove("survey_city");
+    await prefs.remove("survey_ward");
+    await prefs.remove("survey_area");
+    await prefs.remove("survey_building_photo_path");
     if (!mounted) return;
 
     Navigator.pushReplacement(
@@ -826,7 +1784,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
               onChanged: (val) {
                 controller.text = val;
 
-                // Keep selected model data updated inline with input changes
                 if (controller == _wetRfidSearchController) {
                   _selectedWetRFID = (val.trim().isEmpty || val.trim() == "Select") ? null : val.trim();
                 } else if (controller == _dryRfidSearchController) {
@@ -884,6 +1841,16 @@ class _SurveyScreenState extends State<SurveyScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final bool isLocationSelected = _selectedCity != null && _selectedWard != null;
+
+    final String locationSubtitle = isLocationSelected
+        ? "$_selectedCity • $_selectedWard"
+        : "Please select City and Ward";
+
+    final String areaValue = _areaController.text.trim();
+    final bool hasSurveyDetails = areaValue.isNotEmpty && _capturedImage != null;
+
     return Scaffold(
       extendBodyBehindAppBar: false,
       backgroundColor: const Color(0xFFF8F9FA),
@@ -897,23 +1864,137 @@ class _SurveyScreenState extends State<SurveyScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Column(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Survey Form",
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF2C3E50),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Survey Form",
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF2C3E50),
+                          ),
+                        ),
+                        Text(
+                          locationSubtitle,
+                          style: const TextStyle(color: Colors.black54, fontSize: 13),
+                        ),
+                      ],
                     ),
                   ),
-                  Text(
-                    "Capture household and generator specifications",
-                    style: TextStyle(color: Colors.black54, fontSize: 13),
-                  ),
+                  if (isLocationSelected)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4.0),
+                      child: TextButton.icon(
+                        onPressed: () => _showLocationPopup(isMandatory: false),
+                        icon: const Icon(Icons.edit_location_alt_outlined, size: 16, color: Color(0xFF00A236)),
+                        label: const Text(
+                          "Change",
+                          style: TextStyle(
+                            color: Color(0xFF00A236),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          backgroundColor: const Color(0xFF00A236).withOpacity(0.08),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
+              const SizedBox(height: 16),
+              if (hasSurveyDetails) ...[
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.black.withOpacity(0.03)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.02),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Survey Details Summary",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF2C3E50),
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              "Area: $areaValue",
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Colors.black87,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              children: const [
+                                Text(
+                                  "Building Photo: ",
+                                  style: TextStyle(fontSize: 13, color: Colors.black87),
+                                ),
+                                Text(
+                                  "Captured ✓",
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF00A236),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      TextButton.icon(
+                        onPressed: () => _showSurveyDetailsPopup(isMandatory: false),
+                        icon: const Icon(Icons.edit_outlined, size: 16, color: Color(0xFFFFA000)),
+                        label: const Text(
+                          "EDIT",
+                          style: TextStyle(
+                            color: Color(0xFFFFA000),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          backgroundColor: const Color(0xFFFFA000).withOpacity(0.08),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
               const SizedBox(height: 24),
               Form(
                 key: _formKey,
@@ -933,40 +2014,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
                   ),
                   child: Column(
                     children: [
-                      _buildDropdown(
-                        label: "Select City *",
-                        value: _selectedCity,
-                        prefixIcon: Icons.location_city_outlined,
-                        items: const [
-                          "Bangalore",
-                          "Mysore",
-                          "Mangalore",
-                        ],
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedCity = value;
-                          });
-                        },
-                      ),
-                      _buildDropdown(
-                        label: "Select Ward *",
-                        value: _selectedWard,
-                        prefixIcon: Icons.map_outlined,
-                        items: const [
-                          "Ward 174",
-                        ],
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedWard = value;
-                          });
-                        },
-                      ),
-                      _buildInput(
-                        label: "Area / Main / Cross Road *",
-                        controller: _areaController,
-                        prefixIcon: Icons.add_location_alt_outlined,
-                      ),
-                      const SizedBox(height: 6),
                       const Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -1045,34 +2092,101 @@ class _SurveyScreenState extends State<SurveyScreen> {
                           if (value == null || value.trim().isEmpty) {
                             return "Required";
                           }
-
                           if (!RegExp(r'^[A-Za-z ]+$').hasMatch(value.trim())) {
                             return "Only alphabets allowed";
                           }
-
                           return null;
                         },
                       ),
-                      _buildInput(
-                        label: "Contact Number *",
-                        controller: _phoneController,
-                        prefixIcon: Icons.phone_android_rounded,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Contact Number *",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF2C3E50),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          TextFormField(
+                            controller: _phoneController,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(10),
+                            ],
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return "Required";
+                              }
+                              if (!RegExp(r'^[0-9]{10}$').hasMatch(value.trim())) {
+                                return "Enter exactly 10 digits";
+                              }
+                              return null;
+                            },
+                            style: const TextStyle(
+                              color: Color(0xFF2C3E50),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+
+                              prefixIcon: Container(
+                                width: 65,
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  "+91",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF2C3E50),
+                                  ),
+                                ),
+                              ),
+
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 16,
+                              ),
+
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                borderSide: BorderSide(
+                                  color: Colors.black.withOpacity(0.04),
+                                ),
+                              ),
+
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                borderSide: const BorderSide(
+                                  color: Color(0xFF00A236),
+                                  width: 1.5,
+                                ),
+                              ),
+
+                              errorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                borderSide: BorderSide(
+                                  color: Colors.red.shade400,
+                                  width: 1.0,
+                                ),
+                              ),
+
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                borderSide: BorderSide(
+                                  color: Colors.red.shade400,
+                                  width: 1.5,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 18),
                         ],
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return "Required";
-                          }
-
-                          if (!RegExp(r'^[0-9]{10}$').hasMatch(value.trim())) {
-                            return "Enter exactly 10 digits";
-                          }
-
-                          return null;
-                        },
                       ),
                       _buildSearchDropdown(
                         label: "Wet Waste RFID *",
@@ -1123,46 +2237,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
                         controller: _peopleController,
                         prefixIcon: Icons.groups_outlined,
                         keyboardType: TextInputType.number,
-                      ),
-                      const SizedBox(height: 6),
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Photo of Building",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF2C3E50),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      GestureDetector(
-                        onTap: _pickImage,
-                        child: Container(
-                          height: 120,
-                          width: 120,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF8F9FA),
-                            borderRadius: BorderRadius.circular(24),
-                            border: Border.all(
-                              color: Colors.black12,
-                            ),
-                          ),
-                          child: _capturedImage != null
-                              ? ClipRRect(
-                            borderRadius: BorderRadius.circular(24),
-                            child: Image.file(
-                              File(_capturedImage!.path),
-                              fit: BoxFit.cover,
-                            ),
-                          )
-                              : const Icon(
-                            Icons.add_a_photo_rounded,
-                            size: 36,
-                            color: Color(0xFF00A236),
-                          ),
-                        ),
                       ),
                       const SizedBox(height: 32),
                       SizedBox(

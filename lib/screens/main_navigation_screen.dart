@@ -71,15 +71,7 @@ class _MainNavigationScreenState
 
     return Scaffold(
 
-      body:
-      IndexedStack(
-
-        index:
-        safeIndex,
-
-        children:
-        _pages,
-      ),
+      body: _pages[safeIndex],
 
       bottomNavigationBar:
       Container(

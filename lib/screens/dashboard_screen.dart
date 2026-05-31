@@ -458,6 +458,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   String _status = 'Found';
+  bool _isMovingToNotFound = true;
   bool _showValidation = false;
   bool _showRemarksError = false;
 
@@ -1456,65 +1457,95 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             const SizedBox(height: 20),
 
                             Container(
-                              padding: const EdgeInsets.all(6),
+                              height: 58,
                               decoration: BoxDecoration(
                                 color: const Color(0xFFEFEFEF),
                                 borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.black12, width: 0.5),
+                                border: Border.all(
+                                  color: Colors.black12,
+                                  width: 0.5,
+                                ),
                               ),
-                              child: Row(
+                              child: Stack(
                                 children: [
-                                  Expanded(
-                                    child: GestureDetector(
-                                      onTap: () => setState(() => _status = 'Found'),
-                                      child: AnimatedContainer(
-                                        duration: const Duration(milliseconds: 200),
-                                        padding: const EdgeInsets.symmetric(vertical: 12),
-                                        decoration: BoxDecoration(
-                                          color: _status == 'Found' ? Colors.white : Colors.transparent,
-                                          borderRadius: BorderRadius.circular(16),
-                                          boxShadow: _status == 'Found'
-                                              ? [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))]
-                                              : [],
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            "Found",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                              color: _status == 'Found' ? const Color(0xFF00A236) : Colors.black54,
-                                            ),
+
+                                  AnimatedAlign(
+                                    duration: const Duration(milliseconds: 350),
+                                    curve: Curves.easeInOutCubic,
+                                    alignment: _status == "Found"
+                                        ? Alignment.centerLeft
+                                        : Alignment.centerRight,
+                                    child: Container(
+                                      width: (MediaQuery.of(context).size.width - 60) / 2,
+                                      margin: const EdgeInsets.all(6),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(16),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(0.05),
+                                            blurRadius: 6,
+                                            offset: const Offset(0, 2),
                                           ),
-                                        ),
+                                        ],
                                       ),
                                     ),
                                   ),
-                                  Expanded(
-                                    child: GestureDetector(
-                                      onTap: () => setState(() => _status = 'Not Found'),
-                                      child: AnimatedContainer(
-                                        duration: const Duration(milliseconds: 200),
-                                        padding: const EdgeInsets.symmetric(vertical: 12),
-                                        decoration: BoxDecoration(
-                                          color: _status == 'Not Found' ? Colors.white : Colors.transparent,
-                                          borderRadius: BorderRadius.circular(16),
-                                          boxShadow: _status == 'Not Found'
-                                              ? [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))]
-                                              : [],
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            "Not Found",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                              color: _status == 'Not Found' ? const Color(0xFF00A236) : Colors.black54,
+
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: InkWell(
+                                          borderRadius: BorderRadius.circular(20),
+                                          onTap: () {
+                                            if (_status != "Found") {
+                                              setState(() {
+                                                _status = "Found";
+                                              });
+                                            }
+                                          },
+                                          child: Center(
+                                            child: AnimatedDefaultTextStyle(
+                                              duration: const Duration(milliseconds: 250),
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                                color: _status == "Found"
+                                                    ? const Color(0xFF00A236)
+                                                    : Colors.black54,
+                                              ),
+                                              child: const Text("Found"),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
+
+                                      Expanded(
+                                        child: InkWell(
+                                          borderRadius: BorderRadius.circular(20),
+                                          onTap: () {
+                                            if (_status != "Not Found") {
+                                              setState(() {
+                                                _status = "Not Found";
+                                              });
+                                            }
+                                          },
+                                          child: Center(
+                                            child: AnimatedDefaultTextStyle(
+                                              duration: const Duration(milliseconds: 250),
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                                color: _status == "Not Found"
+                                                    ? const Color(0xFF00A236)
+                                                    : Colors.black54,
+                                              ),
+                                              child: const Text("Not Found"),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -1522,20 +1553,39 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             const SizedBox(height: 20),
 
                             AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 300),
+                              duration: const Duration(milliseconds: 450),
+                              switchInCurve: Curves.easeOutCubic,
+                              switchOutCurve: Curves.easeInCubic,
                               transitionBuilder: (child, animation) {
-                                final offsetAnimation = Tween<Offset>(
-                                  begin: const Offset(0.08, 0.0),
+
+                                final slideAnimation = Tween<Offset>(
+                                  begin: const Offset(0.15, 0),
                                   end: Offset.zero,
-                                ).animate(CurvedAnimation(
-                                  parent: animation,
-                                  curve: Curves.easeOutCubic,
-                                ));
+                                ).animate(
+                                  CurvedAnimation(
+                                    parent: animation,
+                                    curve: Curves.easeOutCubic,
+                                  ),
+                                );
+
+                                final scaleAnimation = Tween<double>(
+                                  begin: 0.97,
+                                  end: 1.0,
+                                ).animate(
+                                  CurvedAnimation(
+                                    parent: animation,
+                                    curve: Curves.easeOut,
+                                  ),
+                                );
+
                                 return FadeTransition(
                                   opacity: animation,
                                   child: SlideTransition(
-                                    position: offsetAnimation,
-                                    child: child,
+                                    position: slideAnimation,
+                                    child: ScaleTransition(
+                                      scale: scaleAnimation,
+                                      child: child,
+                                    ),
                                   ),
                                 );
                               },
