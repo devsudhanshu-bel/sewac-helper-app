@@ -1,7 +1,3 @@
-Perfect. For a README, project report, GitHub repository, internship documentation, or YMK submission, you should **avoid excessive bullet points** and instead write it in a professional narrative style with points only where necessary.
-
-You can directly copy-paste the following:
-
 ---
 
 # ♻️ SEWAC – Smart Waste Management System Using RFID Technology
