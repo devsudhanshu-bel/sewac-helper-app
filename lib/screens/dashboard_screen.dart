@@ -4,6 +4,7 @@ import 'login_screen.dart';
 import '../widgets/sewac_background.dart';
 import '../widgets/sewac_header.dart';
 import 'dart:io';
+import '../config/api_constants.dart';
 
 // API imports
 import 'dart:convert';
@@ -110,7 +111,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
 
     if (start == null || end == null) {
-      _showRFIDRangeDialog();
       return;
     }
 
@@ -570,6 +570,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
       await _loadAdminName();
       await _loadRFIDRange();
       await _loadAllDropdownData();
+
+      if (_assignedStartRFID == null || _assignedEndRFID == null) {
+        Future.delayed(const Duration(milliseconds: 300), () {
+          if (mounted) {
+            _showRFIDRangeDialog();
+          }
+        });
+      }
     });
   }
 
@@ -601,7 +609,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Future<void> _fetchUnmappedRFIDs() async {
     try {
       final response = await http.get(
-        Uri.parse("https://sewac-helper-backend.up.railway.app/api/v1/rfid/unmapped"),
+          Uri.parse(
+            "${ApiConstants.apiV1}/rfid/unmapped",
+          )
       );
 
       if (response.statusCode == 200) {
@@ -645,7 +655,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     try {
       final headers = await _getHeaders();
       final response = await http.get(
-        Uri.parse("https://sewac-helper-backend.up.railway.app/api/v1/phone/unmapped"),
+        Uri.parse(
+          "${ApiConstants.apiV1}/phone/unmapped",
+        ),
         headers: headers,
       );
 
@@ -668,7 +680,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     try {
       final headers = await _getHeaders();
       final response = await http.get(
-        Uri.parse("https://sewac-helper-backend.up.railway.app/api/v1/citizen/unmapped"),
+        Uri.parse(
+          "${ApiConstants.apiV1}/citizen/unmapped",
+        ),
         headers: headers,
       );
 
@@ -693,7 +707,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     try {
       final headers = await _getHeaders();
       final response = await http.get(
-        Uri.parse("https://sewac-helper-backend.up.railway.app/api/v1/citizen/phone/$phone"),
+        Uri.parse(
+          "${ApiConstants.apiV1}/citizen/phone/$phone"),
         headers: headers,
       );
 
@@ -718,7 +733,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final headers = await _getHeaders();
       final encodedName = Uri.encodeComponent(name);
       final response = await http.get(
-        Uri.parse("https://sewac-helper-backend.up.railway.app/api/v1/citizen/name/$encodedName"),
+        Uri.parse(
+          "${ApiConstants.apiV1}/citizen/name/$encodedName"),
         headers: headers,
       );
 
@@ -1204,7 +1220,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       if (_status == "Not Found") {
         var request = http.MultipartRequest(
           "POST",
-          Uri.parse("https://sewac-helper-backend.up.railway.app/api/v1/tracking/create"),
+          Uri.parse(
+            "${ApiConstants.apiV1}/tracking/create",
+          ),
         );
 
         request.headers["Authorization"] = "Bearer $token";
@@ -1242,7 +1260,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
         if (!absoluteWetEmpty) {
           final wetMapResponse = await http.patch(
-            Uri.parse("https://sewac-helper-backend.up.railway.app/api/v1/rfid/map"),
+            Uri.parse(
+              "${ApiConstants.apiV1}/rfid/map",
+            ),
             headers: headers,
             body: jsonEncode({
               "slno": savedWet,
@@ -1270,7 +1290,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
         if (!absoluteDryEmpty) {
           final dryMapResponse = await http.patch(
-            Uri.parse("https://sewac-helper-backend.up.railway.app/api/v1/rfid/map"),
+            Uri.parse(
+              "${ApiConstants.apiV1}/rfid/map"),
             headers: headers,
             body: jsonEncode({
               "slno": savedDry,
@@ -1297,7 +1318,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         }
 
         response = await http.post(
-          Uri.parse("https://sewac-helper-backend.up.railway.app/api/v1/tracking/create"),
+          Uri.parse(
+            "${ApiConstants.apiV1}/tracking/create"),
           headers: headers,
           body: jsonEncode({
             "slno": absoluteWetEmpty ? "N/A" : savedWet,
@@ -1393,7 +1415,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final token = prefs.getString("auth_token") ?? "";
 
       await http.post(
-        Uri.parse("https://sewac-helper-backend.up.railway.app/api/v1/auth/logout"),
+        Uri.parse(
+          "${ApiConstants.apiV1}/auth/logout",
+        ),
         headers: {
           "Authorization": "Bearer $token",
           "Content-Type": "application/json",

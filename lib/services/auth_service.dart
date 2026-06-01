@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../config/api_constants.dart';
 
 class AuthService {
   static const String loginUrl =
-      "https://sewac-helper-backend.up.railway.app/api/v1/auth/login";
+      "${ApiConstants.apiV1}/auth/login";
 
   static const String baseUrl =
-      "https://sewac-helper-backend.up.railway.app/api/v1/auth";
+      "${ApiConstants.apiV1}/auth";
 
   static bool _isRequesting = false;
 

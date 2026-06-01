@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/sewac_header.dart';
 import 'dart:io';
 import 'dart:async';
+import '../config/api_constants.dart';
 
 class LogsScreen extends StatefulWidget {
   const LogsScreen({super.key});
@@ -58,16 +59,20 @@ class _LogsScreenState extends State<LogsScreen>
 
     _fetchLogs();
 
-    // Auto refresh every 10 seconds
-    Future.doWhile(() async {
-      await Future.delayed(const Duration(seconds: 10));
-
-      if (!mounted) return false;
-
-      await _fetchLogs();
-
-      return mounted;
+    // FIXED: Replacing Future.doWhile with a standard periodic timer to avoid stacked calls
+    _refreshTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
+      if (mounted) {
+        _fetchLogs();
+      }
     });
+  }
+
+  @override
+  void dispose() {
+    // FIXED: Cancel the timer and dispose controllers to prevent memory leaks
+    _refreshTimer?.cancel();
+    _searchController.dispose();
+    super.dispose();
   }
 
   Future<void> _fetchLogs() async {
@@ -84,7 +89,13 @@ class _LogsScreenState extends State<LogsScreen>
 
       final result = await TrackingService.fetchLogs();
 
-      print("UI Received Logs: ${result.length}");
+      // DEBUG LOGS: Look at your terminal! Compare what your app saved vs what the server sends.
+      print("---------------- SEWAC DEBUG ----------------");
+      print("LOGGED IN USER (SharedPreferences): '$savedUser'");
+      if (result.isNotEmpty) {
+        print("FIRST LOG WORKER ID FROM SERVER: '${result.first.workerId}'");
+      }
+      print("---------------------------------------------");
 
       setState(() {
         _adminName = savedUser.trim();
@@ -93,7 +104,6 @@ class _LogsScreenState extends State<LogsScreen>
       });
     } catch (e) {
       debugPrint("Logs fetch error: $e");
-
       setState(() {
         _isLoading = false;
       });
@@ -106,24 +116,22 @@ class _LogsScreenState extends State<LogsScreen>
 
   Future<void> _handleLogout() async {
     try {
-      final prefs =
-      await SharedPreferences.getInstance();
+      final prefs = await SharedPreferences.getInstance();
+      final workerId =
+          prefs.getString("workerId") ??
+              prefs.getString("worker_id") ??
+              "";
 
-      final token =
-          prefs.getString(
-            "auth_token",
-          ) ?? "";
+      await prefs.remove("assignedStartRFID_$workerId");
+      await prefs.remove("assignedEndRFID_$workerId");
+      await prefs.remove("assignedMappedTagsList_$workerId");
+      final token = prefs.getString("auth_token") ?? "";
 
-      final response =
-      await http.post(
-        Uri.parse(
-          "https://sewac-helper-backend.up.railway.app/api/v1/auth/logout",
-        ),
+      final response = await http.post(
+        Uri.parse("${ApiConstants.apiV1}/auth/logout"),
         headers: {
-          "Authorization":
-          "Bearer $token",
-          "Content-Type":
-          "application/json",
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json",
         },
       );
 
@@ -141,15 +149,12 @@ class _LogsScreenState extends State<LogsScreen>
     await prefs.remove("worker_id");
     await prefs.remove("user");
 
-    if (!mounted) {
-      return;
-    }
+    if (!mounted) return;
 
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) =>
-        const LoginScreen(),
+        builder: (_) => const LoginScreen(),
       ),
     );
   }
@@ -304,10 +309,22 @@ class _LogsScreenState extends State<LogsScreen>
 
   @override
   Widget build(BuildContext context) {
-    // Computed variables inside build() for metrics counting status == "FOUND"
+    for (final log in _logs.take(5)) {
+      print("LOG WORKER => ${log.workerId}");
+    }
+
+    // FIXED: Soft matching logic to handle cases where worker ID might be "1" vs "SEWAC01" or have spaces
     final myFoundLogs = _logs.where((log) {
       if (_adminName.isEmpty) return false;
-      final isCurrentUser = log.workerId.trim().toUpperCase() == _adminName.toUpperCase();
+
+      String cleanWorkerId = log.workerId.trim().toUpperCase();
+      String cleanAdminName = _adminName.trim().toUpperCase();
+
+      // Matches if they are completely identical OR if one contains the other (e.g., "1" inside "SEWAC01")
+      final isCurrentUser = (cleanWorkerId == cleanAdminName) ||
+          cleanWorkerId.contains(cleanAdminName) ||
+          cleanAdminName.contains(cleanWorkerId);
+
       final isFoundStatus = log.status.trim().toUpperCase() == "FOUND";
       return isCurrentUser && isFoundStatus;
     }).length;
@@ -315,7 +332,6 @@ class _LogsScreenState extends State<LogsScreen>
     final allFoundLogs = _logs.where((log) {
       return log.status.trim().toUpperCase() == "FOUND";
     }).length;
-
     // 1. Gather all filtered logs first
     final filteredLogs = _logs.where((log) {
       final query = _searchQuery.toLowerCase();

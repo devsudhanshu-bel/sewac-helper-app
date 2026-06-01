@@ -12,6 +12,7 @@ import 'main_navigation_screen.dart';
 
 import '../widgets/sewac_background.dart';
 import '../widgets/sewac_header.dart';
+import '../config/api_constants.dart';
 
 class SurveyScreen extends StatefulWidget {
   const SurveyScreen({super.key});
@@ -210,7 +211,9 @@ class _SurveyScreenState extends State<SurveyScreen> {
   Future<void> _fetchUnmappedRFIDs() async {
     try {
       final response = await http.get(
-        Uri.parse("https://sewac-helper-backend.up.railway.app/api/v1/rfid/unmapped"),
+          Uri.parse(
+            "${ApiConstants.apiV1}/rfid/unmapped",
+          )
       );
 
       if (response.statusCode == 200) {
@@ -1364,7 +1367,8 @@ class _SurveyScreenState extends State<SurveyScreen> {
     try {
       var request = http.MultipartRequest(
         "POST",
-        Uri.parse("https://sewac-helper-backend.up.railway.app/api/v1/survey/create"),
+          Uri.parse(
+            "${ApiConstants.apiV1}/survey/create"),
       );
 
       request.fields["city"] = _selectedCity ?? "";
@@ -1403,7 +1407,8 @@ class _SurveyScreenState extends State<SurveyScreen> {
 
         if (!wetEmpty) {
           final wetMapResponse = await http.patch(
-            Uri.parse("https://sewac-helper-backend.up.railway.app/api/v1/rfid/map"),
+            Uri.parse(
+              "${ApiConstants.apiV1}/rfid/map"),
             headers: headers,
             body: jsonEncode({
               "slno": savedWet,
@@ -1433,7 +1438,8 @@ class _SurveyScreenState extends State<SurveyScreen> {
 
         if (!dryEmpty) {
           final dryMapResponse = await http.patch(
-            Uri.parse("https://sewac-helper-backend.up.railway.app/api/v1/rfid/map"),
+            Uri.parse(
+              "${ApiConstants.apiV1}/rfid/map"),
             headers: headers,
             body: jsonEncode({
               "slno": savedDry,
@@ -1484,7 +1490,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
         };
 
         final trackingResponse = await http.post(
-          Uri.parse("https://sewac-helper-backend.up.railway.app/api/v1/tracking/create"),
+          Uri.parse("${ApiConstants.apiV1}/tracking/create"),
           headers: headers,
           body: jsonEncode(trackingPayload),
         );
@@ -1544,10 +1550,19 @@ class _SurveyScreenState extends State<SurveyScreen> {
   Future<void> _handleLogout() async {
     try {
       final prefs = await SharedPreferences.getInstance();
+      final workerId =
+          prefs.getString("workerId") ??
+              prefs.getString("worker_id") ??
+              "";
+
+      await prefs.remove("assignedStartRFID_$workerId");
+      await prefs.remove("assignedEndRFID_$workerId");
+      await prefs.remove("assignedMappedTagsList_$workerId");
       final token = prefs.getString("auth_token") ?? "";
 
       await http.post(
-        Uri.parse("https://sewac-helper-backend.up.railway.app/api/v1/auth/logout"),
+        Uri.parse(
+          "${ApiConstants.apiV1}/auth/logout"),
         headers: {
           "Authorization": "Bearer $token",
           "Content-Type": "application/json",

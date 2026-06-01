@@ -7,6 +7,7 @@ import 'login_screen.dart';
 import '../widgets/sewac_background.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/sewac_header.dart';
+import '../config/api_constants.dart';
 
 class ReaderScreen extends StatefulWidget {
   const ReaderScreen({super.key});
@@ -52,8 +53,8 @@ class _ReaderScreenState extends State<ReaderScreen> {
       final encodedCode = Uri.encodeComponent(code);
 
       final response = await http.post(
-        Uri.parse(
-          "https://sewac-helper-backend.up.railway.app/api/v1/rfid/create/$encodedCode",
+          Uri.parse(
+            "${ApiConstants.apiV1}/rfid/create/$encodedCode",
         ),
         headers: {
           "Authorization": "Bearer $token",
@@ -148,8 +149,8 @@ class _ReaderScreenState extends State<ReaderScreen> {
       ) ?? "";
 
       final response = await http.post(
-        Uri.parse(
-          "https://sewac-helper-backend.up.railway.app/api/v1/auth/logout",
+          Uri.parse(
+            "${ApiConstants.apiV1}/auth/logout",
         ),
         headers: {
           "Authorization": "Bearer $token",
@@ -171,6 +172,14 @@ class _ReaderScreenState extends State<ReaderScreen> {
     }
 
     final prefs = await SharedPreferences.getInstance();
+    final workerId =
+        prefs.getString("workerId") ??
+            prefs.getString("worker_id") ??
+            "";
+
+    await prefs.remove("assignedStartRFID_$workerId");
+    await prefs.remove("assignedEndRFID_$workerId");
+    await prefs.remove("assignedMappedTagsList_$workerId");
 
     await prefs.remove(
       "auth_token",
