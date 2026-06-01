@@ -120,8 +120,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void _showRFIDRangeDialog() {
-    final startController = TextEditingController();
-    final endController = TextEditingController();
+    final startController = TextEditingController(
+      text: _assignedStartRFID?.toString() ?? "",
+    );
+
+    final endController = TextEditingController(
+      text: _assignedEndRFID?.toString() ?? "",
+    );
 
     showDialog(
       context: context,
@@ -1399,11 +1404,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
 
     final prefs = await SharedPreferences.getInstance();
+
+    final workerId =
+        prefs.getString("workerId") ??
+            prefs.getString("worker_id") ??
+            prefs.getString("username") ??
+            "";
+
+    if (workerId.isNotEmpty) {
+      await prefs.remove("assignedStartRFID_$workerId");
+      await prefs.remove("assignedEndRFID_$workerId");
+      await prefs.remove("assignedMappedTagsList_$workerId");
+    }
+
     await prefs.remove("auth_token");
     await prefs.remove("isLoggedIn");
     await prefs.remove("username");
     await prefs.remove("user");
     await prefs.remove("admin_name");
+    await prefs.remove("workerId");
+    await prefs.remove("worker_id");
 
     await AuthService.logout();
 
@@ -1429,6 +1449,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         backgroundColor: const Color(0xFFF8F9FA),
         appBar: SewacHeader(
           onLogout: _handleLogout,
+          onEditRange: _showRFIDRangeDialog,
         ),
         body: SewacBackground(
           child: RefreshIndicator(
@@ -2006,7 +2027,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 if (label.contains("RFID")) {
                   final entered = int.tryParse(value);
 
-                  if (entered != null && _assignedStartRFID != null && _assignedEndRFID != null) {
+                  if (value.length >=
+                      (_assignedStartRFID?.toString().length ?? 0) &&
+                      entered != null &&
+                      _assignedStartRFID != null &&
+                      _assignedEndRFID != null) {
                     if (entered < _assignedStartRFID! || entered > _assignedEndRFID!) {
                       ScaffoldMessenger.of(context).hideCurrentSnackBar();
                       ScaffoldMessenger.of(context).showSnackBar(

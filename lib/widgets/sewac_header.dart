@@ -4,12 +4,15 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 
-class SewacHeader extends StatefulWidget implements PreferredSizeWidget {
+class SewacHeader extends StatefulWidget
+    implements PreferredSizeWidget {
   final VoidCallback onLogout;
+  final VoidCallback? onEditRange;
 
   const SewacHeader({
     super.key,
     required this.onLogout,
+    this.onEditRange,
   });
 
   @override
@@ -34,6 +37,17 @@ class _SewacHeaderState extends State<SewacHeader> {
             prefs.getString("username") ??
             "";
 
+    // If session is cleared and workerId is empty, treat as new login
+    if (workerId.isEmpty) {
+      if (mounted) {
+        setState(() {
+          _rangeDisplay = "Not Assigned";
+          _availableTagsCount = 0;
+        });
+      }
+      return;
+    }
+
     final start = prefs.getInt("assignedStartRFID_$workerId");
     final end = prefs.getInt("assignedEndRFID_$workerId");
 
@@ -47,6 +61,13 @@ class _SewacHeaderState extends State<SewacHeader> {
         setState(() {
           _rangeDisplay = "$start - $end";
           _availableTagsCount = totalCapacity - mappedTags.length;
+        });
+      }
+    } else {
+      if (mounted) {
+        setState(() {
+          _rangeDisplay = "Not Assigned";
+          _availableTagsCount = 0;
         });
       }
     }
@@ -99,6 +120,17 @@ class _SewacHeaderState extends State<SewacHeader> {
               prefs.getString("username") ??
               "";
 
+      // If session is cleared and workerId is empty, clear the display immediately
+      if (workerId.isEmpty) {
+        if (mounted) {
+          setState(() {
+            _rangeDisplay = "Not Assigned";
+            _availableTagsCount = 0;
+          });
+        }
+        return;
+      }
+
       final int? start =
       prefs.getInt("assignedStartRFID_$workerId");
 
@@ -135,6 +167,8 @@ class _SewacHeaderState extends State<SewacHeader> {
     }
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -166,20 +200,31 @@ class _SewacHeaderState extends State<SewacHeader> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "Range: $_rangeDisplay",
-
-              style: const TextStyle(
-                color: Color(0xFF1A237E),
-                fontWeight: FontWeight.w700,
-                fontSize: 13,
-              ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Range: $_rangeDisplay",
+                  style: const TextStyle(
+                    color: Color(0xFF1A237E),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 13,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                GestureDetector(
+                  onTap: widget.onEditRange,
+                  child: const Icon(
+                    Icons.edit_rounded,
+                    color: Color(0xFF1A237E),
+                    size: 14,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 2),
             Text(
               "Available Tags: $_availableTagsCount",
-
-
               style: const TextStyle(
                 color: Color(0xFF00A236),
                 fontWeight: FontWeight.w700,
