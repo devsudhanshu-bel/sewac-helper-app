@@ -4,7 +4,7 @@
 
 ## Introduction
 
-SEWAC (Solid Waste Electronic Administration and Collection) is a comprehensive waste management ecosystem developed as part of an internship project aimed at modernizing and digitizing the traditional solid waste collection process. The primary objective of the project is to establish an efficient, scalable, and transparent waste management system by integrating RFID technology, cloud infrastructure, mobile applications, and centralized administrative monitoring.
+SEWAC is a comprehensive waste management ecosystem developed as part of an internship project aimed at modernizing and digitizing the traditional solid waste collection process. The primary objective of the project is to establish an efficient, scalable, and transparent waste management system by integrating RFID technology, cloud infrastructure, mobile applications, and centralized administrative monitoring.
 
 The project focuses on creating a complete digital workflow that enables municipalities and waste management organizations to track households, monitor waste collection activities, manage RFID tags, conduct surveys, and analyze operational data through a centralized platform.
 
