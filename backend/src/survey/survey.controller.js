@@ -9,8 +9,6 @@ const streamifier =
 
 
 
-
-
 // ======================================
 // CREATE SURVEY
 // ======================================
@@ -26,8 +24,6 @@ const createSurvey =
 
       let imageUrl = null;
 
-
-
       // ======================================
       // CHECK IF IMAGE EXISTS
       // ======================================
@@ -37,8 +33,6 @@ const createSurvey =
         console.log(
           "SURVEY IMAGE RECEIVED"
         );
-
-
 
         // ======================================
         // CLOUDINARY STREAM UPLOAD
@@ -83,8 +77,6 @@ const createSurvey =
 
                   );
 
-
-
                 streamifier
 
                   .createReadStream(
@@ -99,8 +91,6 @@ const createSurvey =
 
           };
 
-
-
         // ======================================
         // UPLOAD TO CLOUDINARY
         // ======================================
@@ -108,16 +98,12 @@ const createSurvey =
         const uploadedImage =
           await streamUpload();
 
-
-
         // ======================================
         // SAVE CLOUDINARY URL
         // ======================================
 
         imageUrl =
           uploadedImage.secure_url;
-
-
 
         console.log(
           "SURVEY CLOUDINARY URL =>",
@@ -131,10 +117,6 @@ const createSurvey =
         );
 
       }
-
-
-
-
 
       // ======================================
       // CREATE SURVEY PAYLOAD
@@ -174,19 +156,33 @@ const createSurvey =
         numberOfPeople:
           req.body.numberOfPeople || null,
 
+        // ======================================
+        // GPS LOCATION
+        // ======================================
+
+        lat:
+          req.body.lat
+            ? Number(req.body.lat)
+            : null,
+
+        lng:
+          req.body.lng
+            ? Number(req.body.lng)
+            : null,
+
+        // ======================================
+        // CLOUDINARY IMAGE
+        // ======================================
+
         buildingPhoto:
           imageUrl,
 
       };
 
-
-
       console.log(
         "FINAL SURVEY DATA =>",
         surveyData
       );
-
-
 
       // ======================================
       // CREATE SURVEY
@@ -196,8 +192,6 @@ const createSurvey =
         await surveyService.createSurvey(
           surveyData
         );
-
-
 
       // ======================================
       // SUCCESS RESPONSE
@@ -221,8 +215,6 @@ const createSurvey =
         error
       );
 
-
-
       return res.status(500).json({
 
         success: false,
@@ -236,8 +228,6 @@ const createSurvey =
     }
 
   };
-
-
 
 
 
@@ -256,8 +246,6 @@ const getAllSurveys =
 
       const result =
         await surveyService.getAllSurveys();
-
-
 
       return res.status(200).json({
 
@@ -278,8 +266,6 @@ const getAllSurveys =
         error
       );
 
-
-
       return res.status(500).json({
 
         success: false,
@@ -293,8 +279,6 @@ const getAllSurveys =
     }
 
   };
-
-
 
 
 
@@ -314,14 +298,10 @@ const getSurveyById =
       const { id } =
         req.params;
 
-
-
       const result =
         await surveyService.getSurveyById(
           Number(id)
         );
-
-
 
       // ======================================
       // NOT FOUND
@@ -339,8 +319,6 @@ const getSurveyById =
         });
 
       }
-
-
 
       // ======================================
       // SUCCESS RESPONSE
@@ -362,8 +340,6 @@ const getSurveyById =
         error
       );
 
-
-
       return res.status(500).json({
 
         success: false,
@@ -377,8 +353,6 @@ const getSurveyById =
     }
 
   };
-
-
 
 
 

@@ -3,8 +3,6 @@ const { prisma } =
 
 
 
-
-
 /*
 |--------------------------------------------------------------------------
 | Sync Master Citizen Data
@@ -26,8 +24,6 @@ const syncMasterCitizenData =
 
       });
 
-
-
     if (
       !rfidMappings ||
       rfidMappings.length === 0
@@ -36,8 +32,6 @@ const syncMasterCitizenData =
       return null;
 
     }
-
-
 
     // =============================
     // GET SURVEY DATA
@@ -54,20 +48,14 @@ const syncMasterCitizenData =
 
       `;
 
-
-
     const surveyData =
       surveyRows[0];
-
-
 
     if (!surveyData) {
 
       return null;
 
     }
-
-
 
     // =============================
     // EXTRACT DRY/WET RFID
@@ -78,8 +66,6 @@ const syncMasterCitizenData =
 
     let drySlno = null;
     let wetSlno = null;
-
-
 
     rfidMappings.forEach((item) => {
 
@@ -97,8 +83,6 @@ const syncMasterCitizenData =
 
       }
 
-
-
       // WET
       if (
         item.wasteType ===
@@ -115,8 +99,6 @@ const syncMasterCitizenData =
 
     });
 
-
-
     // =============================
     // UPSERT MASTER DATA
     // =============================
@@ -130,12 +112,14 @@ const syncMasterCitizenData =
 
         update: {
 
+          // RFID DATA
           dryRFID,
           wetRFID,
 
           drySlno,
           wetSlno,
 
+          // SURVEY DATA
           city:
             surveyData.city,
 
@@ -168,19 +152,29 @@ const syncMasterCitizenData =
 
           buildingPhoto:
             surveyData.buildingPhoto,
+
+          // GPS DATA
+          lat:
+            surveyData.lat,
+
+          lng:
+            surveyData.lng,
 
         },
 
         create: {
 
+          // PRIMARY LINK
           phoneNumber,
 
+          // RFID DATA
           dryRFID,
           wetRFID,
 
           drySlno,
           wetSlno,
 
+          // SURVEY DATA
           city:
             surveyData.city,
 
@@ -214,17 +208,20 @@ const syncMasterCitizenData =
           buildingPhoto:
             surveyData.buildingPhoto,
 
+          // GPS DATA
+          lat:
+            surveyData.lat,
+
+          lng:
+            surveyData.lng,
+
         },
 
       });
 
-
-
     return master;
 
   };
-
-
 
 
 
@@ -248,8 +245,6 @@ const getAllMasterData =
 
 
 
-
-
 /*
 |--------------------------------------------------------------------------
 | Get Master By Phone
@@ -267,8 +262,6 @@ const getMasterByPhone =
     });
 
   };
-
-
 
 
 
@@ -301,8 +294,6 @@ const getMasterBySLNO =
     });
 
   };
-
-
 
 
 

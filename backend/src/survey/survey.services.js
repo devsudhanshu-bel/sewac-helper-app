@@ -3,8 +3,6 @@ const { prisma } =
 
 
 
-
-
 // ======================================
 // CREATE SURVEY SERVICE
 // ======================================
@@ -27,13 +25,9 @@ const createSurvey =
               data.city ||
               "Bangalore",
 
-
-
             ward:
               data.ward ||
               "Ibbanuru-174",
-
-
 
             // ======================================
             // SURVEY DETAILS
@@ -42,42 +36,36 @@ const createSurvey =
             area:
               data.area || null,
 
-
-
             wasteGeneratorTypes:
               data.wasteGeneratorTypes || null,
-
-
 
             houseNumber:
               data.houseNumber || null,
 
-
-
             floorNumber:
               data.floorNumber || null,
-
-
 
             householdType:
               data.householdType || null,
 
-
-
             personName:
               data.personName || null,
-
-
 
             contactNumber:
               data.contactNumber || null,
 
-
-
             numberOfPeople:
               data.numberOfPeople || null,
 
+            // ======================================
+            // GPS LOCATION
+            // ======================================
 
+            lat:
+              data.lat ?? null,
+
+            lng:
+              data.lng ?? null,
 
             // ======================================
             // CLOUDINARY IMAGE URL
@@ -89,8 +77,6 @@ const createSurvey =
           },
 
         });
-
-
 
       return survey;
 
@@ -106,8 +92,6 @@ const createSurvey =
     }
 
   };
-
-
 
 
 
@@ -132,8 +116,6 @@ const getAllSurveys =
 
         });
 
-
-
       return surveys;
 
     } catch (error) {
@@ -148,8 +130,6 @@ const getAllSurveys =
     }
 
   };
-
-
 
 
 
@@ -173,8 +153,6 @@ const getSurveyById =
 
         });
 
-
-
       return survey;
 
     } catch (error) {
@@ -189,8 +167,6 @@ const getSurveyById =
     }
 
   };
-
-
 
 
 
