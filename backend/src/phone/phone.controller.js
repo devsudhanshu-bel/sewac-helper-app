@@ -220,7 +220,7 @@ const mapPhoneNumber =
       if (
 
         existingRecord.wasteType ===
-          "DRY" &&
+        "DRY" &&
 
         hasDry
 
@@ -248,7 +248,7 @@ const mapPhoneNumber =
       if (
 
         existingRecord.wasteType ===
-          "WET" &&
+        "WET" &&
 
         hasWet
 
@@ -756,13 +756,13 @@ const getUnmappedPhoneNumbers =
       const citizens =
         await prisma.$queryRaw`
 
-          SELECT DISTINCT
-            "personName",
-            "contactNumber"
-          FROM "survey_attribute_specific"
-          WHERE "contactNumber" IS NOT NULL
+    SELECT DISTINCT ON ("contactNumber")
+      "personName",
+      "contactNumber",
+    FROM "survey_attribute_specific"
+    WHERE "contactNumber" IS NOT NULL
 
-        `;
+  `;
 
 
 
@@ -778,7 +778,7 @@ const getUnmappedPhoneNumbers =
 
             const status =
               tracker[
-                citizen.contactNumber
+              citizen.contactNumber
               ];
 
 
