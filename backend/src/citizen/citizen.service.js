@@ -317,7 +317,7 @@ const getAllCitizenPhoneNumbersService =
 
           SELECT DISTINCT
             "personName",
-            "contactNumber",
+            "contactNumber"
           FROM "survey_attribute_specific"
           WHERE "contactNumber" IS NOT NULL
 
@@ -516,7 +516,7 @@ const getAllCitizenNamesService =
 
           SELECT DISTINCT
             "personName",
-            "contactNumber",
+            "contactNumber"
           FROM "survey_attribute_specific"
           WHERE "contactNumber" IS NOT NULL
 
@@ -715,7 +715,7 @@ const getUnmappedCitizensService =
 
           SELECT DISTINCT
             "personName",
-            "contactNumber",
+            "contactNumber"
           FROM "survey_attribute_specific"
           WHERE "contactNumber" IS NOT NULL
 
