@@ -64,12 +64,6 @@ const getCitizenByPhoneService =
         phoneNumber:
           citizen.contactNumber,
 
-        lat:
-          citizen.lat,
-
-        lng:
-          citizen.lng,
-
         city:
           citizen.city,
 
@@ -136,9 +130,7 @@ const searchCitizenByNameService =
             "contactNumber",
             "city",
             "ward",
-            "area",
-            "lat",
-            "lng"
+            "area"
           FROM "survey_attribute_specific"
           WHERE LOWER("personName")
           LIKE LOWER(${`%${citizenName}%`})
@@ -166,13 +158,6 @@ const searchCitizenByNameService =
 
           area:
             citizen.area,
-
-          lat:
-            citizen.lat,
-
-          lng:
-            citizen.lng,
-
         })
       );
 
@@ -333,8 +318,6 @@ const getAllCitizenPhoneNumbersService =
           SELECT DISTINCT
             "personName",
             "contactNumber",
-            "lat",
-            "lng"
           FROM "survey_attribute_specific"
           WHERE "contactNumber" IS NOT NULL
 
@@ -534,8 +517,6 @@ const getAllCitizenNamesService =
           SELECT DISTINCT
             "personName",
             "contactNumber",
-            "lat",
-            "lng"
           FROM "survey_attribute_specific"
           WHERE "contactNumber" IS NOT NULL
 
@@ -735,8 +716,6 @@ const getUnmappedCitizensService =
           SELECT DISTINCT
             "personName",
             "contactNumber",
-            "lat",
-            "lng"
           FROM "survey_attribute_specific"
           WHERE "contactNumber" IS NOT NULL
 
@@ -775,13 +754,6 @@ const getUnmappedCitizensService =
 
           phoneNumber:
             citizen.contactNumber,
-
-          lat:
-            citizen.lat,
-
-          lng:
-            citizen.lng,
-
         })
       );
 
