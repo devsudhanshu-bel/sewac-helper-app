@@ -374,10 +374,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         setState(() {
                           _assignedStartRFID = start;
                           _assignedEndRFID = end;
+
+                          // Clear currently selected RFIDs
+                          _selectedWetRFID = null;
+                          _selectedDryRFID = null;
                         });
 
+                        _wetRfidSearchController.clear();
+                        _dryRfidSearchController.clear();
+
+                        FocusScope.of(this.context).unfocus();
+
+                        await _loadRFIDRange();
+
                         Navigator.pop(context);
+
                         await _loadAllDropdownData();
+
+                        Future.delayed(
+                          const Duration(milliseconds: 100),
+                              () {
+                            if (mounted) {
+                              FocusScope.of(this.context).unfocus();
+                            }
+                          },
+                        );
                       },
                       child: const Center(
                         child: Text(

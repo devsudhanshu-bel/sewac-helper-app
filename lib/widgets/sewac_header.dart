@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:async';
+import '../config/api_constants.dart';
 
 class SewacHeader extends StatefulWidget
     implements PreferredSizeWidget {
@@ -137,22 +138,45 @@ class _SewacHeaderState extends State<SewacHeader> {
       final int? end =
       prefs.getInt("assignedEndRFID_$workerId");
 
-      final List<String> mappedTags =
-          prefs.getStringList(
-            "assignedMappedTagsList_$workerId",
-          ) ?? [];
       if (start != null && end != null) {
-        final int totalCapacity = (end - start + 1);
-        int availableCount = totalCapacity - mappedTags.length;
-        if (availableCount < 0) availableCount = 0;
+        try {
+          final response = await http.get(
+            Uri.parse(
+              "${ApiConstants.apiV1}/rfid/unmapped",
+            ),
+          );
 
-        if (mounted) {
-          setState(() {
-            _rangeDisplay = "$start - $end";
-            _availableTagsCount = availableCount;
-          });
+          if (response.statusCode == 200) {
+            final result = jsonDecode(response.body);
+
+            if (result["success"] == true) {
+              final List<dynamic> rfids = result["data"];
+
+              final int availableCount = rfids.where((item) {
+                final value =
+                int.tryParse(item["slno"].toString());
+
+                if (value == null) return false;
+
+                return value >= start &&
+                    value <= end;
+              }).length;
+
+              if (mounted) {
+                setState(() {
+                  _rangeDisplay = "$start - $end";
+                  _availableTagsCount = availableCount;
+                });
+              }
+
+              return;
+            }
+          }
+        } catch (e) {
+          debugPrint(
+            "Available Tags API Error: $e",
+          );
         }
-        return;
       }
     } catch (e) {
       debugPrint("Header local range compute error: $e");
