@@ -758,7 +758,7 @@ const getUnmappedPhoneNumbers =
 
     SELECT DISTINCT ON ("contactNumber")
       "personName",
-      "contactNumber",
+      "contactNumber"
     FROM "survey_attribute_specific"
     WHERE "contactNumber" IS NOT NULL
 
