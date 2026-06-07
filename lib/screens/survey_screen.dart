@@ -13,6 +13,7 @@ import 'main_navigation_screen.dart';
 import '../widgets/sewac_background.dart';
 import '../widgets/sewac_header.dart';
 import '../config/api_constants.dart';
+import 'package:geolocator/geolocator.dart';
 
 class SurveyScreen extends StatefulWidget {
   const SurveyScreen({super.key});
@@ -41,6 +42,36 @@ class _SurveyScreenState extends State<SurveyScreen> {
 
   XFile? _capturedImage;
   bool _isSubmitting = false;
+  String _surveyMode = "WITH_TAGS";
+  double? _latitude;
+  double? _longitude;
+
+  Future<void> _getCurrentLocation() async {
+    try {
+      LocationPermission permission =
+      await Geolocator.checkPermission();
+
+      if (permission == LocationPermission.denied) {
+        permission =
+        await Geolocator.requestPermission();
+      }
+
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        return;
+      }
+
+      Position position =
+      await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      _latitude = position.latitude;
+      _longitude = position.longitude;
+    } catch (e) {
+      debugPrint("Location Error: $e");
+    }
+  }
 
   final ImagePicker _picker = ImagePicker();
 
@@ -102,12 +133,14 @@ class _SurveyScreenState extends State<SurveyScreen> {
   void initState() {
     super.initState();
 
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getCurrentLocation();
+    });
+
     _loadRFIDRange().then((_) async {
       await _loadRFIDRange();
       await _fetchUnmappedRFIDs();
-
       await _loadSurveyDetails();
-
       _loadLocationAndCheckPopups();
     });
   }
@@ -278,15 +311,14 @@ class _SurveyScreenState extends State<SurveyScreen> {
   }
 
   Widget _buildVerificationRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0),
+    return Padding(padding: const EdgeInsets.symmetric(vertical: 1),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
             style: const TextStyle(
-              fontSize: 13,
+              fontSize: 12,
               fontWeight: FontWeight.w500,
               color: Color(0xFF7F8C8D),
             ),
@@ -295,8 +327,8 @@ class _SurveyScreenState extends State<SurveyScreen> {
           Text(
             value,
             style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
               color: Color(0xFF2C3E50),
             ),
           ),
@@ -747,212 +779,352 @@ class _SurveyScreenState extends State<SurveyScreen> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return StatefulBuilder(
-            builder: (context, setDialogState) {
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(28.0),
+          builder: (context, setDialogState) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              backgroundColor: Colors.white,
+              elevation: 6,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.85,
                 ),
-                backgroundColor: Colors.white,
-                contentPadding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-                content: Form(
-                  key: verifyFormKey,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: Colors.green.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Icon(
-                                Icons.assignment_turned_in_outlined,
-                                color: Colors.green,
-                                size: 26,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            const Text(
-                              "Verify Details",
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF2C3E50),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        const Divider(height: 1, color: Colors.black12),
-                        const SizedBox(height: 8),
-                        _buildVerificationRow("City", _selectedCity ?? "N/A"),
-                        _buildVerificationRow("Ward", _selectedWard ?? "N/A"),
-                        _buildVerificationRow("Area / Main / Cross Road", _areaController.text.trim()),
-                        _buildVerificationRow("Citizen Name", savedName),
-                        _buildVerificationRow("Phone Number", savedPhone),
-                        const SizedBox(height: 8),
-
-                        const Text(
-                          "Building Photo",
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xFF7F8C8D),
-                          ),
-                        ),
-
-                        const SizedBox(height: 6),
-
-                        if (_capturedImage != null)
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(16),
-                            child: Image.file(
-                              File(_capturedImage!.path),
-                              height: 120,
-                              width: 120,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-
-                        const SizedBox(height: 8),
-                        _buildVerificationRow("Wet RFID", formattedWet),
-                        _buildVerificationRow("Dry RFID", formattedDry),
-                        const SizedBox(height: 12),
-                        if (hasWet) ...[
-                          const Text(
-                            "Re-enter Wet RFID *",
-                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF2C3E50)),
-                          ),
-                          const SizedBox(height: 6),
-                          TextFormField(
-                            controller: reenterWetController,
-                            style: const TextStyle(color: Color(0xFF2C3E50), fontSize: 14, fontWeight: FontWeight.w500),
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.white,
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Colors.black12)),
-                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFF00A236), width: 1.5)),
-                              errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.red.shade400)),
-                              focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.red.shade400, width: 1.5)),
-                            ),
-                            validator: (val) {
-                              if (val == null || val.trim().isEmpty) return "Required";
-                              if (val.trim() != savedWet) return "RFID mismatch. Please verify.";
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 12),
-                        ],
-                        if (hasDry) ...[
-                          const Text(
-                            "Re-enter Dry RFID *",
-                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF2C3E50)),
-                          ),
-                          const SizedBox(height: 6),
-                          TextFormField(
-                            controller: reenterDryController,
-                            style: const TextStyle(color: Color(0xFF2C3E50), fontSize: 14, fontWeight: FontWeight.w500),
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.white,
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Colors.black12)),
-                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFF00A236), width: 1.5)),
-                              errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.red.shade400)),
-                              focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.red.shade400, width: 1.5)),
-                            ),
-                            validator: (val) {
-                              if (val == null || val.trim().isEmpty) return "Required";
-                              if (val.trim() != savedDry) return "RFID mismatch. Please verify.";
-                              return null;
-                            },
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ),
-                actionsPadding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                actions: [
-                  Row(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: SizedBox(
-                          height: 56,
-                          child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              side: const BorderSide(color: Colors.black12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF00A236).withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            onPressed: () async {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text(
-                              "CANCEL",
-                              style: TextStyle(
-                                color: Colors.black54,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 0.5,
-                              ),
+                            child: const Icon(
+                              Icons.verified_user_rounded,
+                              color: Color(0xFF00A236),
+                              size: 24,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          const Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Verify Details",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF2C3E50),
+                                  ),
+                                ),
+                                SizedBox(height: 1),
+                                Text(
+                                  "Please verify all information before saving.",
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      const Divider(
+                        height: 1,
+                        color: Colors.black12,
+                      ),
+                      const SizedBox(height: 8),
+                      Flexible(
+                        child: Form(
+                          key: verifyFormKey,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFF8F9FA),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: Colors.black12.withOpacity(0.05),
+                                    ),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      _buildVerificationRow(
+                                        "City",
+                                        _selectedCity ?? "N/A",
+                                      ),
+                                      const Divider(
+                                        height: 12,
+                                        color: Colors.black12,
+                                      ),
+                                      _buildVerificationRow(
+                                        "Ward",
+                                        _selectedWard ?? "N/A",
+                                      ),
+                                      const Divider(
+                                        height: 12,
+                                        color: Colors.black12,
+                                      ),
+                                      _buildVerificationRow(
+                                        "Area / Main / Cross Road",
+                                        _areaController.text.trim(),
+                                      ),
+                                      const Divider(
+                                        height: 12,
+                                        color: Colors.black12,
+                                      ),
+                                      _buildVerificationRow(
+                                        "Citizen Name",
+                                        savedName,
+                                      ),
+                                      const Divider(
+                                        height: 12,
+                                        color: Colors.black12,
+                                      ),
+                                      _buildVerificationRow(
+                                        "Phone Number",
+                                        savedPhone,
+                                      ),
+                                      if (_surveyMode == "WITH_TAGS") ...[
+                                        const Divider(
+                                          height: 12,
+                                          color: Colors.black12,
+                                        ),
+                                        _buildVerificationRow(
+                                          "Wet Waste RFID",
+                                          formattedWet,
+                                        ),
+                                        const Divider(
+                                          height: 12,
+                                          color: Colors.black12,
+                                        ),
+                                        _buildVerificationRow(
+                                          "Dry Waste RFID",
+                                          formattedDry,
+                                        ),
+                                      ],
+                                    ],
+                                  ),
+                                ),
+                                if (_capturedImage != null) ...[
+                                  const SizedBox(height: 10),
+                                  const Text(
+                                    "Building Photo",
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: Color(0xFF7F8C8D),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.file(
+                                      File(_capturedImage!.path),
+                                      height: 70,
+                                      width: 70,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ],
+                                if (_surveyMode == "WITH_TAGS" && hasWet) ...[
+                                  const SizedBox(height: 10),
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 2, bottom: 4),
+                                    child: Text(
+                                      "Confirm Wet RFID *",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color: Color(0xFF7F8C8D),
+                                      ),
+                                    ),
+                                  ),
+                                  TextFormField(
+                                    controller: reenterWetController,
+                                    style: const TextStyle(fontSize: 13),
+                                    validator: (val) {
+                                      if (val == null || val.trim().isEmpty) {
+                                        return "Required";
+                                      }
+                                      final entered = val.trim().padLeft(8, '0');
+                                      final actual = savedWet.padLeft(8, '0');
+                                      if (entered != actual) {
+                                        return "Wet RFID confirmation does not match";
+                                      }
+                                      return null;
+                                    },
+                                    decoration: InputDecoration(
+                                      hintText: "Re-enter Wet RFID number",
+                                      hintStyle: const TextStyle(fontSize: 12, color: Colors.black38),
+                                      prefixIcon: const Icon(
+                                        Icons.qr_code,
+                                        color: Colors.black54,
+                                        size: 18,
+                                      ),
+                                      filled: true,
+                                      fillColor: const Color(0xFFF8F9FA),
+                                      contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 10,
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: const BorderSide(color: Colors.black12),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: const BorderSide(color: Colors.black12),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                                if (_surveyMode == "WITH_TAGS" && hasDry) ...[
+                                  const SizedBox(height: 10),
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 2, bottom: 4),
+                                    child: Text(
+                                      "Confirm Dry RFID *",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color: Color(0xFF7F8C8D),
+                                      ),
+                                    ),
+                                  ),
+                                  TextFormField(
+                                    controller: reenterDryController,
+                                    style: const TextStyle(fontSize: 13),
+                                    validator: (val) {
+                                      if (val == null || val.trim().isEmpty) {
+                                        return "Required";
+                                      }
+                                      final entered = val.trim().padLeft(8, '0');
+                                      final actual = savedDry.padLeft(8, '0');
+                                      if (entered != actual) {
+                                        return "Dry RFID confirmation does not match";
+                                      }
+                                      return null;
+                                    },
+                                    decoration: InputDecoration(
+                                      hintText: "Re-enter Dry RFID number",
+                                      hintStyle: const TextStyle(fontSize: 12, color: Colors.black38),
+                                      prefixIcon: const Icon(
+                                        Icons.qr_code,
+                                        color: Colors.black54,
+                                        size: 18,
+                                      ),
+                                      filled: true,
+                                      fillColor: const Color(0xFFF8F9FA),
+                                      contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 10,
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: const BorderSide(color: Colors.black12),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: const BorderSide(color: Colors.black12),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ],
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: SizedBox(
-                          height: 56,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Color(0xFFFFA000),
-                                  Color(0xFF4CAF50),
-                                ],
-                              ),
-                            ),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent,
-                                shadowColor: Colors.transparent,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
+                      const SizedBox(height: 14),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: SizedBox(
+                              height: 40,
+                              child: OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(
+                                    color: Colors.black12,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
                                 ),
-                              ),
-                              onPressed: () {
-                                if (verifyFormKey.currentState!.validate()) {
+                                onPressed: () {
                                   Navigator.of(context).pop();
-                                  _handleSurveySubmissionExecution();
-                                }
-                              },
-                              child: const Center(
-                                child: Text(
-                                  "CONFIRM",
-                                  textAlign: TextAlign.center,
+                                },
+                                child: const Text(
+                                  "CANCEL",
                                   style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
+                                    color: Colors.black54,
                                     fontWeight: FontWeight.bold,
+                                    fontSize: 13,
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      )
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Container(
+                              height: 40,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFFFFA000),
+                                    Color(0xFF4CAF50),
+                                  ],
+                                ),
+                              ),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  shadowColor: Colors.transparent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  padding: EdgeInsets.zero,
+                                ),
+                                onPressed: () {
+                                  if (verifyFormKey.currentState!.validate()) {
+                                    Navigator.of(context).pop();
+                                    _handleSurveySubmissionExecution();
+                                  }
+                                },
+                                child: const Text(
+                                  "CONFIRM",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
-                ],
-              );
-            }
+                ),
+              ),
+            );
+          },
         );
       },
     );
@@ -1181,8 +1353,8 @@ class _SurveyScreenState extends State<SurveyScreen> {
                                                       setPhotoPopupState(() {});
                                                     },
                                                     child: Container(
-                                                      height: 120,
-                                                      width: 120,
+                                                      height: 70,
+                                                      width: 70,
                                                       decoration: BoxDecoration(
                                                         color: const Color(0xFFF8F9FA),
                                                         borderRadius: BorderRadius.circular(24),
@@ -1316,20 +1488,31 @@ class _SurveyScreenState extends State<SurveyScreen> {
     final bool wetEmpty = savedWet.isEmpty || savedWet == "Select";
     final bool dryEmpty = savedDry.isEmpty || savedDry == "Select";
 
-    if (wetEmpty && dryEmpty) {
-      setState(() {
-        _showRfidValidationError = true;
-      });
-    } else {
-      setState(() {
-        _showRfidValidationError = false;
-      });
+    if (_surveyMode == "WITH_TAGS") {
+      if (wetEmpty && dryEmpty) {
+        setState(() {
+          _showRfidValidationError = true;
+        });
+      } else {
+        setState(() {
+          _showRfidValidationError = false;
+        });
+      }
     }
 
-    if (!isFormValid || (wetEmpty && dryEmpty)) {
+    if (!isFormValid ||
+        (_surveyMode == "WITH_TAGS" && wetEmpty && dryEmpty)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Please fill all required parameters accurately"),
+        ),
+      );
+      return;
+    }
+    if (_latitude == null || _longitude == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Location is required"),
         ),
       );
       return;
@@ -1367,7 +1550,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
     try {
       var request = http.MultipartRequest(
         "POST",
-          Uri.parse(
+        Uri.parse(
             "${ApiConstants.apiV1}/survey/create"),
       );
 
@@ -1381,6 +1564,11 @@ class _SurveyScreenState extends State<SurveyScreen> {
       request.fields["personName"] = citizenNameEnteredInSurvey;
       request.fields["contactNumber"] = phoneNumberEnteredInSurvey;
       request.fields["numberOfPeople"] = _peopleController.text.trim();
+      request.fields["lat"] =
+          (_latitude ?? 0).toStringAsFixed(8);
+
+      request.fields["lng"] =
+          (_longitude ?? 0).toStringAsFixed(8);
 
       if (_capturedImage != null) {
         final bytes = await _capturedImage!.readAsBytes();
@@ -1398,6 +1586,22 @@ class _SurveyScreenState extends State<SurveyScreen> {
       final response = await http.Response.fromStream(streamedResponse);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        if (_surveyMode == "WITHOUT_TAGS") {
+
+          _clearForm();
+
+          await _refreshSurveyScreen();
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              backgroundColor: Color(0xFF4CAF50),
+              content: Text("Survey submitted successfully"),
+            ),
+          );
+
+          _showContinueSurveyPopup();
+          return;
+        }
         final prefs = await SharedPreferences.getInstance();
         final token = prefs.getString("auth_token") ?? "";
         final headers = {
@@ -1408,7 +1612,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
         if (!wetEmpty) {
           final wetMapResponse = await http.patch(
             Uri.parse(
-              "${ApiConstants.apiV1}/rfid/map"),
+                "${ApiConstants.apiV1}/rfid/map"),
             headers: headers,
             body: jsonEncode({
               "slno": savedWet,
@@ -1439,7 +1643,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
         if (!dryEmpty) {
           final dryMapResponse = await http.patch(
             Uri.parse(
-              "${ApiConstants.apiV1}/rfid/map"),
+                "${ApiConstants.apiV1}/rfid/map"),
             headers: headers,
             body: jsonEncode({
               "slno": savedDry,
@@ -1486,7 +1690,9 @@ class _SurveyScreenState extends State<SurveyScreen> {
           "workerId": workerId.trim(),
           "drySlno": dryEmpty ? "N/A" : savedDry,
           "wetSlno": wetEmpty ? "N/A" : savedWet,
-          "status": "FOUND",
+          "status": _surveyMode == "WITH_TAGS"
+              ? "FOUND"
+              : "NOT_FOUND",
         };
 
         final trackingResponse = await http.post(
@@ -1562,7 +1768,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
 
       await http.post(
         Uri.parse(
-          "${ApiConstants.apiV1}/auth/logout"),
+            "${ApiConstants.apiV1}/auth/logout"),
         headers: {
           "Authorization": "Bearer $token",
           "Content-Type": "application/json",
@@ -1883,11 +2089,16 @@ class _SurveyScreenState extends State<SurveyScreen> {
       appBar: SewacHeader(
         onLogout: _handleLogout,
       ),
-      body: SewacBackground(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.fromLTRB(24, 4, 24, 24),
-          child: Column(
+        body: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () {
+            FocusManager.instance.primaryFocus?.unfocus();
+          },
+          child: SewacBackground(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(24, 4, 24, 24),
+              child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
@@ -1913,6 +2124,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                       ],
                     ),
                   ),
+
                   if (isLocationSelected)
                     Padding(
                       padding: const EdgeInsets.only(top: 4.0),
@@ -1941,7 +2153,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
               const SizedBox(height: 16),
               if (hasSurveyDetails) ...[
                 Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
@@ -2022,6 +2234,104 @@ class _SurveyScreenState extends State<SurveyScreen> {
                 ),
               ],
               const SizedBox(height: 24),
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFEFEFEF),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Colors.black12,
+                    width: 0.5,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _surveyMode = "WITH_TAGS";
+                          });
+                        },
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          decoration: BoxDecoration(
+                            color: _surveyMode == "WITH_TAGS"
+                                ? Colors.white
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: _surveyMode == "WITH_TAGS"
+                                ? [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              )
+                            ]
+                                : [],
+                          ),
+                          child: Center(
+                            child: Text(
+                              "With Tags",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                color: _surveyMode == "WITH_TAGS"
+                                    ? const Color(0xFF00A236)
+                                    : Colors.black54,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _surveyMode = "WITHOUT_TAGS";
+                          });
+                        },
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          decoration: BoxDecoration(
+                            color: _surveyMode == "WITHOUT_TAGS"
+                                ? Colors.white
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: _surveyMode == "WITHOUT_TAGS"
+                                ? [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              )
+                            ]
+                                : [],
+                          ),
+                          child: Center(
+                            child: Text(
+                              "Without Tags",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                color: _surveyMode == "WITHOUT_TAGS"
+                                    ? const Color(0xFF00A236)
+                                    : Colors.black54,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 20),
               Form(
                 key: _formKey,
                 child: Container(
@@ -2214,50 +2524,53 @@ class _SurveyScreenState extends State<SurveyScreen> {
                           const SizedBox(height: 18),
                         ],
                       ),
-                      _buildSearchDropdown(
-                        label: "Wet Waste RFID *",
-                        hint: "Search Wet RFID",
-                        controller: _wetRfidSearchController,
-                        items: _wetAvailableRfids,
-                        icon: Icons.qr_code_scanner_rounded,
-                        onSelected: (val, currentController) {
-                          setState(() {
-                            if (val == "Select") {
-                              _selectedWetRFID = null;
-                              currentController.clear();
-                              _wetRfidSearchController.clear();
-                              FocusScope.of(context).unfocus();
-                            } else {
-                              _selectedWetRFID = val;
-                              currentController.text = val ?? "";
-                              _wetRfidSearchController.text = val ?? "";
-                            }
-                            _showRfidValidationError = false;
-                          });
-                        },
-                      ),
-                      _buildSearchDropdown(
-                        label: "Dry Waste RFID *",
-                        hint: "Search Dry RFID",
-                        controller: _dryRfidSearchController,
-                        items: _dryAvailableRfids,
-                        icon: Icons.qr_code_scanner_rounded,
-                        onSelected: (val, currentController) {
-                          setState(() {
-                            if (val == "Select") {
-                              _selectedDryRFID = null;
-                              currentController.clear();
-                              _dryRfidSearchController.clear();
-                              FocusScope.of(context).unfocus();
-                            } else {
-                              _selectedDryRFID = val;
-                              currentController.text = val ?? "";
-                              _dryRfidSearchController.text = val ?? "";
-                            }
-                            _showRfidValidationError = false;
-                          });
-                        },
-                      ),
+                      if (_surveyMode == "WITH_TAGS") ...[
+                        _buildSearchDropdown(
+                          label: "Wet Waste RFID *",
+                          hint: "Search Wet RFID",
+                          controller: _wetRfidSearchController,
+                          items: _wetAvailableRfids,
+                          icon: Icons.qr_code_scanner_rounded,
+                          onSelected: (val, currentController) {
+                            setState(() {
+                              if (val == "Select") {
+                                _selectedWetRFID = null;
+                                currentController.clear();
+                                _wetRfidSearchController.clear();
+                                FocusScope.of(context).unfocus();
+                              } else {
+                                _selectedWetRFID = val;
+                                currentController.text = val ?? "";
+                                _wetRfidSearchController.text = val ?? "";
+                              }
+                              _showRfidValidationError = false;
+                            });
+                          },
+                        ),
+
+                        _buildSearchDropdown(
+                          label: "Dry Waste RFID *",
+                          hint: "Search Dry RFID",
+                          controller: _dryRfidSearchController,
+                          items: _dryAvailableRfids,
+                          icon: Icons.qr_code_scanner_rounded,
+                          onSelected: (val, currentController) {
+                            setState(() {
+                              if (val == "Select") {
+                                _selectedDryRFID = null;
+                                currentController.clear();
+                                _dryRfidSearchController.clear();
+                                FocusScope.of(context).unfocus();
+                              } else {
+                                _selectedDryRFID = val;
+                                currentController.text = val ?? "";
+                                _dryRfidSearchController.text = val ?? "";
+                              }
+                              _showRfidValidationError = false;
+                            });
+                          },
+                        ),
+                      ],
                       _buildInput(
                         label: "No of People *",
                         controller: _peopleController,
@@ -2323,6 +2636,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
           ),
         ),
       ),
-    );
+        ));
   }
 }

@@ -473,6 +473,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   final TextEditingController _wetRfidSearchController = TextEditingController();
   final TextEditingController _dryRfidSearchController = TextEditingController();
+
   final TextEditingController _phoneSearchController = TextEditingController();
   final TextEditingController _nameSearchController = TextEditingController();
 
@@ -1095,18 +1096,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                               if (wetConfirmError || dryConfirmError) return;
 
-                              if (hasWet && wetInput != savedWet) {
-                                setModalState(() {
-                                  modalErrorMessage = "Wet RFID confirmation does not match";
-                                });
-                                return;
+                              if (hasWet) {
+                                final enteredWet = wetInput.padLeft(8, '0');
+                                final actualWet = savedWet.padLeft(8, '0');
+
+                                if (enteredWet != actualWet) {
+                                  setModalState(() {
+                                    modalErrorMessage = "Wet RFID confirmation does not match";
+                                  });
+                                  return;
+                                }
                               }
 
-                              if (hasDry && dryInput != savedDry) {
-                                setModalState(() {
-                                  modalErrorMessage = "Dry RFID confirmation does not match";
-                                });
-                                return;
+                              if (hasDry) {
+                                final enteredDry = dryInput.padLeft(8, '0');
+                                final actualDry = savedDry.padLeft(8, '0');
+
+                                if (enteredDry != actualDry) {
+                                  setModalState(() {
+                                    modalErrorMessage = "Dry RFID confirmation does not match";
+                                  });
+                                  return;
+                                }
                               }
 
                               Navigator.of(context).pop();
@@ -1974,7 +1985,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 4, bottom: 6),
-          child: Text(label, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Color(0xFF7F8C8D))),
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: Color(0xFF7F8C8D),
+            ),
+          ),
         ),
         Autocomplete<String>(
           key: dropdownKey,
@@ -2004,11 +2022,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
               alignment: Alignment.topLeft,
               child: Material(
                 elevation: 4.0,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(18),
                 color: Colors.white,
                 child: Container(
                   constraints: const BoxConstraints(maxHeight: 200),
-                  width: MediaQuery.of(context).size.width - 96,
+                  width: MediaQuery.of(context).size.width - 80,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(
+                      color: Colors.black.withOpacity(0.04),
+                    ),
+                  ),
                   child: ListView.builder(
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
@@ -2016,7 +2040,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     itemBuilder: (BuildContext context, int index) {
                       final String option = options.elementAt(index);
                       return ListTile(
-                        title: Text(option, style: const TextStyle(color: Colors.black87)),
+                        title: Text(
+                          option,
+                          style: const TextStyle(
+                            color: Color(0xFF2C3E50),
+                            fontSize: 13,
+                          ),
+                        ),
                         onTap: () => onSelected(option),
                       );
                     },
@@ -2047,6 +2077,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
             return TextField(
               controller: textController,
               focusNode: autocompleteFocusNode,
+              style: const TextStyle(
+                color: Color(0xFF2C3E50),
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
               onChanged: (value) {
                 if (label.contains("RFID")) {
                   final entered = int.tryParse(value);
@@ -2088,11 +2123,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 hintText: hint,
                 hintStyle: const TextStyle(color: Colors.black38, fontSize: 14),
                 prefixIcon: Icon(icon, color: Colors.black54, size: 20),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                filled: true,
-                fillColor: const Color(0xFFF8F9FA),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 16,
+                ),
+                filled: true,fillColor: Colors.white,
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(18),
                   borderSide: BorderSide(
                     color: hasError ? Colors.red.shade400 : Colors.black12,
                     width: hasError ? 1.5 : 1.0,

@@ -39,13 +39,7 @@ class _LogsScreenState extends State<LogsScreen>
   String _selectedWorker = "All Workers";
   String _selectedStatus = "All Status";
 
-  final List<String> _workerIds = [
-    "All Workers",
-    ...List.generate(
-      15,
-          (index) => "SEWAC${(index + 1).toString().padLeft(2, '0')}",
-    ),
-  ];
+  List<String> _workerIds = ["All Workers"];
 
   final List<String> _statusOptions = [
     "All Status",
@@ -100,6 +94,16 @@ class _LogsScreenState extends State<LogsScreen>
       setState(() {
         _adminName = savedUser.trim();
         _logs = result;
+
+        _workerIds = [
+          "All Workers",
+          ...result
+              .map((log) => log.workerId.trim().toUpperCase())
+              .toSet()
+              .toList()
+            ..sort(),
+        ];
+
         _isLoading = false;
       });
     } catch (e) {

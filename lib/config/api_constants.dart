@@ -1,6 +1,6 @@
 class ApiConstants {
   static const String baseUrl =
-      "https://sewac-helper-backend.up.railway.app";
+      "http://18.60.41.32:5001";
 
   static const String apiV1 = "$baseUrl/api/v1";
 }
