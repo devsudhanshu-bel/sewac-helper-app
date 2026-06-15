@@ -730,7 +730,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final headers = await _getHeaders();
       final response = await http.get(
         Uri.parse(
-          "${ApiConstants.apiV1}/citizen/phone/$phone"),
+            "${ApiConstants.apiV1}/citizen/phone/$phone"),
         headers: headers,
       );
 
@@ -756,7 +756,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final encodedName = Uri.encodeComponent(name);
       final response = await http.get(
         Uri.parse(
-          "${ApiConstants.apiV1}/citizen/name/$encodedName"),
+            "${ApiConstants.apiV1}/citizen/name/$encodedName"),
         headers: headers,
       );
 
@@ -1323,7 +1323,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         if (!absoluteDryEmpty) {
           final dryMapResponse = await http.patch(
             Uri.parse(
-              "${ApiConstants.apiV1}/rfid/map"),
+                "${ApiConstants.apiV1}/rfid/map"),
             headers: headers,
             body: jsonEncode({
               "slno": savedDry,
@@ -1351,7 +1351,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
         response = await http.post(
           Uri.parse(
-            "${ApiConstants.apiV1}/tracking/create"),
+              "${ApiConstants.apiV1}/tracking/create"),
           headers: headers,
           body: jsonEncode({
             "slno": absoluteWetEmpty ? "N/A" : savedWet,

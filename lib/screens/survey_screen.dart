@@ -460,6 +460,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
     showDialog(
       context: context,
       barrierDismissible: !isMandatory,
+      useRootNavigator: false,
       builder: (BuildContext context) {
         return PopScope(
           canPop: !isMandatory,
@@ -569,6 +570,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
     showDialog(
       context: context,
       barrierDismissible: !isMandatory,
+      useRootNavigator: false,
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setPopupState) {
@@ -777,6 +779,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
     showDialog(
       context: context,
       barrierDismissible: false,
+      useRootNavigator: false,
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setDialogState) {
@@ -2084,11 +2087,11 @@ class _SurveyScreenState extends State<SurveyScreen> {
     final bool hasSurveyDetails = areaValue.isNotEmpty && _capturedImage != null;
 
     return Scaffold(
-      extendBodyBehindAppBar: false,
-      backgroundColor: const Color(0xFFF8F9FA),
-      appBar: SewacHeader(
-        onLogout: _handleLogout,
-      ),
+        extendBodyBehindAppBar: false,
+        backgroundColor: const Color(0xFFF8F9FA),
+        appBar: SewacHeader(
+          onLogout: _handleLogout,
+        ),
         body: GestureDetector(
           behavior: HitTestBehavior.translucent,
           onTap: () {
@@ -2099,543 +2102,543 @@ class _SurveyScreenState extends State<SurveyScreen> {
               physics: const BouncingScrollPhysics(),
               padding: const EdgeInsets.fromLTRB(24, 4, 24, 24),
               child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "Survey Form",
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF2C3E50),
-                          ),
-                        ),
-                        Text(
-                          locationSubtitle,
-                          style: const TextStyle(color: Colors.black54, fontSize: 13),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  if (isLocationSelected)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4.0),
-                      child: TextButton.icon(
-                        onPressed: () => _showLocationPopup(isMandatory: false),
-                        icon: const Icon(Icons.edit_location_alt_outlined, size: 16, color: Color(0xFF00A236)),
-                        label: const Text(
-                          "Change",
-                          style: TextStyle(
-                            color: Color(0xFF00A236),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                        ),
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          backgroundColor: const Color(0xFF00A236).withOpacity(0.08),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              if (hasSurveyDetails) ...[
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.black.withOpacity(0.03)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.02),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Row(
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text(
-                              "Survey Details Summary",
+                              "Survey Form",
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: 28,
                                 fontWeight: FontWeight.bold,
                                 color: Color(0xFF2C3E50),
                               ),
                             ),
-                            const SizedBox(height: 6),
                             Text(
-                              "Area: $areaValue",
-                              style: const TextStyle(
-                                fontSize: 13,
-                                color: Colors.black87,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 4),
-                            Row(
-                              children: const [
-                                Text(
-                                  "Building Photo: ",
-                                  style: TextStyle(fontSize: 13, color: Colors.black87),
-                                ),
-                                Text(
-                                  "Captured ✓",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFF00A236),
-                                  ),
-                                ),
-                              ],
+                              locationSubtitle,
+                              style: const TextStyle(color: Colors.black54, fontSize: 13),
                             ),
                           ],
                         ),
                       ),
-                      TextButton.icon(
-                        onPressed: () => _showSurveyDetailsPopup(isMandatory: false),
-                        icon: const Icon(Icons.edit_outlined, size: 16, color: Color(0xFFFFA000)),
-                        label: const Text(
-                          "EDIT",
-                          style: TextStyle(
-                            color: Color(0xFFFFA000),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                        ),
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                          backgroundColor: const Color(0xFFFFA000).withOpacity(0.08),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-              const SizedBox(height: 24),
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFEFEFEF),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: Colors.black12,
-                    width: 0.5,
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _surveyMode = "WITH_TAGS";
-                          });
-                        },
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          decoration: BoxDecoration(
-                            color: _surveyMode == "WITH_TAGS"
-                                ? Colors.white
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: _surveyMode == "WITH_TAGS"
-                                ? [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 4,
-                                offset: const Offset(0, 2),
-                              )
-                            ]
-                                : [],
-                          ),
-                          child: Center(
-                            child: Text(
-                              "With Tags",
+
+                      if (isLocationSelected)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4.0),
+                          child: TextButton.icon(
+                            onPressed: () => _showLocationPopup(isMandatory: false),
+                            icon: const Icon(Icons.edit_location_alt_outlined, size: 16, color: Color(0xFF00A236)),
+                            label: const Text(
+                              "Change",
                               style: TextStyle(
+                                color: Color(0xFF00A236),
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
-                                color: _surveyMode == "WITH_TAGS"
-                                    ? const Color(0xFF00A236)
-                                    : Colors.black54,
+                              ),
+                            ),
+                            style: TextButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              backgroundColor: const Color(0xFF00A236).withOpacity(0.08),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _surveyMode = "WITHOUT_TAGS";
-                          });
-                        },
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          decoration: BoxDecoration(
-                            color: _surveyMode == "WITHOUT_TAGS"
-                                ? Colors.white
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: _surveyMode == "WITHOUT_TAGS"
-                                ? [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 4,
-                                offset: const Offset(0, 2),
-                              )
-                            ]
-                                : [],
-                          ),
-                          child: Center(
-                            child: Text(
-                              "Without Tags",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                                color: _surveyMode == "WITHOUT_TAGS"
-                                    ? const Color(0xFF00A236)
-                                    : Colors.black54,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 20),
-              Form(
-                key: _formKey,
-                child: Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(28),
-                    border: Border.all(color: Colors.black.withOpacity(0.03)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.04),
-                        blurRadius: 16,
-                        offset: const Offset(0, 6),
-                      ),
                     ],
                   ),
-                  child: Column(
-                    children: [
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Type of Waste Generators *",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF2C3E50),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF8F9FA),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: Colors.black12.withOpacity(0.04)),
-                        ),
-                        child: ListView.separated(
-                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: wasteOptions.keys.length,
-                          separatorBuilder: (context, index) => const Divider(height: 1, color: Colors.black12, indent: 14, endIndent: 14),
-                          itemBuilder: (context, index) {
-                            final key = wasteOptions.keys.elementAt(index);
-                            return CheckboxListTile(
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 14),
-                              dense: true,
-                              activeColor: const Color(0xFF00A236),
-                              checkboxShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                              value: wasteOptions[key],
-                              title: Text(key, style: const TextStyle(fontSize: 14, color: Color(0xFF2C3E50), fontWeight: FontWeight.w500)),
-                              onChanged: (value) {
-                                setState(() {
-                                  wasteOptions[key] = value!;
-                                });
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      _buildInput(
-                        label: "House / Building Number *",
-                        controller: _buildingController,
-                        prefixIcon: Icons.holiday_village_outlined,
-                      ),
-                      _buildInput(
-                        label: "Floor of Building *",
-                        controller: _floorController,
-                        prefixIcon: Icons.layers_outlined,
-                      ),
-                      _buildDropdown(
-                        label: "Type of HHs *",
-                        value: _selectedHH,
-                        prefixIcon: Icons.supervised_user_circle_outlined,
-                        items: hhTypes,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedHH = value;
-                          });
-                        },
-                      ),
-                      _buildInput(
-                        label: "Name of Person *",
-                        controller: _nameController,
-                        prefixIcon: Icons.person_outline_rounded,
-                        keyboardType: TextInputType.name,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(
-                            RegExp(r'[a-zA-Z ]'),
+                  const SizedBox(height: 16),
+                  if (hasSurveyDetails) ...[
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.black.withOpacity(0.03)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.02),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
                           ),
                         ],
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return "Required";
-                          }
-                          if (!RegExp(r'^[A-Za-z ]+$').hasMatch(value.trim())) {
-                            return "Only alphabets allowed";
-                          }
-                          return null;
-                        },
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Row(
                         children: [
-                          const Text(
-                            "Contact Number *",
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xFF2C3E50),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          TextFormField(
-                            controller: _phoneController,
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                              LengthLimitingTextInputFormatter(10),
-                            ],
-                            validator: (value) {
-                              if (value == null || value.trim().isEmpty) {
-                                return "Required";
-                              }
-                              if (!RegExp(r'^[0-9]{10}$').hasMatch(value.trim())) {
-                                return "Enter exactly 10 digits";
-                              }
-                              return null;
-                            },
-                            style: const TextStyle(
-                              color: Color(0xFF2C3E50),
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.white,
-
-                              prefixIcon: Container(
-                                width: 65,
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  "+91",
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Survey Details Summary",
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                     color: Color(0xFF2C3E50),
                                   ),
                                 ),
-                              ),
-
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 16,
-                              ),
-
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(18),
-                                borderSide: BorderSide(
-                                  color: Colors.black.withOpacity(0.04),
+                                const SizedBox(height: 6),
+                                Text(
+                                  "Area: $areaValue",
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black87,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                              ),
-
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(18),
-                                borderSide: const BorderSide(
-                                  color: Color(0xFF00A236),
-                                  width: 1.5,
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: const [
+                                    Text(
+                                      "Building Photo: ",
+                                      style: TextStyle(fontSize: 13, color: Colors.black87),
+                                    ),
+                                    Text(
+                                      "Captured ✓",
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF00A236),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-
-                              errorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(18),
-                                borderSide: BorderSide(
-                                  color: Colors.red.shade400,
-                                  width: 1.0,
-                                ),
-                              ),
-
-                              focusedErrorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(18),
-                                borderSide: BorderSide(
-                                  color: Colors.red.shade400,
-                                  width: 1.5,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 18),
-                        ],
-                      ),
-                      if (_surveyMode == "WITH_TAGS") ...[
-                        _buildSearchDropdown(
-                          label: "Wet Waste RFID *",
-                          hint: "Search Wet RFID",
-                          controller: _wetRfidSearchController,
-                          items: _wetAvailableRfids,
-                          icon: Icons.qr_code_scanner_rounded,
-                          onSelected: (val, currentController) {
-                            setState(() {
-                              if (val == "Select") {
-                                _selectedWetRFID = null;
-                                currentController.clear();
-                                _wetRfidSearchController.clear();
-                                FocusScope.of(context).unfocus();
-                              } else {
-                                _selectedWetRFID = val;
-                                currentController.text = val ?? "";
-                                _wetRfidSearchController.text = val ?? "";
-                              }
-                              _showRfidValidationError = false;
-                            });
-                          },
-                        ),
-
-                        _buildSearchDropdown(
-                          label: "Dry Waste RFID *",
-                          hint: "Search Dry RFID",
-                          controller: _dryRfidSearchController,
-                          items: _dryAvailableRfids,
-                          icon: Icons.qr_code_scanner_rounded,
-                          onSelected: (val, currentController) {
-                            setState(() {
-                              if (val == "Select") {
-                                _selectedDryRFID = null;
-                                currentController.clear();
-                                _dryRfidSearchController.clear();
-                                FocusScope.of(context).unfocus();
-                              } else {
-                                _selectedDryRFID = val;
-                                currentController.text = val ?? "";
-                                _dryRfidSearchController.text = val ?? "";
-                              }
-                              _showRfidValidationError = false;
-                            });
-                          },
-                        ),
-                      ],
-                      _buildInput(
-                        label: "No of People *",
-                        controller: _peopleController,
-                        prefixIcon: Icons.groups_outlined,
-                        keyboardType: TextInputType.number,
-                      ),
-                      const SizedBox(height: 32),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 56,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            gradient: const LinearGradient(
-                              colors: [
-                                Color(0xFFFFA000),
-                                Color(0xFF4CAF50),
                               ],
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFF4CAF50).withOpacity(0.2),
-                                blurRadius: 12,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
                           ),
-                          child: ElevatedButton(
-                            onPressed: _handleSubmitClick,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              shadowColor: Colors.transparent,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
+                          TextButton.icon(
+                            onPressed: () => _showSurveyDetailsPopup(isMandatory: false),
+                            icon: const Icon(Icons.edit_outlined, size: 16, color: Color(0xFFFFA000)),
+                            label: const Text(
+                              "EDIT",
+                              style: TextStyle(
+                                color: Color(0xFFFFA000),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
                               ),
                             ),
-                            child: _isSubmitting
-                                ? const SizedBox(
-                              height: 22,
-                              width: 22,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
+                            style: TextButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                              backgroundColor: const Color(0xFFFFA000).withOpacity(0.08),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                            )
-                                : const Text(
-                              "SUBMIT SURVEY",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 0.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 24),
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFEFEFEF),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: Colors.black12,
+                        width: 0.5,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _surveyMode = "WITH_TAGS";
+                              });
+                            },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              decoration: BoxDecoration(
+                                color: _surveyMode == "WITH_TAGS"
+                                    ? Colors.white
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: _surveyMode == "WITH_TAGS"
+                                    ? [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  )
+                                ]
+                                    : [],
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "With Tags",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: _surveyMode == "WITH_TAGS"
+                                        ? const Color(0xFF00A236)
+                                        : Colors.black54,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _surveyMode = "WITHOUT_TAGS";
+                              });
+                            },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              decoration: BoxDecoration(
+                                color: _surveyMode == "WITHOUT_TAGS"
+                                    ? Colors.white
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: _surveyMode == "WITHOUT_TAGS"
+                                    ? [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  )
+                                ]
+                                    : [],
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "Without Tags",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: _surveyMode == "WITHOUT_TAGS"
+                                        ? const Color(0xFF00A236)
+                                        : Colors.black54,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+
+                  const SizedBox(height: 20),
+                  Form(
+                    key: _formKey,
+                    child: Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(28),
+                        border: Border.all(color: Colors.black.withOpacity(0.03)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.04),
+                            blurRadius: 16,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Type of Waste Generators *",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF2C3E50),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF8F9FA),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: Colors.black12.withOpacity(0.04)),
+                            ),
+                            child: ListView.separated(
+                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: wasteOptions.keys.length,
+                              separatorBuilder: (context, index) => const Divider(height: 1, color: Colors.black12, indent: 14, endIndent: 14),
+                              itemBuilder: (context, index) {
+                                final key = wasteOptions.keys.elementAt(index);
+                                return CheckboxListTile(
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 14),
+                                  dense: true,
+                                  activeColor: const Color(0xFF00A236),
+                                  checkboxShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                  value: wasteOptions[key],
+                                  title: Text(key, style: const TextStyle(fontSize: 14, color: Color(0xFF2C3E50), fontWeight: FontWeight.w500)),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      wasteOptions[key] = value!;
+                                    });
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          _buildInput(
+                            label: "House / Building Number *",
+                            controller: _buildingController,
+                            prefixIcon: Icons.holiday_village_outlined,
+                          ),
+                          _buildInput(
+                            label: "Floor of Building *",
+                            controller: _floorController,
+                            prefixIcon: Icons.layers_outlined,
+                          ),
+                          _buildDropdown(
+                            label: "Type of HHs *",
+                            value: _selectedHH,
+                            prefixIcon: Icons.supervised_user_circle_outlined,
+                            items: hhTypes,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedHH = value;
+                              });
+                            },
+                          ),
+                          _buildInput(
+                            label: "Name of Person *",
+                            controller: _nameController,
+                            prefixIcon: Icons.person_outline_rounded,
+                            keyboardType: TextInputType.name,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                RegExp(r'[a-zA-Z ]'),
+                              ),
+                            ],
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return "Required";
+                              }
+                              if (!RegExp(r'^[A-Za-z ]+$').hasMatch(value.trim())) {
+                                return "Only alphabets allowed";
+                              }
+                              return null;
+                            },
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Contact Number *",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF2C3E50),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              TextFormField(
+                                controller: _phoneController,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  LengthLimitingTextInputFormatter(10),
+                                ],
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return "Required";
+                                  }
+                                  if (!RegExp(r'^[0-9]{10}$').hasMatch(value.trim())) {
+                                    return "Enter exactly 10 digits";
+                                  }
+                                  return null;
+                                },
+                                style: const TextStyle(
+                                  color: Color(0xFF2C3E50),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+
+                                  prefixIcon: Container(
+                                    width: 65,
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      "+91",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF2C3E50),
+                                      ),
+                                    ),
+                                  ),
+
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 16,
+                                  ),
+
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(18),
+                                    borderSide: BorderSide(
+                                      color: Colors.black.withOpacity(0.04),
+                                    ),
+                                  ),
+
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(18),
+                                    borderSide: const BorderSide(
+                                      color: Color(0xFF00A236),
+                                      width: 1.5,
+                                    ),
+                                  ),
+
+                                  errorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(18),
+                                    borderSide: BorderSide(
+                                      color: Colors.red.shade400,
+                                      width: 1.0,
+                                    ),
+                                  ),
+
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(18),
+                                    borderSide: BorderSide(
+                                      color: Colors.red.shade400,
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 18),
+                            ],
+                          ),
+                          if (_surveyMode == "WITH_TAGS") ...[
+                            _buildSearchDropdown(
+                              label: "Wet Waste RFID *",
+                              hint: "Search Wet RFID",
+                              controller: _wetRfidSearchController,
+                              items: _wetAvailableRfids,
+                              icon: Icons.qr_code_scanner_rounded,
+                              onSelected: (val, currentController) {
+                                setState(() {
+                                  if (val == "Select") {
+                                    _selectedWetRFID = null;
+                                    currentController.clear();
+                                    _wetRfidSearchController.clear();
+                                    FocusScope.of(context).unfocus();
+                                  } else {
+                                    _selectedWetRFID = val;
+                                    currentController.text = val ?? "";
+                                    _wetRfidSearchController.text = val ?? "";
+                                  }
+                                  _showRfidValidationError = false;
+                                });
+                              },
+                            ),
+
+                            _buildSearchDropdown(
+                              label: "Dry Waste RFID *",
+                              hint: "Search Dry RFID",
+                              controller: _dryRfidSearchController,
+                              items: _dryAvailableRfids,
+                              icon: Icons.qr_code_scanner_rounded,
+                              onSelected: (val, currentController) {
+                                setState(() {
+                                  if (val == "Select") {
+                                    _selectedDryRFID = null;
+                                    currentController.clear();
+                                    _dryRfidSearchController.clear();
+                                    FocusScope.of(context).unfocus();
+                                  } else {
+                                    _selectedDryRFID = val;
+                                    currentController.text = val ?? "";
+                                    _dryRfidSearchController.text = val ?? "";
+                                  }
+                                  _showRfidValidationError = false;
+                                });
+                              },
+                            ),
+                          ],
+                          _buildInput(
+                            label: "No of People *",
+                            controller: _peopleController,
+                            prefixIcon: Icons.groups_outlined,
+                            keyboardType: TextInputType.number,
+                          ),
+                          const SizedBox(height: 32),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 56,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFFFFA000),
+                                    Color(0xFF4CAF50),
+                                  ],
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFF4CAF50).withOpacity(0.2),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: ElevatedButton(
+                                onPressed: _handleSubmitClick,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  shadowColor: Colors.transparent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                                child: _isSubmitting
+                                    ? const SizedBox(
+                                  height: 22,
+                                  width: 22,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                                    : const Text(
+                                  "SUBMIT SURVEY",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
         ));
   }
 }

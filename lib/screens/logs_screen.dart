@@ -653,6 +653,7 @@ class _LogsScreenState extends State<LogsScreen>
                   child: Row(
                     children: [
                       // Enhanced Searchable Worker Trigger Layout Field Box
+                      // Enhanced Searchable Worker Trigger Layout Field Box
                       Expanded(
                         child: InkWell(
                           onTap: _showSearchableWorkerPicker,
@@ -662,6 +663,8 @@ class _LogsScreenState extends State<LogsScreen>
                               labelText: "Worker ID",
                               labelStyle: const TextStyle(color: Color(0xFF7F8C8D), fontSize: 13, fontWeight: FontWeight.w500),
                               prefixIcon: const Icon(Icons.badge_outlined, size: 18, color: Colors.black54),
+                              // ADD THIS: Keeps it identically sized with the Status dropdown next to it
+                              prefixIconConstraints: const BoxConstraints(minWidth: 34, minHeight: 0),
                               suffixIcon: const Icon(Icons.arrow_drop_down, color: Color(0xFF2C3E50)),
                               contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                               filled: true,
@@ -780,11 +783,14 @@ class _LogsScreenState extends State<LogsScreen>
   }) {
     return DropdownButtonFormField<String>(
       value: value,
+      isExpanded: true, // FIX 1: Prevents the dropdown selection row from overflowing
       style: const TextStyle(color: Color(0xFF2C3E50), fontSize: 14, fontWeight: FontWeight.w500),
       decoration: InputDecoration(
         labelText: label,
         labelStyle: const TextStyle(color: Color(0xFF7F8C8D), fontSize: 13, fontWeight: FontWeight.w500),
         prefixIcon: Icon(icon, size: 18, color: Colors.black54),
+        // FIX 2: Reduces the massive default 48px width down to 34px for more breathing room
+        prefixIconConstraints: const BoxConstraints(minWidth: 34, minHeight: 0),
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         filled: true,
         fillColor: const Color(0xFFF8F9FA),
@@ -800,7 +806,11 @@ class _LogsScreenState extends State<LogsScreen>
       items: items.map((item) {
         return DropdownMenuItem(
           value: item,
-          child: Text(item, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.normal)),
+          child: Text(
+            item,
+            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.normal),
+            overflow: TextOverflow.ellipsis, // Safety fallback for long text entries
+          ),
         );
       }).toList(),
       onChanged: onChanged,

@@ -225,22 +225,29 @@ class _SewacHeaderState extends State<SewacHeader> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  "Range: $_rangeDisplay",
-                  style: const TextStyle(
-                    color: Color(0xFF1A237E),
-                    fontWeight: FontWeight.w700,
-                    fontSize: 13,
+                Expanded(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Range: $_rangeDisplay",
+                      style: const TextStyle(
+                        color: Color(0xFF1A237E),
+                        fontWeight: FontWeight.w700,
+                        fontSize: 13,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 4),
                 GestureDetector(
                   onTap: widget.onEditRange,
-                  child: const Icon(
+                  child: Icon(
                     Icons.edit_rounded,
-                    color: Color(0xFF1A237E),
+                    color: widget.onEditRange != null
+                        ? const Color(0xFF1A237E)
+                        : Colors.transparent,
                     size: 14,
                   ),
                 ),
@@ -248,11 +255,11 @@ class _SewacHeaderState extends State<SewacHeader> {
             ),
             const SizedBox(height: 2),
             Text(
-              "Available Tags: $_availableTagsCount",
+              "Tags: $_availableTagsCount",
               style: const TextStyle(
                 color: Color(0xFF00A236),
                 fontWeight: FontWeight.w700,
-                fontSize: 12,
+                fontSize: 11,
               ),
             ),
           ],
