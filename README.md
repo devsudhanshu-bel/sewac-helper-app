@@ -1,6 +1,7 @@
 ---
 
-# ♻️ SEWAC – Smart Waste Management System Using RFID Technology
+# SEWAC – Segregated Waste Accountability System
+## - SEWAC HELPER APP -
 
 ## Introduction
 
